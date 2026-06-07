@@ -13,7 +13,8 @@ public class Start {
             System.out.println("2. 내역 조회");
             System.out.println("3. 날짜 전체 삭제");
             System.out.println("4. 항목 하나 삭제");
-            System.out.println("5. 종료");
+            System.out.println("5. 금액 수정");
+            System.out.println("6. 종료");
             System.out.println("-----------------");
             System.out.print("메뉴 선택 > ");
 
@@ -40,6 +41,9 @@ public class Start {
                     book.deleteItem();
                     break;
                 case 5:
+                    book.updateItem();
+                    break;
+                case 6:
                     System.out.println("====== 종료 ======");
                     return;
                 default:

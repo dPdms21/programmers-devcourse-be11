@@ -5,4 +5,5 @@ public interface AccountBook {
     void showAccount();
     void deleteAll();
     void deleteItem();
+    void updateItem();
 }
