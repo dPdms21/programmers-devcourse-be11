@@ -3,28 +3,34 @@ package bingogame;
 import java.util.*;
 
 public class BingoGame {
-    static final int TARGET = 3;
-    static final int SIZE = 5;
-    static final int MAX = 25;
+    private Scanner sc = new Scanner(System.in);
+    private Random rand = new Random();
 
-    static boolean[] called = new boolean[MAX+1];
-    static Scanner sc = new Scanner(System.in);
-    static Random rand = new Random();
+    private int size;
+    private int max;
+    private boolean[] called;
 
     public void play() {
         System.out.println("======= 빙고 게임! =======");
         System.out.println("  컴퓨터와 빙고 게임하기!!");
         System.out.println("=========================");
 
-        int[][] playerBoard = new int[SIZE][SIZE];
-        boolean[][] playerMarked = new boolean[SIZE][SIZE];
-        int[][] computerBoard = new int[SIZE][SIZE];
-        boolean[][] computerMarked = new boolean[SIZE][SIZE];
+        size = inputSize();
+        max = size * size;
+        called = new boolean[max + 1];
+
+        int[][] playerBoard = new int[size][size];
+        boolean[][] playerMarked = new boolean[size][size];
+        int[][] computerBoard = new int[size][size];
+        boolean[][] computerMarked = new boolean[size][size];
 
         makeBoard(playerBoard);
         makeBoard(computerBoard);
 
-        System.out.println("     " + TARGET + "줄 완성하면 승리!");
+        int target = inputTarget();
+
+        System.out.println("-------------------------");
+        System.out.println("     " + target + "줄 완성하면 승리!");
 
         while (true) {
             System.out.println("====== 사용자 빙고판 ======");
@@ -43,20 +49,20 @@ public class BingoGame {
             int playerBingo = countBingo(playerMarked);
             int computerBingo = countBingo(computerMarked);
 
-            if (playerBingo >= TARGET && computerBingo >= TARGET) {
+            if (playerBingo >= target && computerBingo >= target) {
                 System.out.println("\n======== 무승부! ========");
                 System.out.println("     사용자 " + playerBingo + "줄 빙고!!");
                 System.out.println("     컴퓨터 " + computerBingo + "줄 빙고!!");
                 System.out.println("========================");
                 break;
             }
-            else if (playerBingo >= TARGET) {
+            else if (playerBingo >= target) {
                 System.out.println("\n========================");
                 System.out.println("     사용자 " + playerBingo + "줄 빙고!!");
                 System.out.println("========================\n");
                 break;
             }
-            else if (computerBingo >= TARGET) {
+            else if (computerBingo >= target) {
                 System.out.println("\n========================");
                 System.out.println("     컴퓨터 " + computerBingo + "줄 빙고!!");
                 System.out.println("========================\n");
@@ -71,26 +77,26 @@ public class BingoGame {
         System.out.println("\n======== 게임 끝! ========");
     }
 
-    public static void makeBoard(int[][] board) {
+    private void makeBoard(int[][] board) {
         List<Integer> nums = new ArrayList<>();
 
-        for (int i=1; i<=MAX; i++) {
+        for (int i=1; i<=max; i++) {
             nums.add(i);
         }
         Collections.shuffle(nums);
 
         int idx = 0;
 
-        for (int r=0; r<SIZE; r++) {
-            for (int c=0; c<SIZE; c++) {
+        for (int r=0; r<size; r++) {
+            for (int c=0; c<size; c++) {
                 board[r][c] = nums.get(idx++);
             }
         }
     }
 
-    public static void printBoard(int[][] board, boolean[][] marked) {
-        for (int r=0; r<SIZE; r++) {
-            for (int c=0; c<SIZE; c++) {
+    private void printBoard(int[][] board, boolean[][] marked) {
+        for (int r=0; r<size; r++) {
+            for (int c=0; c<size; c++) {
                 if (marked[r][c]) {
                     System.out.print("[ ★] ");
                 }
@@ -102,9 +108,9 @@ public class BingoGame {
         }
     }
 
-    public static void mark(int[][] board, boolean[][] marked, int num) {
-        for (int r=0; r<SIZE; r++) {
-            for (int c = 0; c < SIZE; c++) {
+    private void mark(int[][] board, boolean[][] marked, int num) {
+        for (int r=0; r<size; r++) {
+            for (int c=0; c<size; c++) {
                 if (board[r][c] == num) {
                     marked[r][c] = true;
                 }
@@ -112,13 +118,13 @@ public class BingoGame {
         }
     }
 
-    public static int countBingo(boolean[][] marked) {
+    private int countBingo(boolean[][] marked) {
         int cnt = 0;
 
-        for (int r=0; r<SIZE; r++) {
+        for (int r=0; r<size; r++) {
             boolean all = true;
 
-            for (int c = 0; c < SIZE; c++) {
+            for (int c=0; c<size; c++) {
                 if (!marked[r][c]) {
                     all = false;
                 }
@@ -129,10 +135,10 @@ public class BingoGame {
             }
         }
 
-        for (int c = 0; c < SIZE; c++) {
+        for (int c=0; c<size; c++) {
             boolean all = true;
 
-            for (int r=0; r<SIZE; r++) {
+            for (int r=0; r<size; r++) {
                 if (!marked[r][c]) {
                     all = false;
                 }
@@ -145,7 +151,7 @@ public class BingoGame {
 
         boolean d1 = true;
 
-        for (int i=0; i<SIZE; i++) {
+        for (int i=0; i<size; i++) {
             if (!marked[i][i]) {
                 d1 = false;
             }
@@ -157,8 +163,8 @@ public class BingoGame {
 
         boolean d2 = true;
 
-        for (int i=0; i<SIZE; i++) {
-            if (!marked[i][SIZE-1-i]) {
+        for (int i=0; i<size; i++) {
+            if (!marked[i][size-1-i]) {
                 d2 = false;
             }
         }
@@ -170,7 +176,7 @@ public class BingoGame {
         return cnt;
     }
 
-    public static int playerPick() {
+    private int playerPick() {
         while (true) {
             System.out.println("-------------------------");
             System.out.print("숫자 입력 > ");
@@ -183,9 +189,10 @@ public class BingoGame {
                 System.out.println("숫자만 입력!");
                 continue;
             }
-            if (num < 1 || num > MAX) {
+
+            if (num < 1 || num > max) {
                 System.out.println("-------------------------");
-                System.out.println("1~25 사이 입력");
+                System.out.println("1~" + max + " 사이 입력");
             }
             else if (called[num]) {
                 System.out.println("-------------------------");
@@ -197,13 +204,61 @@ public class BingoGame {
         }
     }
 
-    public static int computerPick() {
+    private int computerPick() {
         while (true) {
-            int num = rand.nextInt(MAX) + 1;
+            int num = rand.nextInt(max) + 1;
 
             if (!called[num]) {
                 System.out.println("-------------------------");
                 System.out.println("컴퓨터가 부른 숫자 > " + num);
+                return num;
+            }
+        }
+    }
+
+    private int inputTarget() {
+        while (true) {
+            System.out.println("-------------------------");
+            System.out.print("빙고 줄 수 입력 (3/4/5) > ");
+            int num;
+
+            try {
+                num = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("-------------------------");
+                System.out.println("숫자만 입력!");
+                continue;
+            }
+
+            if (num < 3 || num > 5) {
+                System.out.println("-------------------------");
+                System.out.println("3~5 사이 입력");
+            }
+            else {
+                return num;
+            }
+        }
+    }
+
+    private int inputSize() {
+        while (true) {
+            System.out.println("-------------------------");
+            System.out.print("빙고판 크기 입력 (3/5/7) > ");
+            int num;
+
+            try {
+                num = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("-------------------------");
+                System.out.println("숫자만 입력!");
+                continue;
+            }
+
+            if (num != 3 && num != 5 && num != 7) {
+                System.out.println("-------------------------");
+                System.out.println("3/5/7 중 입력");
+            }
+            else {
                 return num;
             }
         }
