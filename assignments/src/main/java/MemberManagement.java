@@ -83,14 +83,18 @@ public class MemberManagement {
         System.out.print("이름 > ");
         String name = sc.nextLine();
 
+        boolean found = false;
+
         for (int i=0; i<memberCnt; i++) {
             if (name.equals(members[i][0])) {
                 System.out.println("이름: " + members[i][0] + " 이메일: " + members[i][1] + " 전화번호: " + members[i][2]);
-                return;
+                found = true;
             }
         }
 
-        System.out.println("존재하지 않는 이름");
+        if (!found) {
+            System.out.println("존재하지 않는 이름");
+        }
     }
 
     public static void selectAll(String[][] members) {
