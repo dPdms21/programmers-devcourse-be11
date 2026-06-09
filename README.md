@@ -8,15 +8,14 @@
 
 ---
 
-## Repository Structure
+## Directory Guide
 
-```text
-programmers-devcourse-be11
-├── assignments/    과제 코드
-├── lectures/       강의 내용 및 개념 정리
-├── practice/       수업 중 작성한 실습 코드
-└── til/            날짜별 학습 회고
-```
+| Path | Description |
+|---|---|
+| [assignments/](./assignments) | 과제 코드 |
+| [lectures/](./lectures) | 강의 내용 및 개념 정리 |
+| [practice/](./practice) | 수업 중 작성한 실습 코드 |
+| [til/](./til) | 날짜별 학습 회고 |
 
 ---
 
