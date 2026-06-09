@@ -1,3 +1,5 @@
+package part1;
+
 import java.util.Scanner;
 
 public class D_scanner_print {

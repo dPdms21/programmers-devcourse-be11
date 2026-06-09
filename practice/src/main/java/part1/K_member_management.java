@@ -1,3 +1,5 @@
+package part1;
+
 import java.util.*;
 
 public class K_member_management {
@@ -187,7 +189,7 @@ public class K_member_management {
         memberCnt--;
     }
 
-    static void main(String[] args) {
+    public static void main(String[] args) {
 
         // printPricePlan을 실행 -> 2차원 저장공간이 생성되어야한다.
         // 이름, 이메일, 연락처 - 3열
