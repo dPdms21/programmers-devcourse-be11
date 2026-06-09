@@ -1,11 +1,13 @@
 import java.util.*;
 
 public class MemberManagement {
-    static int totalCnt = 0;
-    static int memberCnt = 0;
-    static Scanner sc = new Scanner(System.in);
+    private Scanner sc = new Scanner(System.in);
 
-    public static int printPricePlan() {
+    private int totalCnt = 0;
+    private int memberCnt = 0;
+    private String[][] members;
+
+    private int printPricePlan() {
         System.out.println("================== 요금제 선택 ==================");
         System.out.println("[1]Lite : 10명 [2]Basic : 20명 [3]Premium : 30명");
         System.out.println("===============================================");
@@ -14,7 +16,7 @@ public class MemberManagement {
         return Integer.parseInt(sc.nextLine());
     }
 
-    public static int printMenu(int memberCnt) {
+    private int printMenu() {
         System.out.println("===============================================");
         System.out.println("수행할 업무 선택 - 현재 회원수: " + memberCnt +"/" + totalCnt);
         System.out.println("[1]회원추가 [2]회원조회(메일) [3]회원조회(이름)");
@@ -26,7 +28,7 @@ public class MemberManagement {
         return Integer.parseInt(sc.nextLine());
     }
 
-    public static void addMember(String[][] members) {
+    private void addMember() {
         if (memberCnt == members.length) {
             System.out.println("------------------- 정원 초과 -------------------");
             return;
@@ -39,7 +41,7 @@ public class MemberManagement {
         System.out.print("이메일 > ");
         String email = sc.nextLine();
 
-        if (checkEmail(members, email)) {
+        if (checkEmail(email)) {
             System.out.println("이미 존재하는 이메일");
             return;
         }
@@ -54,7 +56,7 @@ public class MemberManagement {
         memberCnt++;
     }
 
-    public static boolean checkEmail(String[][] members, String email) {
+    private boolean checkEmail(String email) {
         for (int i=0; i<memberCnt; i++) {
             if (email.equals(members[i][1])) {
                 return true;
@@ -63,7 +65,7 @@ public class MemberManagement {
         return false;
     }
 
-    public static void selectEmail(String[][] members) {
+    private void selectEmail() {
         System.out.println("-----------------------------------------------");
         System.out.print("이메일 > ");
         String email = sc.nextLine();
@@ -78,7 +80,7 @@ public class MemberManagement {
         System.out.println("존재하지 않는 이메일");
     }
 
-    public static void selectName(String[][] members) {
+    private void selectName() {
         System.out.println("-----------------------------------------------");
         System.out.print("이름 > ");
         String name = sc.nextLine();
@@ -97,13 +99,13 @@ public class MemberManagement {
         }
     }
 
-    public static void selectAll(String[][] members) {
+    private void selectAll() {
         for (int i=0; i<memberCnt; i++) {
             System.out.println("이름: " + members[i][0] + " 이메일: " + members[i][1] + " 전화번호: " + members[i][2]);
         }
     }
 
-    public static void updateMember(String[][] members) {
+    private void updateMember() {
         System.out.println("-----------------------------------------------");
         System.out.print("이메일 > ");
         String email = sc.nextLine();
@@ -133,7 +135,7 @@ public class MemberManagement {
         members[idx][2] = sc.nextLine();
     }
 
-    public static void deleteMember(String[][] members) {
+    private void deleteMember() {
         System.out.println("-----------------------------------------------");
         System.out.print("이메일 > ");
         String email = sc.nextLine();
@@ -165,7 +167,7 @@ public class MemberManagement {
         members[memberCnt][2] = null;
     }
 
-    public static void main(String[] args) {
+    public void run() {
         int num = printPricePlan();
 
         while (num < 1 || num > 3) {
@@ -173,30 +175,30 @@ public class MemberManagement {
             num = printPricePlan();
         }
 
-        String[][] members = new String[num*10][3];
+        members = new String[num*10][3];
         totalCnt = num * 10;
 
         while (true) {
-            int choice = printMenu(memberCnt);
+            int choice = printMenu();
 
             switch (choice) {
                 case 1:
-                    addMember(members);
+                    addMember();
                     break;
                 case 2:
-                    selectEmail(members);
+                    selectEmail();
                     break;
                 case 3:
-                    selectName(members);
+                    selectName();
                     break;
                 case 4:
-                    selectAll(members);
+                    selectAll();
                     break;
                 case 5:
-                    updateMember(members);
+                    updateMember();
                     break;
                 case 6:
-                    deleteMember(members);
+                    deleteMember();
                     break;
                 case 7:
                     System.out.println("================= 프로그램 종료 =================");
@@ -205,6 +207,10 @@ public class MemberManagement {
                     System.out.println("=============== 올바른 번호 입력! ===============");
             }
         }
+    }
 
+    public static void main(String[] args) {
+        MemberManagement mm = new MemberManagement();
+        mm.run();
     }
 }
