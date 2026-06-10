@@ -12,9 +12,9 @@
 
 | Path | Description |
 |---|---|
-| [assignments/](./assignments) | 과제 코드 |
+| [assignments/](./assignments/src/main/java) | 과제 Java 소스 코드 |
 | [lectures/](./lectures) | 강의 내용 및 개념 정리 |
-| [practice/](./practice) | 수업 중 작성한 실습 코드 |
+| [practice/](./practice/src/main/java) | 수업 중 작성한 실습 코드 |
 | [til/](./til) | 날짜별 학습 회고 |
 
 ---
