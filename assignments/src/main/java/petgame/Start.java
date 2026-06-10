@@ -16,7 +16,7 @@ public class Start {
         while (true) {
             System.out.println("===========================");
             System.out.println("[1]먹이주기 [2]놀아주기");
-            System.out.println("[3]상태보기 [4]종료");
+            System.out.println("[3]상태보기 [4] 잠자기 [5]종료");
             System.out.println("===========================");
             System.out.print("숫자 입력 > ");
             int menu = Integer.parseInt(sc.nextLine());
@@ -34,6 +34,10 @@ public class Start {
                     pet.showStatus();
                     break;
                 case 4:
+                    pet.sleep();
+                    pet.showStatus();
+                    break;
+                case 5:
                     System.out.println("===========================");
                     System.out.println("        프로그램 종료");
                     System.out.println("===========================");
