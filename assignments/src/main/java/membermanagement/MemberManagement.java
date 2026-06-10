@@ -1,3 +1,5 @@
+package membermanagement;
+
 import java.util.*;
 
 public class MemberManagement {
@@ -5,7 +7,7 @@ public class MemberManagement {
 
     private int totalCnt = 0;
     private int memberCnt = 0;
-    private String[][] members;
+    private Member[] members;
 
     private int printPricePlan() {
         System.out.println("================== 요금제 선택 ==================");
@@ -49,16 +51,14 @@ public class MemberManagement {
         System.out.println("-----------------------------------------------");
         System.out.print("전화번호 > ");
         String phone = sc.nextLine();
-        
-        members[memberCnt][0] = name;
-        members[memberCnt][1] = email;
-        members[memberCnt][2] = phone;
+
+        members[memberCnt] = new Member(name, email, phone);
         memberCnt++;
     }
 
     private boolean checkEmail(String email) {
         for (int i=0; i<memberCnt; i++) {
-            if (email.equals(members[i][1])) {
+            if (email.equals(members[i].getEmail())) {
                 return true;
             }
         }
@@ -71,8 +71,8 @@ public class MemberManagement {
         String email = sc.nextLine();
 
         for (int i=0; i<memberCnt; i++) {
-            if (email.equals(members[i][1])) {
-                System.out.println("이름: " + members[i][0] + " 이메일: " + members[i][1] + " 전화번호: " + members[i][2]);
+            if (email.equals(members[i].getEmail())) {
+                System.out.println("이름: " + members[i].getName() + " 이메일: " + members[i].getEmail() + " 전화번호: " + members[i].getPhone());
                 return;
             }
         }
@@ -88,8 +88,8 @@ public class MemberManagement {
         boolean found = false;
 
         for (int i=0; i<memberCnt; i++) {
-            if (name.equals(members[i][0])) {
-                System.out.println("이름: " + members[i][0] + " 이메일: " + members[i][1] + " 전화번호: " + members[i][2]);
+            if (name.equals(members[i].getName())) {
+                System.out.println("이름: " + members[i].getName() + " 이메일: " + members[i].getEmail() + " 전화번호: " + members[i].getPhone());
                 found = true;
             }
         }
@@ -101,7 +101,7 @@ public class MemberManagement {
 
     private void selectAll() {
         for (int i=0; i<memberCnt; i++) {
-            System.out.println("이름: " + members[i][0] + " 이메일: " + members[i][1] + " 전화번호: " + members[i][2]);
+            System.out.println("이름: " + members[i].getName() + " 이메일: " + members[i].getEmail() + " 전화번호: " + members[i].getPhone());
         }
     }
 
@@ -113,7 +113,7 @@ public class MemberManagement {
         int idx = -1;
 
         for (int i=0; i<memberCnt; i++) {
-            if (email.equals(members[i][1])) {
+            if (email.equals(members[i].getEmail())) {
                 idx = i;
                 break;
             }
@@ -126,13 +126,13 @@ public class MemberManagement {
 
         System.out.println("-----------------------------------------------");
         System.out.print("이름 > ");
-        members[idx][0] = sc.nextLine();
+        members[idx].setName(sc.nextLine());
         System.out.println("-----------------------------------------------");
         System.out.print("이메일 > ");
-        members[idx][1] = sc.nextLine();
+        members[idx].setEmail(sc.nextLine());
         System.out.println("-----------------------------------------------");
         System.out.print("전화번호 > ");
-        members[idx][2] = sc.nextLine();
+        members[idx].setPhone(sc.nextLine());
     }
 
     private void deleteMember() {
@@ -143,7 +143,7 @@ public class MemberManagement {
         int idx = -1;
 
         for (int i=0; i<memberCnt; i++) {
-            if (email.equals(members[i][1])) {
+            if (email.equals(members[i].getEmail())) {
                 idx = i;
                 break;
             }
@@ -155,16 +155,11 @@ public class MemberManagement {
         }
 
         for (int i=idx; i<memberCnt-1; i++) {
-            members[i][0] = members[i+1][0];
-            members[i][1] = members[i+1][1];
-            members[i][2] = members[i+1][2];
+            members[i] = members[i + 1];
         }
 
         memberCnt--;
-
-        members[memberCnt][0] = null;
-        members[memberCnt][1] = null;
-        members[memberCnt][2] = null;
+        members[memberCnt] = null;
     }
 
     public void run() {
@@ -175,7 +170,7 @@ public class MemberManagement {
             num = printPricePlan();
         }
 
-        members = new String[num*10][3];
+        members = new Member[num*10];
         totalCnt = num * 10;
 
         while (true) {
@@ -207,10 +202,5 @@ public class MemberManagement {
                     System.out.println("=============== 올바른 번호 입력! ===============");
             }
         }
-    }
-
-    public static void main(String[] args) {
-        MemberManagement mm = new MemberManagement();
-        mm.run();
     }
 }
