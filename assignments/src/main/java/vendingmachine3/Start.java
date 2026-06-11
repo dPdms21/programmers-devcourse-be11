@@ -1,4 +1,4 @@
-package vendingmachine2;
+package vendingmachine3;
 
 import java.util.*;
 

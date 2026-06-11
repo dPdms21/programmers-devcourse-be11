@@ -1,4 +1,4 @@
-package vendingmachine2;
+package vendingmachine3;
 
 public class VendingMachine {
     private int totalMoney;
@@ -11,7 +11,6 @@ public class VendingMachine {
 
     public void insertMoney(int money) {
         totalMoney += money;
-        System.out.println("-------------------------------");
         System.out.println(money + "원 입금");
     }
 
