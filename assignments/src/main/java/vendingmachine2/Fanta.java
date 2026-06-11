@@ -2,7 +2,7 @@ package vendingmachine2;
 
 public class Fanta extends Drink {
     public Fanta() {
-        super("환타", 500);
+        super("환타", 300, 5);
     }
 
     @Override

@@ -17,8 +17,10 @@ public class VendingMachine {
 
     public void printMenu() {
         System.out.println("============ 자판기 ============");
-        System.out.println("[1]콜라 : 500  [2]사이다 : 500");
-        System.out.println("[3]환타 : 300  [4]물 : 200");
+        System.out.println("[1]" + drinks[0].getName() + " : " + drinks[0].getPrice() + "원 (" + drinks[0].getStock() + "개)");
+        System.out.println("[2]" + drinks[1].getName() + " : " + drinks[1].getPrice() + "원 (" + drinks[1].getStock() + "개)");
+        System.out.println("[3]" + drinks[2].getName() + " : " + drinks[2].getPrice() + "원 (" + drinks[2].getStock() + "개)");
+        System.out.println("[4]" + drinks[3].getName() + " : " + drinks[3].getPrice() + "원 (" + drinks[3].getStock() + "개)");
         System.out.println("[5]돈 넣기     [6]종료");
         System.out.println("-------------------------------");
         System.out.println("현재 금액 : " + totalMoney);
@@ -28,6 +30,12 @@ public class VendingMachine {
     public void buy(int menuNum) {
         Drink drink = drinks[menuNum - 1];
 
+        if (drink.isSoldOut()) {
+            System.out.println("-------------------------------");
+            System.out.println("품절!!");
+            return;
+        }
+
         if (totalMoney < drink.getPrice()) {
             System.out.println("-------------------------------");
             System.out.println("잔돈 부족!");
@@ -35,13 +43,14 @@ public class VendingMachine {
         }
 
         totalMoney -= drink.getPrice();
+        drink.decreaseStock();
         drink.dispense();
     }
 
     public int returnChange() {
-        int charge = totalMoney;
+        int change = totalMoney;
         totalMoney = 0;
 
-        return charge;
+        return change;
     }
 }

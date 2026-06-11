@@ -2,7 +2,7 @@ package vendingmachine2;
 
 public class Cider extends Drink {
     public Cider() {
-        super("사이다", 500);
+        super("사이다", 500, 10);
     }
 
     @Override
