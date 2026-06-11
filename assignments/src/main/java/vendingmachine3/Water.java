@@ -21,13 +21,8 @@ public class Water implements Drink {
     }
 
     @Override
-    public boolean isSoldOut() {
-        return stock <= 0;
-    }
-
-    @Override
-    public void decreaseStock() {
-        stock--;
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 
     @Override
