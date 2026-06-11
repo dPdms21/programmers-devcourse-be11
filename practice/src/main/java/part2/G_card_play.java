@@ -6,7 +6,7 @@ package part2;
  * ============================================================
  *
  *  [구성 요소]
- *  1) Card2  : 카드 한 장을 표현하는 클래스
+ *  1) Card  : 카드 한 장을 표현하는 클래스
  *     - kind   : 무늬 (1=CLOVER, 2=HEART, 3=DIAMOND, 4=SPADE)
  *     - number : 숫자 (1~13, 1=A, 11=J, 12=Q, 13=K)
  *     - 무늬 종류는 4가지(KIND_MAX), 숫자는 13가지(NUM_MAX)
@@ -39,84 +39,11 @@ package part2;
 
 import java.util.*;
 
-class Card2 {
-    static final int CLOVER = 1;
-    static final int HEART = 2;
-    static final int DIAMOND = 3;
-    static final int SPADE = 4;
-
-    static final int A = 1;
-    static final int J = 11;
-    static final int Q = 12;
-    static final int K = 13;
-
-    static final int KIND_MAX = 4;
-    static final int NUM_MAX = 13;
-
-    int kind;
-    int num;
-
-    public Card2() {
-        this(SPADE, A);
-    }
-
-    public Card2(int kind, int num) {
-        this.kind = kind;
-        this.num = num;
-    }
-
-    @Override
-    public String toString() {
-        String[] kinds = { "", "CLOVER", "HEART", "DIAMOND", "SPADE" };
-        String numbers = "0123456789XJQK";
-
-        return "kind : " + kinds[kind] + ", number : " + numbers.charAt(num);
-    }
-}
-
-class Deck {
-    private static final Random random = new Random();
-    final int CARD_NUM = 52;
-
-    Card2[] cards = new Card2[CARD_NUM];
-
-    public Deck() {
-        int idx = 0;
-
-        for (int kind=Card2.KIND_MAX; kind>0; kind--) {
-            for (int num=1; num<=Card2.NUM_MAX; num++) {
-                cards[idx] = new Card2(kind, num);
-                idx++;
-            }
-        }
-    }
-
-    public Card2 pick(int idx) {
-        return cards[idx];
-    }
-
-    public Card2 pick() {
-        int idx = random.nextInt(CARD_NUM);
-
-        return pick(idx);
-    }
-
-    public void shuffle() {
-        for ( int i = 0; i < cards.length; i++ ) {
-            int idx = random.nextInt(CARD_NUM);
-
-            Card2 temp = cards[idx];
-            cards[idx] = cards[i];
-            cards[i] = temp;
-        }
-    }
-}
-
 public class G_card_play {
     public static void main(String[] args) {
-        Deck deck = new Deck();
+        G_deck deck = new G_deck();
 
-        Card2 card = deck.pick(0);
+        G_card card = deck.pick(0);
         System.out.println(card);
 
         deck.shuffle();
