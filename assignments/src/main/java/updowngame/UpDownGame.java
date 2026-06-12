@@ -1,3 +1,5 @@
+package updowngame;
+
 import java.util.*;
 
 public class UpDownGame {

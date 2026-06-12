@@ -1,3 +1,5 @@
+package vendingmachine;
+
 import java.util.*;
 
 public class VendingMachine {
