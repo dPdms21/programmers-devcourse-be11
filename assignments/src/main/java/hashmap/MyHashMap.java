@@ -3,10 +3,10 @@ package hashmap;
 public class MyHashMap {
     static class Node {
         String key;
-        Integer value;
+        String value;
         Node next;
 
-        Node(String key, Integer value) {
+        Node(String key, String value) {
             this.key = key;
             this.value = value;
         }
@@ -15,16 +15,17 @@ public class MyHashMap {
     private Node[] buckets;
     private int capacity = 16;
     private int size = 0;
+    private static final double LOAD_FACTOR = 0.75;
 
     public MyHashMap() {
         buckets = new Node[capacity];
     }
 
     private int getIndex(String key) {
-        return Math.abs(key.hashCode() % capacity);
+        return (key.hashCode() & 0x7fffffff) % capacity;
     }
 
-    public void put(String key, Integer value) {
+    public void put(String key, String value) {
         int idx = getIndex(key);
         Node cur = buckets[idx];
 
@@ -37,13 +38,17 @@ public class MyHashMap {
             cur = cur.next;
         }
 
+        resize();
+
+        idx = getIndex(key);
+
         Node node = new Node(key, value);
         node.next = buckets[idx];
         buckets[idx] = node;
         size++;
     }
 
-    public Integer get(String key) {
+    public String get(String key) {
         int idx = getIndex(key);
         Node cur = buckets[idx];
 
@@ -77,7 +82,7 @@ public class MyHashMap {
         return false;
     }
 
-    public Integer remove(String key) {
+    public String remove(String key) {
         int idx = getIndex(key);
         Node cur = buckets[idx];
         Node prev = null;
@@ -100,5 +105,67 @@ public class MyHashMap {
         }
 
         return null;
+    }
+
+    public void resize() {
+        if (size < capacity * LOAD_FACTOR) {
+            return;
+        }
+
+        Node[] oldB = buckets;
+
+        capacity *= 2;
+        buckets = new Node[capacity];
+
+        for (Node n : oldB) {
+            Node cur = n;
+
+            while (cur != null) {
+                Node next = cur.next;
+
+                int idx = getIndex(cur.key);
+
+                cur.next = buckets[idx];
+                buckets[idx] = cur;
+
+                cur = next;
+            }
+        }
+    }
+
+    public String[] keySet() {
+        String[] keys = new String[size];
+        int idx = 0;
+
+        for (Node n : buckets) {
+            Node cur = n;
+
+            while (cur != null) {
+                keys[idx] = cur.key;
+                idx++;
+
+                cur = cur.next;
+            }
+        }
+
+        return keys;
+    }
+
+    public String[] values() {
+        String[] values = new String[size];
+        int idx = 0;
+
+        for (Node n : buckets) {
+            Node cur = n;
+
+            while (cur != null) {
+                values[idx] = cur.value;
+                idx++;
+
+                cur = cur.next;
+            }
+        }
+
+        return values;
     }
 }
