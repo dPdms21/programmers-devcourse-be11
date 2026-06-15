@@ -1,4 +1,4 @@
-# 배열로 MyArrayList 직접 만들기
+# 배열로 ArrayList 직접 만들기
 
 ## 1. 목표
 

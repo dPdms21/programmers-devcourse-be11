@@ -1,4 +1,4 @@
-# 노드로 MyLinkedList 직접 만들기
+# 노드로 LinkedList 직접 만들기
 
 ## 1. 목표
 

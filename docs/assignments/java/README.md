@@ -29,8 +29,8 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 추상 �
 
 | 과제 | 문서 | 코드 | 설명 |
 |---|---|---|---|
-| MyArrayList 구현 | [my-array-list.md](./my-array-list.md) | [🔗 myarraylist/](../../../assignments/src/main/java/myarraylist) | 배열 기반 리스트를 직접 구현하며 인덱스 접근과 맨 앞 삽입의 차이를 확인 |
-| MyLinkedList 구현 | [my-linked-list.md](./my-linked-list.md) | [🔗 mylinkedlist/](../../../assignments/src/main/java/mylinkedlist) | 노드 연결 구조를 직접 구현하며 삽입, 삭제, 인덱스 접근의 동작 차이를 확인 |
+| ArrayList 구현 | [array-list.md](./array-list.md) | [🔗 arraylist/](../../../assignments/src/main/java/arraylist) | 배열 기반 리스트를 직접 구현하며 인덱스 접근과 맨 앞 삽입의 차이를 확인 |
+| LinkedList 구현 | [linked-list.md](./linked-list.md) | [🔗 linkedlist/](../../../assignments/src/main/java/linkedlist) | 노드 연결 구조를 직접 구현하며 삽입, 삭제, 인덱스 접근의 동작 차이를 확인 |
 
 ## 객체지향 · 생성자 · 캡슐화
 
