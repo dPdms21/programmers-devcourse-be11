@@ -1,4 +1,4 @@
-package myarraylist;
+package arraylist;
 
 import java.util.*;
 
