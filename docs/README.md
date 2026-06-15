@@ -13,7 +13,7 @@
 
 | 주제                        | 자료                                                               | 설명                                                         |
 | ------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
-| HashMap resize와 rehashing | [🔗 이미지](./assignments/java/images/hashmap/resize-rehashing.png) | HashMap 과제를 수행하며 버킷 배열 확장과 기존 데이터 재배치 과정을 이해하기 위해 만든 자료 |
+| HashMap resize와 rehashing | [🔗 이미지](./assignments/java/images/hashmap/hashmap-resize-rehashing.png) | HashMap 과제를 수행하며 버킷 배열 확장과 기존 데이터 재배치 과정을 이해하기 위해 만든 자료 |
 
 ## 실습 보조자료
 

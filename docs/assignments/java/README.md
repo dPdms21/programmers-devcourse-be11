@@ -8,8 +8,8 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 
 | 과제        | 문서                                         | 코드                                                                               | 설명                                               |
 | --------- | ------------------------------------------ | -------------------------------------------------------------------------------- | ------------------------------------------------ |
-| 숫자 업다운 게임 | [up-down-game.md](./up-down-game.md)       | [🔗 UpDownGame.java](../../../assignments/src/main/java/UpDownGame.java)         | `Random`, `Scanner`, 조건문, 반복문을 활용해 숫자를 맞히는 콘솔 게임 |
-| 자판기       | [vending-machine.md](./vending-machine.md) | [🔗 VendingMachine.java](../../../assignments/src/main/java/VendingMachine.java) | 돈 넣기, 음료 구매, 잔액 부족 처리, 종료 기능을 구현한 기본 자판기 프로그램    |
+| 숫자 업다운 게임 | [up-down-game.md](./up-down-game.md)       | [🔗 UpDownGame.java](../../../assignments/src/main/java/updowngame)         | `Random`, `Scanner`, 조건문, 반복문을 활용해 숫자를 맞히는 콘솔 게임 |
+| 자판기       | [vending-machine.md](./vending-machine.md) | [🔗 VendingMachine.java](../../../assignments/src/main/java/vendingmachine) | 돈 넣기, 음료 구매, 잔액 부족 처리, 종료 기능을 구현한 기본 자판기 프로그램    |
 
 ## 배열 · 2차원 배열
 
@@ -23,7 +23,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 과제    | 문서                                       | 코드                                                                  | 설명                                                     |
 | ----- | ---------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------ |
 | 가계부   | [account-book.md](./account-book.md)     | [🔗 accountbook/](../../../assignments/src/main/java/accountbook)   | `Map`과 `List`를 활용해 날짜별 지출 내역을 추가, 조회, 삭제하는 가계부 프로그램    |
-| 가계부 2 | [account-book-2.md](./account-book-2.md) | [🔗 accountbook2/](../../../assignments/src/main/java/accountbook2) | File I/O를 활용해 날짜별 가계부 내역을 `.txt` 파일로 저장, 조회, 삭제하는 프로그램 |
+| 가계부 2 | [account-book-2.md](./account-book-2.md) | 미구현 | File I/O를 활용해 날짜별 가계부 내역을 `.txt` 파일로 저장, 조회, 삭제하는 프로그램 |
 
 ## 자료구조 · 직접 구현
 
