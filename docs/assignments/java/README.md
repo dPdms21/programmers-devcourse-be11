@@ -42,7 +42,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 반려동물 키우기   | [pet-game.md](./pet-game.md) | [🔗 petgame/](../../../assignments/src/main/java/petgame) | 클래스, 객체, 생성자, 캡슐화를 활용해 반려동물 상태를 관리하는 콘솔 게임 |
 | 텍스트 RPG 전투 | [text-rpg.md](./text-rpg.md) | [🔗 textrpg/](../../../assignments/src/main/java/textrpg) | 객체끼리 공격하고 피해를 주고받는 턴제 RPG 전투 프로그램          |
 
-## 객체지향 · 추상 클래스 · 인터페이스
+## 객체지향 · 추상 클래스 · 인터페이스 · 컬렉션
 
 | 과제      | 문서                                                 | 코드                                                                            | 설명                                                     |
 | ------- | -------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
@@ -50,6 +50,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 자판기 3   | [vending-machine-3.md](./vending-machine-3.md)     | [🔗 vendingmachine3/](../../../assignments/src/main/java/vendingmachine3)     | 인터페이스, 구현 클래스, 다형성을 활용해 자판기를 설계하고 추상 클래스 버전과 비교        |
 | 회원 관리 2 | [member-management-2.md](./member-management-2.md) | [🔗 membermanagement2/](../../../assignments/src/main/java/membermanagement2) | `String[][]` 구조를 `Member` 객체 배열로 바꾸고 추상 클래스로 회원 등급을 구현 |
 | 회원 관리 3 | [member-management-3.md](./member-management-3.md) | [🔗 membermanagement3/](../../../assignments/src/main/java/membermanagement3) | 인터페이스와 `default` 메서드를 활용해 회원 관리 구조를 구현하고 추상 클래스 버전과 비교 |
+| 회원 관리 4 | [member-management-4.md](./member-management-4.md) | [🔗 membermanagement4/](../../../assignments/src/main/java/membermanagement4) | `List<Member>`, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장   |
 
 ## 멀티스레드
 
@@ -68,4 +69,5 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 7. 이진 검색 트리를 기반으로 키를 정렬하는 `TreeMap`의 동작 원리를 확인한다.
 8. 클래스, 객체, 생성자, 캡슐화를 적용해 객체지향 구조를 연습한다.
 9. 추상 클래스와 인터페이스를 각각 적용해 구조 차이를 비교한다.
-10. 멀티스레드로 여러 작업이 동시에 실행되는 흐름을 확인한다.
+10. 컬렉션, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장한다.
+11. 멀티스레드로 여러 작업이 동시에 실행되는 흐름을 확인한다.
