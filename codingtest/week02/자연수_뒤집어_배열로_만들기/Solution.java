@@ -1,15 +1,16 @@
 package 자연수_뒤집어_배열로_만들기;
 
+import java.util.*;
+
 class Solution {
     public int[] solution(long n) {
-        String s = "" + n;
-        int[] answer = new int[s.length()];
+        List<Integer> list = new LinkedList<>();
 
-        for (int i=0; i<s.length(); i++) {
-            answer[i] = (int) (n % 10);
+        while (n > 0) {
+            list.add((int) (n % 10));
             n /= 10;
         }
 
-        return answer;
+        return list.stream().mapToInt(Integer::intValue).toArray();
     }
 }
