@@ -176,4 +176,114 @@ public class MyTreeMap {
 
         return node;
     }
+
+    public int height() {
+        return heightNode(root);
+    }
+
+    private int heightNode(Node node) {
+        if (node == null) {
+            return 0;
+        }
+
+        int leftHeight = heightNode(node.left);
+        int rightHeight = heightNode(node.right);
+
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    public void headMap(String key) {
+        headMapNode(root, key);
+        System.out.println();
+    }
+
+    private void headMapNode(Node node, String key) {
+        if (node == null) {
+            return;
+        }
+
+        int cmp = node.key.compareTo(key);
+
+        if (cmp < 0) {
+            headMapNode(node.left, key);
+            System.out.print("[" + node.key + " : " + node.value + "] ");
+            headMapNode(node.right, key);
+        }
+        else {
+            headMapNode(node.left, key);
+        }
+    }
+
+    public void subMap(String fromKey, String toKey) {
+        subMapNode(root, fromKey, toKey);
+        System.out.println();
+    }
+
+    private void subMapNode(Node node, String fromKey, String toKey) {
+        if (node == null) {
+            return;
+        }
+
+        int fromCmp = node.key.compareTo(fromKey);
+        int toCmp = node.key.compareTo(toKey);
+
+
+        if (fromCmp < 0) {
+            subMapNode(node.right, fromKey, toKey);
+        }
+        else if (toCmp > 0) {
+            subMapNode(node.left, fromKey, toKey);
+        }
+        else {
+            subMapNode(node.left, fromKey, toKey);
+            System.out.print("[" + node.key + " : " + node.value + "] ");
+            subMapNode(node.right, fromKey, toKey);
+        }
+    }
+
+    public String ceilingKey(String key) {
+        Node node = root;
+        String temp = null;
+
+        while (node != null) {
+            int cmp = key.compareTo(node.key);
+
+            if (cmp == 0) {
+                return node.key;
+            }
+
+            if (cmp < 0) {
+                temp = node.key;
+                node = node.left;
+            }
+            else {
+                node = node.right;
+            }
+        }
+
+        return temp;
+    }
+
+    public String floorKey(String key) {
+        Node node = root;
+        String temp = null;
+
+        while (node != null) {
+            int cmp = key.compareTo(node.key);
+
+            if (cmp == 0) {
+                return node.key;
+            }
+
+            if (cmp > 0) {
+                temp = node.key;
+                node = node.right;
+            }
+            else {
+                node = node.left;
+            }
+        }
+
+        return temp;
+    }
 }
