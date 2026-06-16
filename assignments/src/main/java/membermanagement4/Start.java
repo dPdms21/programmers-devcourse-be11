@@ -51,9 +51,10 @@ public class Start {
                     System.out.println("등급 [1]일반 [2]VIP");
                     System.out.println("====================================");
 
-                    int grade = readInt(sc);
+                    int choice = readInt(sc);
+                    Grade grade = Grade.from(choice);
 
-                    if (grade != 1 && grade != 2) {
+                    if (grade == null) {
                         System.out.println("1~2 중 선택");
                         break;
                     }
@@ -72,9 +73,7 @@ public class Start {
                         break;
                     }
 
-                    Member m = (grade == 2)
-                            ? new VipMember(name, email, phone)
-                            : new NormalMember(name, email, phone);
+                    Member m = new GradeMember(name, email, phone, grade);
                     manager.add(m);
 
                     System.out.println("------------------------------------");

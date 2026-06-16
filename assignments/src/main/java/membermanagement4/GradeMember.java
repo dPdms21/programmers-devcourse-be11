@@ -1,14 +1,16 @@
 package membermanagement4;
 
-public class VipMember implements Member {
+public class GradeMember implements Member {
     private String name;
     private String email;
     private String phone;
+    private final Grade grade;
 
-    public VipMember(String name, String email, String phone) {
+    public GradeMember(String name, String email, String phone, Grade grade) {
         this.name = name;
         this.email = email;
         this.phone = phone;
+        this.grade = grade;
     }
 
     @Override
@@ -28,12 +30,12 @@ public class VipMember implements Member {
 
     @Override
     public String getGrade() {
-        return "VIP";
+        return grade.getName();
     }
 
     @Override
     public String getBenefit() {
-        return "10% 할인 + 무료배송";
+        return grade.getBenefit();
     }
 
     @Override
