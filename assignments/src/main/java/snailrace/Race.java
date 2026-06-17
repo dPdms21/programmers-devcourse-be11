@@ -1,16 +1,35 @@
 package snailrace;
 
-public class Race {
-    private volatile boolean over = false;
+import java.util.*;
 
-    public boolean isOver() {
-        return over;
+public class Race {
+    private final List<String> rank = new ArrayList<>();
+    private final List<Snail> snails = new ArrayList<>();
+
+    public void addSnail(Snail snail) {
+        snails.add(snail);
+    }
+
+    public String getWinner() {
+        return rank.get(0);
+    }
+
+    public List<String> getRanking() {
+        return rank;
     }
 
     public synchronized void finish(String name) {
-        if (!over) {
-            over = true;
-            System.out.println("\n*** 우승: " + name + " ***");
+        rank.add(name);
+    }
+
+    public synchronized void printRace() {
+        System.out.print("\033[2J\033[H");
+        System.out.flush();
+
+        System.out.println();
+
+        for (Snail snail : snails) {
+            System.out.println(snail.getTrack());
         }
     }
 }
