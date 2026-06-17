@@ -22,6 +22,7 @@
 | 주제        | 자료                                                                  | 설명                                                                 |
 | --------- | ------------------------------------------------------------------- | ------------------------------------------------------------------ |
 | 이중 연결 리스트 | [🔗 시각화](./practice/collections/doubly-linked-list-visualizer.html) | `prev`와 `next`를 이용한 노드 연결 구조를 확인하기 위해 제공된 시각화 자료                   |
+| HashMap 체이닝 | [🔗 시각화](./practice/collections/hashmap-chaining-visualizer.html) | 해시 함수를 통한 버킷 선택과 충돌 발생 시 노드가 체이닝되는 과정을 확인하는 시각화 자료 |
 | TreeMap   | [🔗 시각화](./practice/collections/treemap-visualizer.html)            | 이진 검색 트리 기반의 `put`, `get`, `remove` 동작과 중위 순회 결과를 단계별로 확인하는 시각화 자료 |
 
 ## 관리 기준
