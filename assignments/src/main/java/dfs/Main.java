@@ -17,6 +17,15 @@ public class Main {
         graph.addEdge(7, 8);
         graph.addEdge(8, 9);
 
-        graph.dfs(1);
+        graph.dfs(1); // 3,5
+
+        graph.dfs2(1);
+
+        System.out.println();
+        System.out.println("\n1에서 9까지 이동 가능: " + graph.hasPath(1, 9));
+
+        System.out.println("\n사이클 존재 여부: " + graph.hasCycle());
+
+        System.out.println("\n연결 요소 개수: " + graph.cnt());
     }
 }
