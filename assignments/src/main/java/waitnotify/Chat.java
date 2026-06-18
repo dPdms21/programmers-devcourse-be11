@@ -6,7 +6,7 @@ public class Chat {
     public synchronized void question(String msg) {
         while (flag) {
             try {
-                wait();
+                wait(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -14,13 +14,13 @@ public class Chat {
 
         System.out.println("Question: " + msg);
         flag = true;
-        notify();
+        notifyAll();
     }
 
     public synchronized void answer(String msg) {
         while (!flag) {
             try {
-                wait();
+                wait(2000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -28,6 +28,6 @@ public class Chat {
 
         System.out.println("Answer: " + msg);
         flag = false;
-        notify();
+        notifyAll();
     }
 }
