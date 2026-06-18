@@ -8,15 +8,20 @@ public class Main {
         new WorkerThread(sr, "Worker2").start();
         new WorkerThread(sr, "Worker3").start();
 
-        new Thread(() -> {
-            while (true) {
+        Thread provider = new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
                 try {
                     Thread.sleep(2000);
-                    sr.makeResourceAvailable();
+                    sr.makeResourceAvailable(2);
                 } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    Thread.currentThread().interrupt();
+                    return;
                 }
             }
-        }).start();
+
+            sr.printS();
+        });
+
+        provider.start();
     }
 }
