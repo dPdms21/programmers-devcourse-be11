@@ -4,4 +4,7 @@ public interface AccountBook {
     void addAccount();
     void showAccount();
     void deleteAccount();
+    void deleteItem();
+    void searchAccount();
+    void showMonthlyTotal();
 }

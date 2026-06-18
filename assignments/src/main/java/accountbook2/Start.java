@@ -12,7 +12,10 @@ public class Start {
             System.out.println("1. 내역 추가");
             System.out.println("2. 내역 조회");
             System.out.println("3. 삭제");
-            System.out.println("4. 종료");
+            System.out.println("4. 항목 삭제");
+            System.out.println("5. 항목 검색");
+            System.out.println("6. 월별 합계");
+            System.out.println("7. 종료");
             System.out.println("------------------------");
             System.out.print("번호 입력 > ");
 
@@ -37,6 +40,15 @@ public class Start {
                     ab.deleteAccount();
                     break;
                 case 4:
+                    ab.deleteItem();
+                    break;
+                case 5:
+                    ab.searchAccount();
+                    break;
+                case 6:
+                    ab.showMonthlyTotal();
+                    break;
+                case 7:
                     System.out.println("========= 종료! =========");
                     return;
                 default:
