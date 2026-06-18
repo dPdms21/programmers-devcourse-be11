@@ -5,12 +5,15 @@ import java.io.*;
 
 public class MemberManager {
     private final List<Member> members = new ArrayList<>();
+    private final PricePlan plan;
     private final int capacity;
     private static final String DIR = "member-data";
     private static final String FILE = DIR + "/members.txt";
+    private static final String BACKUP_FILE = DIR + "/members_backup.txt";
 
-    public MemberManager(int capacity) {
-        this.capacity = capacity;
+    public MemberManager(PricePlan plan) {
+        this.plan = plan;
+        this.capacity = plan.getCapacity();
 
         File dir = new File(DIR);
 
@@ -106,7 +109,20 @@ public class MemberManager {
     }
 
     public void save() {
+        File file = new File(FILE);
+
+        if (file.exists()) {
+            try (FileInputStream fis = new FileInputStream(file); FileOutputStream fos = new FileOutputStream(BACKUP_FILE)) {
+                fis.transferTo(fos);
+            } catch (IOException e) {
+                System.out.println("백업 오류: " + e.getMessage());
+                return;
+            }
+        }
+
         try (FileWriter fw = new FileWriter(FILE)) {
+            fw.write(plan.name() + "\n");
+
             for (Member m : members) {
                 fw.write(m.toFileString() + "\n");
             }
@@ -123,6 +139,7 @@ public class MemberManager {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            br.readLine();
             String line;
 
             while ((line = br.readLine()) != null) {
@@ -130,13 +147,16 @@ public class MemberManager {
                     continue;
                 }
 
-                String[] p = line.split(",");
+                String[] p = line.split("\\|");
 
                 if (p.length != 4) {
                     continue;
                 }
 
-                String grade = p[0], name = p[1], email = p[2], phone = p[3];
+                String grade = p[0];
+                String name = p[1];
+                String email = p[2];
+                String phone = p[3];
 
                 Member m = grade.equals("VIP")
                         ? new VipMember(name, email, phone)
@@ -145,6 +165,27 @@ public class MemberManager {
             }
         } catch (IOException e) {
             System.out.println("불러오기 오류: " + e.getMessage());
+        }
+    }
+
+    public static PricePlan loadPlan() {
+        File file = new File(FILE);
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line = br.readLine();
+
+            if (line == null) {
+                return null;
+            }
+
+            return PricePlan.valueOf(line);
+        } catch (IOException | IllegalArgumentException e) {
+            System.out.println("요금제 불러오기 오류: " + e.getMessage());
+            return null;
         }
     }
 }

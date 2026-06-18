@@ -19,18 +19,22 @@ public class Start {
         System.out.println("[1]Lite:10 [2]Basic:20 [3]Premium:30");
         System.out.println("====================================");
 
-        PricePlan plan = null;
+        PricePlan plan = MemberManager.loadPlan();
 
-        while (plan == null) {
-            System.out.print("플랜 선택 > ");
-            plan = PricePlan.from(readInt(sc));
+        if (plan == null) {
+            while (plan == null) {
+                System.out.print("플랜 선택 > ");
+                plan = PricePlan.from(readInt(sc));
 
-            if (plan == null) {
-                System.out.println("1~3 중 선택");
+                if (plan == null) {
+                    System.out.println("1~3 중 선택");
+                }
             }
+        } else {
+            System.out.println("저장된 플랜: " + plan);
         }
 
-        MemberManager manager = new MemberManager(plan.getCapacity());
+        MemberManager manager = new MemberManager(plan);
 
         while (true) {
             System.out.println("====================================");
@@ -87,6 +91,7 @@ public class Start {
 
                     System.out.println("------------------------------------");
                     System.out.println("추가 완료");
+
                     break;
                 }
                 case 2: {
@@ -103,6 +108,7 @@ public class Start {
                         System.out.println("------------------------------------");
                         m.printInfo();
                     }
+
                     break;
                 }
                 case 3: {
@@ -119,11 +125,13 @@ public class Start {
                         System.out.println("------------------------------------");
                         m.printInfo();
                     }
+
                     break;
                 }
                 case 4: {
                     System.out.println("-----------------------------------");
                     manager.printAll();
+
                     break;
                 }
                 case 5: {
@@ -156,6 +164,7 @@ public class Start {
 
                     manager.update(email, newName, newEmail, newPhone);
                     System.out.println("수정 완료");
+
                     break;
                 }
                 case 6: {
@@ -169,13 +178,16 @@ public class Start {
                     else {
                         System.out.println("회원 없음");
                     }
+
                     break;
                 }
                 case 7: {
+                    // manager.save(); -> 프로그램 종료 시 저장
                     System.out.println("====================================");
                     System.out.println("            프로그램 종료!");
                     System.out.println("====================================");
                     sc.close();
+
                     return;
                 }
                 default:

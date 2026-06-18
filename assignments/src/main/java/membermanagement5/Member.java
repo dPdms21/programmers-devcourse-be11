@@ -14,6 +14,6 @@ public interface Member {
     }
 
     default String toFileString() {
-        return getGrade() + "," + getName() + "," + getEmail() + "," + getPhone();
+        return getGrade() + "|" + getName() + "|" + getEmail() + "|" + getPhone();
     }
 }
