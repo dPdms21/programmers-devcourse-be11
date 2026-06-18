@@ -1,6 +1,8 @@
 # 가계부 만들기 2 (File I/O 활용)
 
-> 이번 과제에서는 데이터를 메모리 컬렉션이 아니라 날짜별 텍스트 파일(`.txt`)에 저장한다. 프로그램을 종료한 뒤 다시 실행해도 기록이 남는다는 점이 1편과의 가장 큰 차이이다.
+이번 과제에서는 데이터를 메모리 컬렉션이 아니라 날짜별 텍스트 파일(`.txt`)에 저장한다.
+
+프로그램을 종료한 뒤 다시 실행해도 기록이 유지된다는 점이 기존 가계부 과제와의 가장 큰 차이이다.
 
 ---
 
@@ -8,14 +10,14 @@
 
 콘솔에서 동작하는 파일 기반 가계부 프로그램을 구현한다.
 
-모든 내역은 파일로 저장한다.
+모든 내역은 날짜별 파일로 저장한다.
 
-- 하루치 기록은 파일 1개로 저장한다. 예: `2024-09-04.txt`
-- 내역을 추가하면 해당 날짜 파일에 내용이 이어서 저장된다.
-- 내역을 조회하면 파일을 읽어서 출력한다.
-- 내역을 삭제하면 해당 날짜의 파일을 삭제한다.
+* 하루치 기록은 파일 하나로 저장한다. 예: `2024-09-04.txt`
+* 내역을 추가하면 해당 날짜의 파일 뒤에 내용이 이어서 저장된다.
+* 내역을 조회하면 파일 내용을 읽어 출력한다.
+* 내역을 삭제하면 해당 날짜의 파일을 삭제한다.
 
-실행 화면 메뉴는 다음과 같다.
+실행 메뉴는 다음과 같다.
 
 ```text
 ===== 가계부 (File) =====
@@ -28,16 +30,16 @@
 
 ---
 
-## 2. 요구사항 정리 (기능 명세)
+## 2. 요구사항 정리
 
-| 번호 | 기능 | 설명 |
-|---|---|---|
-| 1 | 내역 추가 | 오늘 날짜의 파일이 없으면 새로 만들고, 있으면 기존 파일 뒤에 이어서 내용을 추가한다. |
-| 2 | 내역 조회 | 저장된 파일들의 날짜 목록을 보여준다. 날짜를 입력하면 해당 파일의 내용을 읽어 출력한다. |
-| 3 | 삭제 | 날짜를 입력받아 해당 날짜의 파일을 삭제한다. |
-| 4 | 종료 | 프로그램을 종료한다. |
+| 번호 | 기능    | 설명                                            |
+| -: | ----- | --------------------------------------------- |
+|  1 | 내역 추가 | 오늘 날짜의 파일이 없으면 새로 만들고, 있으면 기존 파일 뒤에 내용을 추가한다. |
+|  2 | 내역 조회 | 저장된 날짜 목록을 출력하고, 입력한 날짜의 파일 내용을 조회한다.         |
+|  3 | 삭제    | 입력한 날짜의 파일을 삭제한다.                             |
+|  4 | 종료    | 프로그램을 종료한다.                                   |
 
-### 파일에 저장되는 형식
+### 파일 저장 형식
 
 ```text
 공책 : 1000원
@@ -45,9 +47,7 @@
 합계 : 1300원
 ```
 
-### 기능 1 동작 예시
-
-**내역 추가**
+### 내역 추가 예시
 
 ```text
 항목 이름 > 공책
@@ -57,15 +57,13 @@
 금액 > 300
 더 추가할까요? (y/n) > n
 
-2024-09-04.txt 에 저장 완료
+2024-09-04.txt에 저장 완료
 공책 : 1000원
 연필 : 300원
 합계 : 1300원
 ```
 
-### 기능 2 동작 예시
-
-**내역 조회**
+### 내역 조회 예시
 
 ```text
 == 기록된 날짜 ==
@@ -82,89 +80,108 @@
 
 ---
 
-## 3. 핵심 개념: 파일을 어떻게 다룰까?
+## 3. 핵심 개념
 
-1편은 데이터를 `Map`에 저장했지만, 이번 과제에서는 파일이 곧 데이터이다.
+기존 가계부에서는 데이터를 `Map`에 저장했지만, 이번 과제에서는 파일이 데이터 저장소 역할을 한다.
 
-| 하고 싶은 것 | 사용하는 도구 |
-|---|---|
-| 오늘 날짜 구하기 | `LocalDate.now()` → 문자열 `"2024-09-04"` |
-| 파일이 있는지 확인 | `File.exists()` |
-| 파일에 이어서 쓰기 | `new FileWriter(파일, true)` |
-| 파일 읽기 | `BufferedReader.readLine()` 반복 |
-| 폴더 안 파일 목록 확인 | `폴더.list()` 또는 `폴더.listFiles()` |
-| 파일 삭제 | `File.delete()` |
+| 작업            | 사용하는 기능                             |
+| ------------- | ----------------------------------- |
+| 오늘 날짜 확인      | `LocalDate.now()`                   |
+| 파일 존재 여부 확인   | `File.exists()`                     |
+| 파일에 이어서 쓰기    | `new FileWriter(file, true)`        |
+| 파일 읽기         | `BufferedReader.readLine()`         |
+| 폴더 안 파일 목록 확인 | `File.list()` 또는 `File.listFiles()` |
+| 파일 삭제         | `File.delete()`                     |
 
-파일에 이어서 쓰기 위해서는 `FileWriter`의 두 번째 인자로 `true`를 전달한다.
+### 파일 이어쓰기
+
+`FileWriter`의 두 번째 인자로 `true`를 전달하면 기존 파일 뒤에 내용을 추가한다.
 
 ```java
 new FileWriter(file, true)
 ```
 
-파일을 다루는 코드는 반드시 예외 처리가 필요하다.
+`true`를 전달하지 않으면 기존 파일 내용을 덮어쓰므로 주의해야 한다.
 
-파일이 존재하지 않거나, 접근 권한 문제가 발생하거나, 입출력 과정에서 오류가 발생할 수 있기 때문이다.
+### 파일 입출력 예외 처리
 
-따라서 `try-catch`를 사용하거나 `throws IOException`을 통해 예외를 처리해야 한다.
+파일 입출력 과정에서는 다음과 같은 문제가 발생할 수 있다.
 
-### 저장 위치 정하기
+* 파일이 존재하지 않는 경우
+* 파일 접근 권한이 없는 경우
+* 파일 읽기 또는 쓰기 중 오류가 발생한 경우
 
-파일이 여러 위치에 흩어지지 않도록, 프로젝트 안에 `accountbook` 폴더를 만들고 그 안에 `.txt` 파일을 저장한다.
+따라서 파일을 다루는 코드는 `try-catch` 또는 `throws IOException`을 통해 예외를 처리해야 한다.
+
+### 저장 위치
+
+가계부 파일이 여러 위치에 생성되지 않도록 프로젝트 안의 `accountbook` 폴더에 저장한다.
 
 ```text
 프로젝트/
- └─ accountbook/
-     ├─ 2024-09-04.txt
-     ├─ 2024-09-03.txt
-     └─ ...
+└─ accountbook/
+   ├─ 2024-09-04.txt
+   ├─ 2024-09-03.txt
+   └─ ...
 ```
 
 ---
 
-## 4. 파일 구조 (각 파일의 역할)
+## 4. 파일 구조
 
-| 파일 | 역할 |
-|---|---|
-| `AccountBook.java` *(인터페이스)* | 추가, 조회, 삭제 기능을 선언한다. |
-| `AccountBookImpl.java` | `AccountBook`을 구현한다. 실제 File I/O 로직을 가진다. |
-| `Start.java` | `main` 메서드를 가진다. 메뉴를 출력하고 사용자 입력에 따라 기능을 호출한다. |
+| 파일                     | 역할                                  |
+| ---------------------- | ----------------------------------- |
+| `AccountBook.java`     | 추가, 조회, 삭제 기능을 선언하는 인터페이스           |
+| `AccountBookImpl.java` | 파일 입출력을 이용해 가계부 기능을 구현하는 클래스        |
+| `Start.java`           | 메뉴를 출력하고 사용자 입력에 따라 기능을 호출하는 실행 클래스 |
 
-1편과 달리 `Item` 같은 데이터 클래스는 반드시 필요하지 않다.
+기존 가계부와 달리 `Item`과 같은 데이터 클래스는 필수가 아니다.
 
-항목들을 객체로 저장하지 않고 파일에 문자열로 저장하기 때문이다.
+입력한 항목을 객체로 보관하지 않고 문자열 형태로 파일에 저장하기 때문이다.
 
-다만 내역을 추가할 때 합계를 계산해야 하므로, 입력받은 값을 잠깐 모아두는 처리는 필요하다.
+다만 내역을 입력받는 동안 합계를 계산하고 저장할 문자열을 만들기 위한 임시 변수는 필요하다.
 
 ---
 
 ## 5. Step by Step
 
-각 Step에는 목표, 할 일, 힌트, 확인 방법이 있다.
-
-한 Step씩 구현한 뒤 실행 결과를 확인하면서 다음 Step으로 넘어간다.
+각 Step을 구현한 뒤 실행 결과를 확인하고 다음 단계로 진행한다.
 
 ---
 
-### Step 1. 메뉴부터 띄우기 (`Start.java`)
+### Step 1. 메뉴 구현 (`Start.java`)
 
-**목표**: 기능이 없어도 메뉴가 반복 출력되고, `4`를 누르면 종료되도록 만든다.
+**목표**: 메뉴를 반복해서 출력하고 `4`를 입력하면 프로그램을 종료한다.
 
 **할 일**
 
-- `Scanner`로 번호를 입력받는다.
-- `while` 반복문과 `switch`문으로 메뉴를 분기한다.
-- `4`를 입력하면 프로그램을 종료한다.
+* `Scanner`로 메뉴 번호를 입력받는다.
+* `while` 반복문으로 메뉴를 계속 출력한다.
+* `switch`문으로 기능을 구분한다.
+* 숫자가 아닌 입력도 처리한다.
+* `4`를 입력하면 프로그램을 종료한다.
 
 **힌트**
 
 ```java
-Scanner sc = new Scanner(System.in);
+Scanner scanner = new Scanner(System.in);
 
 while (true) {
     System.out.println("===== 가계부 (File) =====");
-    // 1~4 메뉴 출력
+    System.out.println("1. 내역 추가");
+    System.out.println("2. 내역 조회");
+    System.out.println("3. 삭제");
+    System.out.println("4. 종료");
+    System.out.print("번호 입력 > ");
 
-    int menu = Integer.parseInt(sc.nextLine());
+    int menu;
+
+    try {
+        menu = Integer.parseInt(scanner.nextLine().trim());
+    } catch (NumberFormatException e) {
+        System.out.println("숫자를 입력하세요.");
+        continue;
+    }
 
     switch (menu) {
         case 1:
@@ -174,56 +191,69 @@ while (true) {
         case 3:
             break;
         case 4:
-            System.out.println("종료합니다");
+            System.out.println("종료합니다.");
             return;
         default:
-            System.out.println("잘못된 번호입니다");
+            System.out.println("잘못된 번호입니다.");
     }
 }
 ```
 
-**확인**: `4`를 입력했을 때 프로그램이 종료되면 성공이다.
+**확인**
+
+* 메뉴가 반복해서 출력되는지 확인한다.
+* 문자 입력 시 프로그램이 종료되지 않는지 확인한다.
+* `4`를 입력하면 프로그램이 종료되는지 확인한다.
 
 ---
 
 ### Step 2. 인터페이스 작성 (`AccountBook.java`)
 
-**목표**: 가계부 기능 3개를 메서드로 선언한다. 구현은 하지 않는다.
+**목표**: 가계부 기능을 인터페이스에 선언한다.
 
 **힌트**
 
 ```java
 public interface AccountBook {
-    void addAccount();    // 1. 내역 추가
-    void showAccount();   // 2. 내역 조회
-    void deleteAccount(); // 3. 삭제
+
+    void addAccount();
+
+    void showAccount();
+
+    void deleteAccount();
 }
 ```
 
-**확인**: 인터페이스에는 본문 없이 메서드 선언만 있으면 된다.
+**확인**
+
+인터페이스에 추가, 조회, 삭제 기능이 선언되어 있는지 확인한다.
 
 ---
 
-### Step 3. 구현 뼈대와 저장 폴더 준비 (`AccountBookImpl.java`)
+### Step 3. 구현 클래스와 저장 폴더 준비 (`AccountBookImpl.java`)
 
-**목표**: 인터페이스를 구현하는 클래스를 만들고, 저장 폴더를 준비한 뒤 `Start`와 연결한다.
+**목표**: 인터페이스를 구현하고 파일을 저장할 폴더를 준비한다.
 
 **할 일**
 
-- `implements AccountBook`을 작성한다.
-- 저장 폴더 경로를 상수로 정한다.
-- 저장 폴더가 없으면 생성한다.
-- 3개 메서드를 빈 몸통으로 만든다.
-- `Start.java`에서 `AccountBook book = new AccountBookImpl();`로 연결한다.
+* `AccountBookImpl`이 `AccountBook`을 구현하도록 한다.
+* 저장 폴더 경로를 상수로 선언한다.
+* 저장 폴더가 없으면 생성한다.
+* `Start`에서 만든 `Scanner`를 생성자로 전달받는다.
+* 인터페이스의 메서드를 재정의한다.
 
 **힌트**
 
 ```java
 public class AccountBookImpl implements AccountBook {
-    private final String DIR = "accountbook";
-    private Scanner sc = new Scanner(System.in);
 
-    public AccountBookImpl() {
+    private static final String DIR = "accountbook";
+
+    private final Scanner scanner;
+
+    public AccountBookImpl(Scanner scanner) {
+        this.scanner = scanner;
+
         File folder = new File(DIR);
 
         if (!folder.exists()) {
@@ -231,53 +261,67 @@ public class AccountBookImpl implements AccountBook {
         }
     }
 
+    @Override
     public void addAccount() {
         // TODO Step 4
     }
 
+    @Override
     public void showAccount() {
         // TODO Step 5
     }
 
+    @Override
     public void deleteAccount() {
         // TODO Step 6
     }
 }
 ```
 
-`Start.java`의 `switch`문과 연결한다.
+`Start.java`에서는 하나의 `Scanner`를 생성해 구현 객체에 전달한다.
+
+```java
+Scanner scanner = new Scanner(System.in);
+
+AccountBook accountBook =
+        new AccountBookImpl(scanner);
+```
+
+메뉴와 기능을 연결한다.
 
 ```java
 case 1:
-    book.addAccount();
+    accountBook.addAccount();
     break;
 case 2:
-    book.showAccount();
+    accountBook.showAccount();
     break;
 case 3:
-    book.deleteAccount();
+    accountBook.deleteAccount();
     break;
 ```
 
-**확인**: 실행했을 때 프로젝트에 `accountbook` 폴더가 생성되면 성공이다.
+**확인**
+
+* 프로그램 실행 시 `accountbook` 폴더가 생성되는지 확인한다.
+* `Start`와 `AccountBookImpl`이 하나의 `Scanner`를 공유하는지 확인한다.
+* 인터페이스 타입으로 구현 객체를 참조하는지 확인한다.
 
 ---
 
-### Step 4. 기능 1 — 내역 추가 (`addAccount`)
+### Step 4. 내역 추가 (`addAccount()`)
 
-**목표**: 오늘 날짜 파일에 항목들을 이어서 저장하고, 합계를 함께 기록한다.
+**목표**: 오늘 날짜의 파일에 항목과 금액을 이어서 저장한다.
 
 **할 일**
 
-1. 오늘 날짜로 파일 경로를 만든다. 예: `accountbook/2024-09-04.txt`
-2. 항목 이름과 금액을 반복 입력받는다.
-3. 입력받은 항목을 임시로 모으고 합계를 계산한다.
-4. append 모드로 파일에 내용을 저장한다.
-5. 저장한 내용을 화면에도 출력한다.
-
-파일이 없으면 `FileWriter`가 새 파일을 만들어 준다.
-
-따라서 별도로 `createNewFile()`을 호출하지 않아도 된다.
+1. 오늘 날짜로 파일 경로를 만든다.
+2. 항목 이름과 금액을 반복해서 입력받는다.
+3. 입력받은 내용을 `StringBuilder`에 저장한다.
+4. 금액의 합계를 계산한다.
+5. append 모드로 파일에 내용을 저장한다.
+6. 저장한 내용을 화면에도 출력한다.
+7. 금액에 문자가 입력된 경우 예외를 처리한다.
 
 **힌트**
 
@@ -286,52 +330,95 @@ String today = LocalDate.now().toString();
 File file = new File(DIR, today + ".txt");
 
 int total = 0;
-StringBuilder sb = new StringBuilder();
+StringBuilder content = new StringBuilder();
 
-// 반복:
-// 이름 입력
-// 금액 입력
-// sb에 "이름 : 금액원\n" 추가
-// total += 금액
+while (true) {
+    System.out.print("항목 이름 > ");
+    String name = scanner.nextLine().trim();
 
-sb.append("합계 : ").append(total).append("원\n");
+    System.out.print("금액 > ");
 
-try (FileWriter fw = new FileWriter(file, true)) {
-    fw.write(sb.toString());
+    int price;
+
+    try {
+        price = Integer.parseInt(
+                scanner.nextLine().trim()
+        );
+    } catch (NumberFormatException e) {
+        System.out.println("금액은 숫자로 입력하세요.");
+        continue;
+    }
+
+    content.append(name)
+            .append(" : ")
+            .append(price)
+            .append("원")
+            .append(System.lineSeparator());
+
+    total += price;
+
+    System.out.print("더 추가할까요? (y/n) > ");
+    String answer = scanner.nextLine().trim();
+
+    if (!answer.equalsIgnoreCase("y")) {
+        break;
+    }
+}
+
+content.append("합계 : ")
+        .append(total)
+        .append("원")
+        .append(System.lineSeparator());
+
+try (FileWriter writer =
+             new FileWriter(file, true)) {
+
+    writer.write(content.toString());
+
+    System.out.println(
+            file.getName() + "에 저장 완료"
+    );
+
+    System.out.print(content);
+
 } catch (IOException e) {
-    System.out.println("저장 중 오류: " + e.getMessage());
+    System.out.println(
+            "저장 중 오류: " + e.getMessage()
+    );
 }
 ```
 
-**확인**: `accountbook` 폴더에 오늘 날짜의 `.txt` 파일이 생성되면 성공이다.
+파일이 없으면 `FileWriter`가 새 파일을 생성하므로 `createNewFile()`을 별도로 호출하지 않아도 된다.
 
-파일을 열었을 때 입력한 항목과 합계가 형식대로 저장되어 있어야 한다.
+**확인**
 
-한 번 더 추가했을 때 같은 파일 뒤에 내용이 이어서 저장되면 성공이다.
+* 오늘 날짜의 `.txt` 파일이 생성되는지 확인한다.
+* 항목과 금액이 형식에 맞게 저장되는지 확인한다.
+* 같은 날 다시 추가하면 기존 내용 뒤에 이어서 저장되는지 확인한다.
+* 합계가 입력한 금액의 합과 일치하는지 확인한다.
+* 금액에 문자를 입력해도 프로그램이 종료되지 않는지 확인한다.
 
-### 설계 결정 포인트
+### 설계 결정
 
-하루에 여러 번 내역을 추가하면 `합계` 줄도 여러 번 생긴다.
+하루에 여러 번 내역을 추가하면 각 입력 묶음마다 합계가 저장된다.
 
-이 방식은 각 입력 묶음별 합계를 기록하는 구조이다.
-
-더 깔끔하게 관리하려면 기존 파일을 읽고 전체 합계를 다시 계산한 뒤, 마지막 합계 줄을 갱신하는 방식으로 발전시킬 수 있다.
+전체 합계를 하나만 유지하려면 기존 파일을 읽어 합계를 다시 계산하고 파일을 다시 작성해야 한다.
 
 ---
 
-### Step 5. 기능 2 — 내역 조회 (`showAccount`)
+### Step 5. 내역 조회 (`showAccount()`)
 
-**목표**: 저장된 날짜 목록을 보여주고, 선택한 날짜의 파일 내용을 읽어 출력한다.
+**목표**: 저장된 날짜 목록을 출력하고 선택한 날짜의 파일 내용을 읽는다.
 
 **할 일**
 
-1. 저장 폴더의 `.txt` 파일 목록을 가져온다.
-2. 파일이 하나도 없으면 "기록이 없습니다"를 출력하고 종료한다.
-3. 파일명에서 `.txt`를 제거하고 날짜만 출력한다.
-4. 조회할 날짜를 입력받는다.
-5. 해당 파일이 있는지 확인한다.
-6. 파일이 없으면 "그런 날짜가 없습니다"를 출력한다.
-7. 파일이 있으면 `BufferedReader`로 한 줄씩 읽어 출력한다.
+1. 저장 폴더의 파일 목록을 가져온다.
+2. `.txt` 파일만 출력한다.
+3. 기록이 없으면 안내 메시지를 출력한다.
+4. 파일명에서 `.txt`를 제거해 날짜만 출력한다.
+5. 조회할 날짜를 입력받는다.
+6. 파일이 존재하면 내용을 한 줄씩 읽어 출력한다.
+7. 파일이 없으면 안내 메시지를 출력한다.
 
 **힌트**
 
@@ -340,100 +427,222 @@ File folder = new File(DIR);
 String[] files = folder.list();
 
 if (files == null || files.length == 0) {
-    System.out.println("기록이 없습니다");
+    System.out.println("기록이 없습니다.");
     return;
 }
 
+System.out.println("== 기록된 날짜 ==");
+
 for (String name : files) {
     if (name.endsWith(".txt")) {
-        System.out.println(name.replace(".txt", ""));
+        System.out.println(
+                name.substring(0, name.length() - 4)
+        );
     }
 }
 
-File file = new File(DIR, inputDate + ".txt");
+System.out.print("조회할 날짜 입력 > ");
+String inputDate = scanner.nextLine().trim();
 
-if (file.exists()) {
-    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-        String line;
+File file = new File(
+        DIR,
+        inputDate + ".txt"
+);
 
-        while ((line = br.readLine()) != null) {
-            System.out.println(line);
-        }
-    } catch (IOException e) {
-        System.out.println("조회 중 오류: " + e.getMessage());
+if (!file.exists()) {
+    System.out.println(
+            "해당 날짜의 기록이 없습니다."
+    );
+    return;
+}
+
+System.out.println("[" + inputDate + "]");
+
+try (BufferedReader reader =
+             new BufferedReader(
+                     new FileReader(file)
+             )) {
+
+    String line;
+
+    while ((line = reader.readLine()) != null) {
+        System.out.println(line);
     }
+
+} catch (IOException e) {
+    System.out.println(
+            "조회 중 오류: " + e.getMessage()
+    );
 }
 ```
 
-**확인**: 날짜 목록이 출력되고, 날짜를 입력했을 때 해당 파일 내용이 그대로 출력되면 성공이다.
+**확인**
+
+* 저장된 날짜 목록이 출력되는지 확인한다.
+* 파일명에서 `.txt`가 제거되는지 확인한다.
+* 날짜를 입력하면 해당 파일 내용이 출력되는지 확인한다.
+* 존재하지 않는 날짜를 입력해도 프로그램이 종료되지 않는지 확인한다.
 
 ---
 
-### Step 6. 기능 3 — 삭제 (`deleteAccount`)
+### Step 6. 내역 삭제 (`deleteAccount()`)
 
 **목표**: 입력한 날짜의 파일을 삭제한다.
 
 **할 일**
 
-1. 현재 저장된 날짜 목록을 먼저 보여준다.
+1. 저장된 날짜 목록을 출력한다.
 2. 삭제할 날짜를 입력받는다.
-3. 해당 파일이 있는지 확인한다.
+3. 해당 파일의 존재 여부를 확인한다.
 4. 파일이 있으면 `delete()`를 호출한다.
-5. 삭제 성공, 삭제 실패, 파일 없음 상황을 각각 안내한다.
+5. 삭제 성공, 실패, 파일 없음 상황을 구분해 출력한다.
 
 **힌트**
 
 ```java
-File file = new File(DIR, inputDate + ".txt");
+File folder = new File(DIR);
+String[] files = folder.list();
 
-if (file.exists()) {
-    if (file.delete()) {
-        System.out.println("삭제되었습니다");
-    } else {
-        System.out.println("삭제 실패");
+if (files == null || files.length == 0) {
+    System.out.println("삭제할 기록이 없습니다.");
+    return;
+}
+
+System.out.println("== 기록된 날짜 ==");
+
+for (String name : files) {
+    if (name.endsWith(".txt")) {
+        System.out.println(
+                name.substring(0, name.length() - 4)
+        );
     }
+}
+
+System.out.print("삭제할 날짜 입력 > ");
+String inputDate = scanner.nextLine().trim();
+
+File file = new File(
+        DIR,
+        inputDate + ".txt"
+);
+
+if (!file.exists()) {
+    System.out.println(
+            "해당 날짜의 기록이 없습니다."
+    );
+    return;
+}
+
+if (file.delete()) {
+    System.out.println("삭제되었습니다.");
 } else {
-    System.out.println("그런 날짜가 없습니다");
+    System.out.println("삭제에 실패했습니다.");
 }
 ```
 
-**확인**: 삭제 후 내역 조회를 했을 때 해당 날짜가 목록에서 사라져 있으면 성공이다.
+**확인**
+
+* 기록이 없을 때 안내 메시지가 출력되는지 확인한다.
+* 존재하는 날짜의 파일이 삭제되는지 확인한다.
+* 삭제 후 조회 목록에서 해당 날짜가 사라지는지 확인한다.
+* 존재하지 않는 날짜를 입력해도 오류가 발생하지 않는지 확인한다.
 
 ---
 
-### Step 7. 마무리 다듬기
+### Step 7. 메뉴와 기능 연결
 
-**목표**: 예외 상황을 점검하고 프로그램을 완성한다.
+**목표**: 메뉴 선택에 따라 가계부 기능을 실행한다.
 
-**점검 항목**
+**힌트**
 
-- [ ] 같은 날 추가를 두 번 하면 파일에 이어서 저장되는가?
-- [ ] 기존 파일을 덮어쓰지 않는가?
-- [ ] 합계가 입력한 금액들의 합과 맞는가?
-- [ ] 기록이 없을 때 조회나 삭제를 하면 안내 메시지가 출력되는가?
-- [ ] 없는 날짜를 입력해도 프로그램이 멈추지 않는가?
-- [ ] 모든 파일 작업에 예외 처리가 되어 있는가?
-- [ ] 금액 입력란에 글자를 넣어도 프로그램이 종료되지 않는가?
+```java
+public class Start {
 
-여기까지 통과하면 File I/O 가계부 프로그램이 완성된다.
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        AccountBook accountBook =
+                new AccountBookImpl(scanner);
+
+        while (true) {
+            System.out.println(
+                    "===== 가계부 (File) ====="
+            );
+            System.out.println("1. 내역 추가");
+            System.out.println("2. 내역 조회");
+            System.out.println("3. 삭제");
+            System.out.println("4. 종료");
+            System.out.print("번호 입력 > ");
+
+            int menu;
+
+            try {
+                menu = Integer.parseInt(
+                        scanner.nextLine().trim()
+                );
+            } catch (NumberFormatException e) {
+                System.out.println(
+                        "숫자를 입력하세요."
+                );
+                continue;
+            }
+
+            switch (menu) {
+                case 1:
+                    accountBook.addAccount();
+                    break;
+                case 2:
+                    accountBook.showAccount();
+                    break;
+                case 3:
+                    accountBook.deleteAccount();
+                    break;
+                case 4:
+                    System.out.println("종료합니다.");
+                    return;
+                default:
+                    System.out.println(
+                            "1부터 4까지 입력하세요."
+                    );
+            }
+        }
+    }
+}
+```
+
+**확인**
+
+* 메뉴에 따라 올바른 기능이 호출되는지 확인한다.
+* 추가, 조회, 삭제를 연속해서 실행할 수 있는지 확인한다.
+* 종료 메뉴를 선택하면 프로그램이 끝나는지 확인한다.
 
 ---
 
 ## 6. 최종 완성 체크리스트
 
-- [ ] `AccountBook.java` — 인터페이스에 기능 3개 선언
-- [ ] `AccountBookImpl.java` — File I/O로 추가, 조회, 삭제 구현
-- [ ] `Start.java` — 메뉴 반복, 기능 호출, 종료 구현
-- [ ] 날짜별 `.txt` 파일이 폴더에 실제로 생성, 수정, 삭제됨
-- [ ] `FileWriter` append 모드, `BufferedReader`, `File.delete()`를 사용함
-- [ ] 추가 → 조회 → 삭제가 순서대로 동작함
+* [ ] `AccountBook.java`에 추가, 조회, 삭제 기능을 선언했다.
+* [ ] `AccountBookImpl.java`가 인터페이스를 구현한다.
+* [ ] `Start.java`와 구현 클래스가 하나의 `Scanner`를 공유한다.
+* [ ] 저장 폴더 경로를 상수로 관리한다.
+* [ ] 저장 폴더가 없으면 자동으로 생성한다.
+* [ ] 오늘 날짜를 파일명으로 사용한다.
+* [ ] 항목과 금액을 날짜별 파일에 저장한다.
+* [ ] 기존 파일에 내용을 이어서 저장한다.
+* [ ] 입력한 금액의 합계를 계산한다.
+* [ ] 저장된 날짜 목록을 출력한다.
+* [ ] 날짜를 입력해 파일 내용을 조회한다.
+* [ ] 날짜를 입력해 파일을 삭제한다.
+* [ ] 파일 입출력에 try-with-resources를 사용한다.
+* [ ] 파일 입출력 예외를 처리한다.
+* [ ] 숫자가 아닌 메뉴와 금액 입력을 처리한다.
 
 ---
 
 ## 7. 선택 도전 과제
 
-1. **전체 합계 갱신**: 같은 날 여러 번 추가해도 합계 줄이 하나로 유지되도록 읽기, 재계산, 다시 쓰기 구조로 개선
-2. **정렬**: 조회 시 날짜 목록을 최신순으로 정렬해서 출력
-3. **검색**: 특정 항목 이름이 들어간 날짜를 모두 찾아 출력 (`공책` 등)
-4. **백업**: 삭제 전에 파일을 `backup` 폴더로 옮긴 뒤 삭제
-5. **월별 합계**: 같은 달의 모든 파일 금액을 합쳐 출력 (`2024-09` 등)
+1. **전체 합계 갱신**: 같은 날짜에 여러 번 추가해도 합계 줄이 하나만 유지되도록 기존 파일을 읽고 다시 저장한다.
+2. **날짜 최신순 정렬**: 조회 시 날짜 목록을 최신 날짜부터 출력한다.
+3. **항목 검색**: 특정 항목이 포함된 날짜와 내역을 검색한다.
+4. **삭제 전 백업**: 삭제할 파일을 `backup` 폴더로 이동한 뒤 원본을 삭제한다.
+5. **월별 합계 계산**: 같은 연도와 월에 해당하는 모든 파일의 금액을 합산한다.
+6. **날짜 형식 검증**: `LocalDate.parse()`를 사용해 입력한 날짜 형식을 검사한다.

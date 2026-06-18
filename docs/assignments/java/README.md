@@ -23,7 +23,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 과제    | 문서                                       | 코드                                                                  | 설명                                                     |
 | ----- | ---------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------ |
 | 가계부   | [account-book.md](./account-book.md)     | [🔗 accountbook/](../../../assignments/src/main/java/accountbook)   | `Map`과 `List`를 활용해 날짜별 지출 내역을 추가, 조회, 삭제하는 가계부 프로그램    |
-| 가계부 2 | [account-book-2.md](./account-book-2.md) | 미구현 | File I/O를 활용해 날짜별 가계부 내역을 `.txt` 파일로 저장, 조회, 삭제하는 프로그램 |
+| 가계부 2 | [account-book-2.md](./account-book-2.md) | [🔗 accountbook2/](../../../assignments/src/main/java/accountbook2) | File I/O를 활용해 날짜별 가계부 내역을 `.txt` 파일로 저장, 조회, 삭제하는 프로그램 |
 
 ## 자료구조 · 직접 구현
 
@@ -51,6 +51,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 회원 관리 2 | [member-management-2.md](./member-management-2.md) | [🔗 membermanagement2/](../../../assignments/src/main/java/membermanagement2) | `String[][]` 구조를 `Member` 객체 배열로 바꾸고 추상 클래스로 회원 등급을 구현 |
 | 회원 관리 3 | [member-management-3.md](./member-management-3.md) | [🔗 membermanagement3/](../../../assignments/src/main/java/membermanagement3) | 인터페이스와 `default` 메서드를 활용해 회원 관리 구조를 구현하고 추상 클래스 버전과 비교 |
 | 회원 관리 4 | [member-management-4.md](./member-management-4.md) | [🔗 membermanagement4/](../../../assignments/src/main/java/membermanagement4) | `List<Member>`, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장   |
+| 회원 관리 5 | [member-management-5.md](./member-management-5.md) | [🔗 membermanagement5/](../../../assignments/src/main/java/membermanagement5) | File I/O를 활용해 회원 목록을 저장하고 불러오며 프로그램 종료 후에도 회원 정보를 유지 |
 
 ## 그래프 탐색
 
@@ -66,7 +67,8 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 달팽이 경주    | [snail-race.md](./snail-race.md)         | [🔗 snailrace/](../../../assignments/src/main/java/snailrace)         | 여러 달팽이를 각각 스레드로 실행하고 `synchronized`, `join()`을 활용해 경주 결과를 제어하는 프로그램    |
 | 스레드 실행 제어 | [thread-control.md](./thread-control.md) | [🔗 threadcontrol/](../../../assignments/src/main/java/threadcontrol) | `sleep()`, `interrupt()`, `yield()`, `join()`을 실험하며 스레드 상태와 실행 제어 방식을 확인           |
 | 세마포어 게임   | [semaphore-game.md](./semaphore-game.md) | [🔗 semaphoregame/](../../../assignments/src/main/java/semaphoregame) | `Semaphore`의 `acquire()`, `release()`, `tryAcquire()`를 활용해 던전의 동시 입장 인원을 제한하는 프로그램 |
-
+| wait/notify | [wait-notify.md](./wait-notify.md) | [🔗 waitnotify/](../../../assignments/src/main/java/waitnotify) | `synchronized`, `wait()`, `notify()`와 상태값을 활용해 질문과 답변 스레드의 실행 순서를 제어 |
+| 기아 현상 | [starvation.md](./starvation.md) | [🔗 starvation/](../../../assignments/src/main/java/starvation) | `wait()`, `notify()`, `notifyAll()`을 비교하며 특정 스레드가 자원을 오래 획득하지 못하는 기아 현상을 확인 |
 
 ## 학습 흐름
 
@@ -79,6 +81,6 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 7. 이진 검색 트리를 기반으로 키를 정렬하는 `TreeMap`의 동작 원리를 확인한다.
 8. 클래스, 객체, 생성자, 캡슐화를 적용해 객체지향 구조를 연습한다.
 9. 추상 클래스와 인터페이스를 각각 적용해 구조 차이를 비교한다.
-10. 컬렉션, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장한다.
+10. 컬렉션, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장하고, File I/O를 활용해 회원 정보를 저장하고 복원한다.
 11. 인접 리스트와 방문 배열로 그래프를 표현하고, `Queue` 기반 BFS와 재귀 및 `Stack` 기반 DFS의 탐색 방식을 비교한다.
-12. 멀티스레드 실행, 스레드 제어, 동기화, 세마포어를 적용해 여러 작업의 동시 실행과 공유 자원 접근을 제어한다.
+12. 멀티스레드 실행과 동기화를 실습하고, 세마포어와 `wait()`, `notify()`, `notifyAll()`을 활용해 실행 순서와 공유 자원 접근을 제어하며 기아 현상을 확인한다.
