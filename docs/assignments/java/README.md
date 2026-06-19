@@ -1,6 +1,6 @@
 # Java 과제 정리
 
-Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구조, 그래프 탐색, 추상 클래스, 인터페이스, 멀티스레드를 실습한 과제 모음이다.
+Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구조, 그래프 탐색, 추상 클래스, 인터페이스, 멀티스레드, JDBC를 실습한 과제 모음이다.
 
 각 과제는 문서와 실제 Java 구현 코드를 함께 확인할 수 있도록 정리한다.
 
@@ -42,7 +42,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 반려동물 키우기   | [pet-game.md](./pet-game.md) | [🔗 petgame/](../../../assignments/src/main/java/petgame) | 클래스, 객체, 생성자, 캡슐화를 활용해 반려동물 상태를 관리하는 콘솔 게임 |
 | 텍스트 RPG 전투 | [text-rpg.md](./text-rpg.md) | [🔗 textrpg/](../../../assignments/src/main/java/textrpg) | 객체끼리 공격하고 피해를 주고받는 턴제 RPG 전투 프로그램          |
 
-## 객체지향 · 추상 클래스 · 인터페이스 · 컬렉션
+## 객체지향 · 추상 클래스 · 인터페이스 · 데이터 저장
 
 | 과제      | 문서                                                 | 코드                                                                            | 설명                                                     |
 | ------- | -------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
@@ -52,6 +52,7 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 회원 관리 3 | [member-management-3.md](./member-management-3.md) | [🔗 membermanagement3/](../../../assignments/src/main/java/membermanagement3) | 인터페이스와 `default` 메서드를 활용해 회원 관리 구조를 구현하고 추상 클래스 버전과 비교 |
 | 회원 관리 4 | [member-management-4.md](./member-management-4.md) | [🔗 membermanagement4/](../../../assignments/src/main/java/membermanagement4) | `List<Member>`, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장   |
 | 회원 관리 5 | [member-management-5.md](./member-management-5.md) | [🔗 membermanagement5/](../../../assignments/src/main/java/membermanagement5) | File I/O를 활용해 회원 목록을 저장하고 불러오며 프로그램 종료 후에도 회원 정보를 유지 |
+| 회원 관리 6 | [member-management-6.md](./member-management-6.md) | [🔗 membermanagement6/](../../../assignments/src/main/java/membermanagement6) | JDBC를 활용해 회원 추가, 조회, 수정, 삭제 기능을 MySQL 데이터베이스와 연결 |
 
 ## 그래프 탐색
 
@@ -81,6 +82,6 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 7. 이진 검색 트리를 기반으로 키를 정렬하는 `TreeMap`의 동작 원리를 확인한다.
 8. 클래스, 객체, 생성자, 캡슐화를 적용해 객체지향 구조를 연습한다.
 9. 추상 클래스와 인터페이스를 각각 적용해 구조 차이를 비교한다.
-10. 컬렉션, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장하고, File I/O를 활용해 회원 정보를 저장하고 복원한다.
+10. 컬렉션, 제네릭, `enum`, 예외 처리를 적용해 회원 관리 구조를 확장하고, File I/O와 JDBC를 활용해 회원 정보를 파일과 데이터베이스에 저장하고 복원한다.
 11. 인접 리스트와 방문 배열로 그래프를 표현하고, `Queue` 기반 BFS와 재귀 및 `Stack` 기반 DFS의 탐색 방식을 비교한다.
 12. 멀티스레드 실행과 동기화를 실습하고, 세마포어와 `wait()`, `notify()`, `notifyAll()`을 활용해 실행 순서와 공유 자원 접근을 제어하며 기아 현상을 확인한다.
