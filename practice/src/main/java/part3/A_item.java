@@ -1,10 +1,10 @@
 package part3;
 
-public class D_item {
+public class A_item {
     private String name;
     private int price;
 
-    public D_item(String name, int price) {
+    public A_item(String name, int price) {
         this.name = name;
         this.price = price;
     }

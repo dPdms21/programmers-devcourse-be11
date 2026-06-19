@@ -2,10 +2,10 @@ package part3;
 
 import java.util.Scanner;
 
-public class D_start {
+public class A_start {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
-        D_account_book book = new D_account_book_impl(sc);
+        A_account_book book = new A_account_book_impl(sc);
 
         while (true) {
             System.out.println("===== 가계부 =====");

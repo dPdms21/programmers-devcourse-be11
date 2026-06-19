@@ -2,11 +2,11 @@ package part3;
 
 import java.util.*;
 
-public class D_account_book_impl implements D_account_book {
-    private Map<String, List<D_item>> data = new HashMap<>();
+public class A_account_book_impl implements A_account_book {
+    private Map<String, List<A_item>> data = new HashMap<>();
     private Scanner sc;
 
-    public D_account_book_impl(Scanner sc) {
+    public A_account_book_impl(Scanner sc) {
         this.sc = sc;
     }
 
@@ -19,7 +19,7 @@ public class D_account_book_impl implements D_account_book {
         // 같은 날짜가 이미 있으면 기존 목록에 이어서 추가
         // key가 맵에 있으면 -> 거기에 맵핑된 값을 반환
         // key가 없으면 -> 두 번째 인자로 넘긴 값을 반환
-        List<D_item> list = data.getOrDefault(date, new ArrayList<>());
+        List<A_item> list = data.getOrDefault(date, new ArrayList<>());
 
         while (true) {
             System.out.println("항목 이름 : ");
@@ -27,7 +27,7 @@ public class D_account_book_impl implements D_account_book {
             System.out.println("금액 : ");
             int price = readInt();
 
-            list.add(new D_item(name, price));
+            list.add(new A_item(name, price));
 
             System.out.println("더 추가? (y/n)");
 
@@ -91,10 +91,10 @@ public class D_account_book_impl implements D_account_book {
             return;
         }
 
-        List<D_item> items = data.get(date);
+        List<A_item> items = data.get(date);
 
         for ( int i = 0; i < items.size(); i++ ) {
-            D_item item = items.get(i);
+            A_item item = items.get(i);
             System.out.println( (i + 1) + ". " + item.getName() + " : " + item.getPrice() + "원" );
         }
 
@@ -106,7 +106,7 @@ public class D_account_book_impl implements D_account_book {
             return;
         }
 
-        D_item removed = items.remove(no - 1);
+        A_item removed = items.remove(no - 1);
         System.out.println(removed.getName() + " 삭제 완료");
 
         if ( items.isEmpty() ) {
@@ -125,10 +125,10 @@ public class D_account_book_impl implements D_account_book {
         }
     }
 
-    private void printItem(List<D_item> list) {
+    private void printItem(List<A_item> list) {
         int sum = 0;
 
-        for ( D_item item : list ) {
+        for ( A_item item : list ) {
             System.out.println(item.getName() + " : " + item.getPrice() + "원");
             sum += item.getPrice();
         }
