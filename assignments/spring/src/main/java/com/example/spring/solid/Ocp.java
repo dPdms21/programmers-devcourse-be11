@@ -22,4 +22,10 @@ public class Ocp {
             return price * 80 / 100;
         }
     }
+
+    public static class SilverDiscount implements DiscountPolicy {
+        public int discount(int price) {
+            return price * 95 / 100;
+        }
+    }
 }

@@ -1,5 +1,8 @@
 package com.example.spring.solid;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Dip {
     public interface MessageSender {
         void send(String msg);
@@ -14,6 +17,18 @@ public class Dip {
     public static class SmsSender implements MessageSender {
         public void send(String msg) {
             System.out.println("[SMS] " + msg);
+        }
+    }
+
+    public static class MockSender implements MessageSender {
+        private final List<String> list = new ArrayList<>();
+
+        public void send(String msg) {
+            list.add(msg);
+        }
+
+        public List<String> getMsg() {
+            return list;
         }
     }
 
