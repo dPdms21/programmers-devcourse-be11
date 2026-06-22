@@ -16,6 +16,7 @@ public class GamePanel extends JPanel {
     private volatile boolean playing = true;
 
     private int score = 0;
+    private int life = 3;
 
     public GamePanel() {
         setPreferredSize(new Dimension(400, 600));
@@ -75,6 +76,7 @@ public class GamePanel extends JPanel {
 
         g.setColor(Color.WHITE);
         g.drawString("SCORE: " + score, 10, 20);
+        g.drawString("LIFE: " + life, 10, 40);
 
         if (!playing) {
             g.setColor(Color.WHITE);
@@ -114,6 +116,7 @@ public class GamePanel extends JPanel {
     public synchronized void checkCollisions() {
         List<Bullet> bulletSnapshot;
         List<Enemy> enemySnapshot;
+        List<Enemy> removedEnemies = new ArrayList<>();
 
         synchronized (bullets) {
             bulletSnapshot = new ArrayList<>(bullets);
@@ -132,6 +135,10 @@ public class GamePanel extends JPanel {
             );
 
             for (Enemy e : enemySnapshot) {
+                if (removedEnemies.contains(e)) {
+                    continue;
+                }
+
                 Rectangle enemyRect = new Rectangle(
                         e.getX(),
                         e.getY(),
@@ -145,6 +152,7 @@ public class GamePanel extends JPanel {
 
                     removeBullet(b);
                     removeEnemy(e);
+                    removedEnemies.add(e);
 
                     score++;
                     break;
@@ -155,10 +163,23 @@ public class GamePanel extends JPanel {
         Rectangle playerRect = new Rectangle(player.getX(), player.getY(), player.getWidth(), player.getHeight());
 
         for (Enemy e : enemySnapshot) {
+            if (removedEnemies.contains(e)) {
+                continue;
+            }
+
             Rectangle enemyRect = new Rectangle(e.getX(), e.getY(), 20, 20);
 
             if (playerRect.intersects(enemyRect)) {
-                gameOver();
+                e.stopMoving();
+                removeEnemy(e);
+
+                life--;
+
+                if (life <= 0) {
+                    gameOver();
+                }
+
+                repaint();
                 break;
             }
         }
