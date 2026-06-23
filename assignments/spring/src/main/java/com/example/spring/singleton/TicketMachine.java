@@ -16,4 +16,12 @@ public class TicketMachine {
         lastNumber++;
         return lastNumber;
     }
+
+    public void reset() {
+        lastNumber = 0;
+    }
+
+    public int peek() {
+        return lastNumber;
+    }
 }

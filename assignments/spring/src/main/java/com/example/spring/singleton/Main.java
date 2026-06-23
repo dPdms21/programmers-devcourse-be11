@@ -19,8 +19,17 @@ public class Main {
 
         System.out.println("1번 창구가 발급: " + w1.issue() + "번");
         System.out.println("2번 창구가 발급: " + w2.issue() + "번");
+
+        w1.reset();
+        System.out.println("\n--- 번호표 리셋 ---\n");
+
+
         System.out.println("1번 창구가 발급: " + w1.issue() + "번");
+
+        System.out.println("1번 창구 재호출 " + w1.peek() + "번");
+
         System.out.println("3번 창구가 발급: " + w3.issue() + "번");
+
         System.out.println("같은 기계인가? " + (w1 == w2));
 
         System.out.println("\n===== 3. lazy 초기화 (설정 관리자) =====");

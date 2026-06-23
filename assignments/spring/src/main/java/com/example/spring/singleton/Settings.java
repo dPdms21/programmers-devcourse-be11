@@ -8,7 +8,7 @@ public class Settings {
 
     }
 
-    public static Settings getInstance() {
+    public static synchronized Settings getInstance() {
         if (instance == null) {
             instance = new Settings();
         }
@@ -16,11 +16,11 @@ public class Settings {
         return instance;
     }
 
-    String getTheme() {
+    public String getTheme() {
         return theme;
     }
 
-    void setTheme(String theme) {
+    public void setTheme(String theme) {
         this.theme = theme;
     }
 }
