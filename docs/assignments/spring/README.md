@@ -1,6 +1,6 @@
 # Spring 과제 정리
 
-Spring 학습 과정에서 진행한 객체지향 설계, 제어의 역전, 싱글톤 과제 모음이다.
+Spring 학습 과정에서 진행한 객체지향 설계, 제어의 역전, 싱글톤, 테스트 코드 과제 모음이다.
 
 각 과제는 문서와 실제 Java 구현 코드를 함께 확인할 수 있도록 정리한다.
 
@@ -18,7 +18,14 @@ Spring 학습 과정에서 진행한 객체지향 설계, 제어의 역전, 싱�
 | 싱글톤 기본 | [singleton.md](./singleton.md)     | [🔗 singleton/](../../../assignments/spring/src/main/java/com/example/spring/singleton)   | `private` 생성자, `static` 인스턴스, `getInstance()`를 활용해 객체를 하나만 생성하고 상태를 공유 |
 | 싱글톤 심화 | [singleton-2.md](./singleton-2.md) | [🔗 singleton2/](../../../assignments/spring/src/main/java/com/example/spring/singleton2) | 여러 스레드가 공유하는 싱글톤의 상태 문제를 확인하고 파라미터와 지역변수를 사용하는 무상태 구조로 개선              |
 
+## 테스트 코드
+
+| 과제     | 문서                             | 코드                                                                                    | 설명                                                                  |
+| ------ | ------------------------------ | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| 테스트 코드 | [test-code.md](./test-code.md) | [🔗 testcode/](../../../assignments/spring/src/main/java/com/example/spring/testcode) | JUnit 5의 생명주기와 단언, 예외 검증을 적용하고 Spring 테스트 컨텍스트에서 빈을 주입받아 DAO 동작을 검증 |
+
 ## 학습 흐름
 
 1. 객체지향 설계 원칙에서는 SOLID 5원칙을 적용해 변경에 유연한 구조로 리팩터링한다.
 2. 제어의 역전 · 싱글톤에서는 객체 생성과 실행 흐름의 제어권을 외부로 분리하고, 싱글톤과 무상태 구조를 구현한다.
+3. 테스트 코드에서는 JUnit 5로 정상 동작과 예외 상황을 자동 검증하고, Spring 테스트 컨텍스트를 통해 빈을 주입받는다.
