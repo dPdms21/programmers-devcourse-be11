@@ -1,9 +1,6 @@
 package com.example.spring.testcode;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
@@ -15,6 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductDaoTest {
     @Autowired
     private ProductDao dao;
+
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("전체 테스트 시작");
+    }
 
     @BeforeEach
     void setUp() {
@@ -30,6 +32,7 @@ class ProductDaoTest {
         return p;
     }
 
+    @DisplayName("상품 추가")
     @Test
     void add() {
         assertEquals(0, dao.getCount());
@@ -50,30 +53,67 @@ class ProductDaoTest {
         assertEquals(p.getPrice(), d.getPrice());
     }
 
+    @DisplayName("상품 수정")
+    @Test
+    void update() {
+        dao.add(newProduct("1", "연필", 1500));
+        dao.update(newProduct("1", "싸인펜", 1000));
+
+        Product p = dao.get("1");
+
+        assertEquals("싸인펜", p.getName());
+        assertEquals(1000, p.getPrice());
+    }
+
+    @DisplayName("상품 삭제")
+    @Test
+    void delete() {
+        dao.add(newProduct("1", "연필", 1500));
+
+        dao.delete("1");
+
+        assertEquals(0, dao.getCount());
+        assertThrows(
+                NoSuchElementException.class,
+                () -> dao.get("1")
+        );
+    }
+
+    @Test
+    void add_여러개_개수_증가() {
+        assertEquals(0, dao.getCount());
+
+        dao.add(newProduct("1", "연필", 1500));
+        assertEquals(1, dao.getCount());
+
+        dao.add(newProduct("2", "지우개", 1000));
+        assertEquals(2, dao.getCount());
+
+        dao.add(newProduct("3", "볼펜", 2000));
+        assertEquals(3, dao.getCount());
+    }
+
     @Test
     void add_중복_id_예외() {
         dao.add(newProduct("3", "샤프", 5000));
 
-        Executable action = new Executable() {
-            @Override
-            public void execute() {
-                dao.add(newProduct("3", "샤프", 5000));
-            }
-        };
-
-        assertThrows(IllegalStateException.class, action);
+        assertThrows(
+                IllegalStateException.class,
+                () -> dao.add(newProduct("3", "샤프", 5000))
+        );
     }
 
     @Test
     void get_없는_id_예외() {
-        Executable action = new Executable() {
-            @Override
-            public void execute() {
-                dao.get("없는_id");
-            }
-        };
+        NoSuchElementException exception = assertThrows(
+                NoSuchElementException.class,
+                () -> dao.get("없는_id")
+        );
 
-        assertThrows(NoSuchElementException.class, action);
+        assertEquals(
+                "없는 id: 없는_id",
+                exception.getMessage()
+        );
     }
 
     @Disabled("일부러 틀린 기대값을 넣은 학습용 실패 예제")

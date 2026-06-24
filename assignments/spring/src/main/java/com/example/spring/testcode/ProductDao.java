@@ -31,4 +31,20 @@ public class ProductDao {
     public void deleteAll() {
         store.clear();
     }
+
+    public void update(Product product) {
+        if (!store.containsKey(product.getId())) {
+            throw new NoSuchElementException("존재하지 않는 상품 ID: " + product.getId());
+        }
+
+        store.put(product.getId(), product);
+    }
+
+    public void delete(String id) {
+        if (!store.containsKey(id)) {
+            throw new NoSuchElementException("존재하지 않는 상품 ID: " + id);
+        }
+
+        store.remove(id);
+    }
 }
