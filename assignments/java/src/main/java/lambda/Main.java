@@ -1,6 +1,7 @@
 package lambda;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class Main {
     public static void main(String[] args) {
@@ -48,5 +49,24 @@ public class Main {
 
         list.sort((a, b) -> a.length() - b.length());
         System.out.println("정렬 후: " + list);
+
+        System.out.println("\n===== 5. 도전: 나누기, 내림차순, 사전순 등 =====");
+        Operation div = (a, b) -> a / b;
+
+        try {
+            System.out.println("5 / 0 = " + div.apply(5, 0));
+        } catch (ArithmeticException e) {
+            System.out.println("0으로 나눌 수 없음");
+        }
+
+        list.sort((a, b) -> b.length() - a.length());
+        System.out.println("내림차순: " + list);
+
+        list.sort((a, b) -> a.compareTo(b));
+        System.out.println("사전순: " + list);
+
+        Predicate<String> isEmpty = s -> s.isEmpty();
+        System.out.println("빈 문자열 확인: " + isEmpty.test(""));
+        System.out.println("일반 문자열 확인: " + isEmpty.test("람다"));
     }
 }
