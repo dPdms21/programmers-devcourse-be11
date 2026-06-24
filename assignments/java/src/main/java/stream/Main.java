@@ -76,5 +76,59 @@ public class Main {
                 .collect(Collectors.toList());
 
         System.out.println("가격 오름차순: " + byPrice);
+
+        System.out.println("\n===== 7. 도전: groupingBy, reduce 등 =====");
+        System.out.println("-- 500원 이하 상품 --");
+        products.stream()
+                .filter(p -> p.getPrice() <= 500)
+                .forEach(p -> System.out.println(p.getName() + " (" + p.getPrice() + "원)"));
+
+        System.out.println("-한 줄짜리 문자열 변환-");
+        products.stream()
+                .map(p -> p.getName() + " : " + p.getPrice() + "원")
+                .forEach(System.out::println);
+
+        System.out.println("- 가장 비싼 상품 1개 -");
+        products.stream()
+                .sorted((a, b) -> b.getPrice() - a.getPrice())
+                .limit(1)
+                .forEach(p -> System.out.println(p.getName() + " (" + p.getPrice() + "원)"));
+
+        // .sorted((a, b) -> Integer.compare(b.getPrice(), a.getPrice()))
+
+        System.out.println("---- 중복X, 정렬 ----");
+        orders.stream()
+                .flatMap(o -> o.getItems().stream())
+                .distinct()
+                .sorted()
+                .forEach(System.out::println);
+
+        System.out.println("--- 가격대별 그룹 ---");
+        Map<String, List<Product>> grouped = products.stream()
+                .collect(Collectors.groupingBy(p -> {
+                    if (p.getPrice() < 1000) {
+                        return "1000원 미만";
+                    }
+                    else if (p.getPrice() < 2000) {
+                        return "1000원대";
+                    }
+                    else {
+                        return "2000원 이상";
+                    }
+                }));
+
+        grouped.forEach((group, productList) ->
+                System.out.println(group + ": " +
+                        productList.stream()
+                                .map(p -> p.getName())
+                                .toList())
+        );
+
+        System.out.println("----- 누적 합계 -----");
+        int sum2 = products.stream()
+                .map(p -> p.getPrice())
+                .reduce(0, (total, price) -> total + price);
+
+        System.out.println(sum2);
     }
 }
