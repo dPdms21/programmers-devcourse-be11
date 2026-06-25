@@ -2,36 +2,41 @@ import java.util.*;
 
 class Solution {
     public int[] solution(int[] progresses, int[] speeds) {
-        List<Integer> list = new ArrayList<>();
+        Deque<Integer> q = new ArrayDeque<>();
 
-        int i = 0;
-
-        while (i < progresses.length) {
-            int cnt = 0;
+        for (int i=0; i<progresses.length; i++) {
+            int day = 0;
 
             while (progresses[i] < 100) {
-                for (int j=i; j<progresses.length; j++) {
-                    progresses[j] += speeds[j];
-                }
+                day++;
+                progresses[i] += speeds[i];
             }
 
-            for (int j=i; j<progresses.length; j++) {
-                if (progresses[j] >= 100) {
-                    cnt++;
-                }
-                else {
-                    break;
-                }
-            }
-
-            list.add(cnt);
-            i += cnt;
+            q.offer(day);
         }
+
+        int t = q.poll();
+        int cnt = 1;
+
+        List<Integer> list = new ArrayList<>();
+
+        while (!q.isEmpty()) {
+            if (t >= q.peek()) {
+                q.poll();
+                cnt++;
+            } else {
+                list.add(cnt);
+                t = q.poll();
+                cnt = 1;
+            }
+        }
+
+        list.add(cnt);
 
         int[] answer = new int[list.size()];
 
-        for (int j=0; j<list.size(); j++) {
-            answer[j] = list.get(j);
+        for (int i=0; i<list.size(); i++) {
+            answer[i] = list.get(i);
         }
 
         return answer;
