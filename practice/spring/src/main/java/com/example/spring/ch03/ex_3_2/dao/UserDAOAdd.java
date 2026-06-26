@@ -20,14 +20,14 @@ public class UserDAOAdd implements StatementStrategy {
 
     @Override
     public PreparedStatement makeStatement(Connection conn) throws SQLException {
-        PreparedStatement pstmt = conn.prepareStatement(
+        PreparedStatement ps = conn.prepareStatement(
                 "INSERT INTO users(id, name, password) VALUES(?, ?, ?)"
         );
 
-        pstmt.setString(1, user.getId());
-        pstmt.setString(2, user.getName());
-        pstmt.setString(3, user.getPassword());
+        ps.setString(1, user.getId());
+        ps.setString(2, user.getName());
+        ps.setString(3, user.getPassword());
 
-        return pstmt;
+        return ps;
     }
 }
