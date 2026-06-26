@@ -3,7 +3,8 @@ package com.example.spring.strategypattern;
 public class Main {
     public static void main(String[] args) {
         Database db = new Database();
-        UserDao dao = new UserDao(db);
+        JdbcContext jdbcContext = new JdbcContext(db);
+        UserDao dao = new UserDao(jdbcContext);
 
         System.out.println("\n== (별도 클래스) deleteAll ==");
         dao.deleteAll();
@@ -19,5 +20,13 @@ public class Main {
         for (User u : db.getUsers()) {
             System.out.println("사용자: " + u.getName());
         }
+
+        User user = dao.get("u1");
+
+        if (user != null) {
+            System.out.println("조회 사용자: " + user.getName());
+        }
+
+
     }
 }
