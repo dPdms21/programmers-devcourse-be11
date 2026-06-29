@@ -11,6 +11,7 @@ public class DataService {
 
     String fetchWithRetry(FlakyService f) {
         int maxRetry = 3;
+        SQLException lastException = null;
 
         for (int i=1; i<=maxRetry; i++) {
             try {
@@ -20,12 +21,25 @@ public class DataService {
                 return r;
             }
             catch (SQLException e) {
+                lastException = e;
                 logger.log("WARN", i + "번째 시도 실패: " + e.getMessage());
+
+                if (i < maxRetry) {
+                    long delay = i * 200L;
+
+                    try {
+                        Thread.sleep(delay);
+                    }
+                    catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        throw new RuntimeException("재시도 대기 중 인터럽트 발생", ie);
+                    }
+                }
             }
         }
 
         logger.log("ERROR", "재시도 " + maxRetry + "회 모두 실패");
-        throw new RuntimeException("재시도 " + maxRetry + "회 모두 실패");
+        throw new RuntimeException("재시도 " + maxRetry + "회 모두 실패", lastException);
     }
 
     void avoidByThrows(FlakyService f) throws SQLException {

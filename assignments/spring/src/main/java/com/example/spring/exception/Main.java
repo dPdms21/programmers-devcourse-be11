@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class Main {
     public static void main(String[] args) {
-        FileLogger logger = new FileLogger();
+        FileLogger logger = new FileLogger("WARN");
         DataService service = new DataService(logger);
 
         System.out.println("\n===== 1) 예외 복구: 재시도 (3번째에 성공) =====");
@@ -23,6 +23,7 @@ public class Main {
         }
         catch (RuntimeException e) {
             System.out.println("실패 통보: " + e.getMessage());
+            System.out.println("실패 원인: " + e.getCause());
         }
 
         System.out.println("\n===== 3) 예외 전환: 아이디 중복 -> 의미 있는 예외 =====");
