@@ -7,16 +7,13 @@ public class Main {
 
         System.out.println("\n=== Part A: 추상화 테스트 ===");
 
-        NotificationService emailService =
-                new NotificationService(new EmailNotificationSender());
+        NotificationService emailService = new NotificationService(new EmailNotificationSender());
         emailService.notifyUser("user@example.com", "알림");
 
-        NotificationService smsService =
-                new NotificationService(new SmsNotificationSender());
+        NotificationService smsService = new NotificationService(new SmsNotificationSender());
         smsService.notifyUser("010-1234-5678", "알림");
 
-        NotificationService kakaoService =
-                new NotificationService(new KakaoNotificationSender());
+        NotificationService kakaoService = new NotificationService(new KakaoNotificationSender());
         kakaoService.notifyUser("kakao-user", "알림");
 
         System.out.println("\n=== Part C: 데코레이터 조합 테스트 ===");
@@ -44,5 +41,33 @@ public class Main {
         NotificationService retryOutsideService = new NotificationService(retryOutside);
 
         retryOutsideService.notifyUser("user@example.com", "Retry 바깥 조합 테스트");
+
+        System.out.println("\n=== 도전 과제: 금칙어 차단 ===");
+
+        NotificationSender filteringSender =
+                new FilteringNotificationSender(
+                        new LoggingNotificationSender(
+                                new EmailNotificationSender()));
+
+        NotificationService filteringService = new NotificationService(filteringSender);
+
+        filteringService.notifyUser("user@example.com", "정상 알림");
+
+        System.out.println("-----");
+
+        filteringService.notifyUser("user@example.com", "광고 메시지");
+
+        System.out.println("\n=== 도전 과제: 발송 속도 제한 ===");
+
+        NotificationSender rateLimitSender =
+                new TimingNotificationSender(
+                        new RateLimitNotificationSender(
+                                new EmailNotificationSender()));
+
+        NotificationService rateLimitService = new NotificationService(rateLimitSender);
+
+        rateLimitService.notifyUser("user@example.com", "첫 번째 알림");
+
+        rateLimitService.notifyUser("user@example.com", "두 번째 알림");
     }
 }
