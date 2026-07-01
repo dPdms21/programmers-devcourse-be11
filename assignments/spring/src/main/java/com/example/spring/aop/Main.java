@@ -1,8 +1,6 @@
 package com.example.spring.aop;
 
-import com.example.spring.aop.service.MemberService;
-import com.example.spring.aop.service.OrderService;
-import com.example.spring.aop.service.ProductService;
+import com.example.spring.aop.service.*;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 public class Main {
@@ -22,8 +20,15 @@ public class Main {
         System.out.println("\n===== 상품 서비스 호출 =====");
         System.out.println(productService.getProduct("A-100"));
 
+        System.out.println("\n===== 상품 서비스 예외 호출 =====");
+        try {
+            productService.getProduct("");
+        } catch (IllegalArgumentException e) {
+            System.out.println("호출 측에서 예외 처리");
+        }
+
         System.out.println("\n===== 진짜 프록시인지 확인 =====");
-        System.out.println("orderService 의 실제 타입: " + orderService.getClass());
+        System.out.println("orderService의 실제 타입: " + orderService.getClass());
 
         ctx.close();
     }

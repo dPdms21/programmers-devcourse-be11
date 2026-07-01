@@ -24,6 +24,14 @@ public class AopConfig {
     }
 
     @Bean
+    public Advisor exceptionLoggingAdvisor() {
+        AspectJExpressionPointcut pointcut = new AspectJExpressionPointcut();
+        pointcut.setExpression("execution(* com.example.spring.aop.service..*.*(..))");
+
+        return new DefaultPointcutAdvisor(pointcut, new ExceptionLoggingAdvice());
+    }
+
+    @Bean
     public OrderService orderService()  {
         return new OrderServiceImpl();
     }
