@@ -1,5 +1,6 @@
 package com.example.essentials.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 // * 디스패처 서블릿 (DispatcherServlet)
@@ -35,6 +36,32 @@ import org.springframework.web.bind.annotation.RestController;
 // - 정리: 화면(HTML)을 보여 주려면 @Controller,
 //   데이터(JSON/문자열)를 내려 주려면 @RestController를 씀
 
+// * 필터 - Dispatcher Servlet 앞단에서 실행
+// 요청이 Dispatcher Servlet에 '도착하기도 전에' 먼저 거치는 관문이 필터
+// 서블릿 컨테이너(톰캣) 수준에서 동작하며, 스프링 MVC의 바깥에 위치
+// 즉 필터는 '요청이 들어올 때'와 '응답이 나갈 때'를 모두 가로챌 수 있음
+// [하는 일]
+// - 모든 요청에 공통으로 필요한 처리를 컨트롤러보다 먼저 해치움
+//   예: 인증/인가 검사, 요청 로깅, 문자 인코딩(UTF-8) 설정, CORS 처리 등
+// - 문지기라서, 통과시키지 않고 여기서 바로 응답을 돌려보내며 막을 수도 있음
+//   (예: 로그인 안 된 요청을 컨트롤러까지 보내지 않고 필터에서 차단함)
+// [만드는 법]
+// - jakarta.servlet.Filter 를 구현하고 doFilter() 안에 로직을 작성
+// - doFilter() 안에서 chain.doFilter(request, response) 를 호출해야
+//   '다음 단계(다음 필터 또는 DispatcherServlet)'로 요청이 넘어감
+//   이 호출을 하지 않으면 요청은 여기서 멈춤
+
 @RestController
 public class FilterController {
+    @GetMapping("/hello")
+    public String hello() {
+        System.out.println("hello");
+
+        return "Hello World!";
+    }
+
+    @GetMapping("/api/data")
+    public String data() {
+        return "data";
+    }
 }
