@@ -4,3 +4,6 @@ server:
 spring:
   application:
     name: feign-client
+
+feign-api:
+  url: http://localhost:8083
