@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: jpa-board
+  datasource:
+    #   jdbc:mysql://localhost:3306/java_basic
+    #   └─┬─┘ └─┬─┘   └───┬───┘ └┬┘ └───┬────┘
+    #   프로토콜 DB종류   호스트  포트   DB이름
+
+    # MySQL(서버)과 Spring Boot는 "서로 다른 프로그램"
+    # 같은 컴퓨터에 있어도 남남이라, 함수 호출로는 못 부르고 "네트워크로 대화"해야 함
+    # 그 대화 규약(약속)이 TCP. 이 URL은 "누구에게 어떻게 연결할지"를 적은 주소
+
+    # 왜 TCP인가? (신뢰성 있는 연결형 통신)
+    # - TCP는 데이터를 보내기 전에 먼저 "연결을 수립" (3-way handshake: SYN -> SYN/ACK -> ACK)
+    # - 그 뒤엔 (a)순서 보장 (b)유실 시 재전송 (c)도착 확인을 해줌 -> SQL/결과가 깨지거나 순서 꼬이면 안 되므로 딱 맞음
+
+    # 그래서 "커넥션 풀(HikariCP)"이 필요함. * 로그에서 보이던 HikariPool
+    # - 위 handshake + 인증은 매번 하면 느리고 비쌈. 요청마다 새로 연결하면 성능이 크게 떨어짐
+    # - 그래서 앱은 시작할 때 TCP 연결 여러 개를 미리 만들어 '풀(pool)'에 담아 두고 재사용
+
+    # localhost (IP 주소)
+    # - localhost는 127.0.0.1, 즉 "내 컴퓨터 자신"을 가리키는 특별한 주소
+    # 3306 (Port)
+    # - 한 컴퓨터엔 프로그램이 많이 떠 있음. IP만으로는 특정 지을 수 없음
+    # - 포트는 "그 컴퓨터 안의 창구 번호". OS가 들어온 데이터를 포트 번호로 보고 알맞은 프로세스에게 전달
+
+    # 소켓(socket)과 연결(connection)
+    # - "내 쪽 IP:port"와 "상대 IP:port" 한 쌍이 이어지면 하나의 '연결(connection)'이 됨
+    # - 프로그램은 이 연결의 양 끝의 '소켓'이라는 창구로 다룸
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
