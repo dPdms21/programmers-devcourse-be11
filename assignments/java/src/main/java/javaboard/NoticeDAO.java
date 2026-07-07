@@ -115,9 +115,9 @@ public class NoticeDAO {
         }
     }
 
-    public List<String> getList() {
+    public List<ContentDTO> getList() {
         String sql = "SELECT id, user_id, content, created FROM content ORDER BY id DESC";
-        List<String> list = new ArrayList<>();
+        List<ContentDTO> list = new ArrayList<>();
 
         try (
                 Connection conn = getConnection();
@@ -132,7 +132,7 @@ public class NoticeDAO {
                         .toLocalDateTime()
                         .format(FORMATTER);
 
-                list.add("[" + id + "] " + userId + " - " + content + " - " + created);
+                list.add(new ContentDTO(id, userId, content, created));
             }
 
             return list;
@@ -142,9 +142,9 @@ public class NoticeDAO {
         }
     }
 
-    public List<String> getListByUserId(String userId) {
+    public List<ContentDTO> getListByUserId(String userId) {
         String sql = "SELECT id, user_id, content, created FROM content WHERE user_id = ? ORDER BY id DESC";
-        List<String> list = new ArrayList<>();
+        List<ContentDTO> list = new ArrayList<>();
 
         try (
                 Connection conn = getConnection();
@@ -161,7 +161,7 @@ public class NoticeDAO {
                             .toLocalDateTime()
                             .format(FORMATTER);
 
-                    list.add("[" + id + "] " + writer + " - " + content + " - " + created);
+                    list.add(new ContentDTO(id, writer, content, created));
                 }
             }
 
@@ -236,6 +236,105 @@ public class NoticeDAO {
         }
         catch (SQLException e) {
             throw new RuntimeException("회원 글 삭제 중 오류 발생", e);
+        }
+    }
+
+    public boolean leaveWithCascade(String userId) {
+        String sql = "DELETE FROM user WHERE user_id = ?";
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, userId);
+
+            return ps.executeUpdate() > 0;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("회원 탈퇴 중 오류 발생", e);
+        }
+    }
+
+    public List<ContentDTO> searchNotice(String keyword) {
+        String sql = "SELECT id, user_id, content, created FROM content WHERE content LIKE ? ORDER BY id DESC";
+        List<ContentDTO> list = new ArrayList<>();
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setString(1, "%" + keyword + "%");
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String userId = rs.getString("user_id");
+                    String content = rs.getString("content");
+                    String created = rs.getTimestamp("created")
+                            .toLocalDateTime()
+                            .format(FORMATTER);
+
+                    list.add(new ContentDTO(id, userId, content, created));
+                }
+            }
+
+            return list;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("글 검색 중 오류 발생", e);
+        }
+    }
+
+    public List<ContentDTO> getListByPage(int page, int size) {
+        String sql = "SELECT id, user_id, content, created FROM content ORDER BY id DESC LIMIT ? OFFSET ?";
+        List<ContentDTO> list = new ArrayList<>();
+
+        int offset = (page - 1) * size;
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            ps.setInt(1, size);
+            ps.setInt(2, offset);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    int id = rs.getInt("id");
+                    String userId = rs.getString("user_id");
+                    String content = rs.getString("content");
+                    String created = rs.getTimestamp("created")
+                            .toLocalDateTime()
+                            .format(FORMATTER);
+
+                    list.add(new ContentDTO(id, userId, content, created));
+                }
+            }
+
+            return list;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("글 목록 페이징 조회 중 오류 발생", e);
+        }
+    }
+
+    public int getTotalPages(int size) {
+        String sql = "SELECT count(*) FROM content";
+
+        try (
+                Connection conn = getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()
+        ) {
+            if (rs.next()) {
+                int totalCount = rs.getInt(1);
+                return (int) Math.ceil((double) totalCount / size);
+            }
+
+            return 0;
+        }
+        catch (SQLException e) {
+            throw new RuntimeException("전체 페이지 수 조회 중 오류 발생", e);
         }
     }
 }

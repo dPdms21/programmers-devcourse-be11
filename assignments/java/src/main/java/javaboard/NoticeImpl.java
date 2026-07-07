@@ -21,6 +21,7 @@ public class NoticeImpl implements Notice {
         System.out.println("7. 로그아웃");
         System.out.println("8. 회원 탈퇴");
         System.out.println("9. 종료");
+        System.out.println("10. 글 검색");
         System.out.println("=================");
         System.out.print("메뉴 선택: ");
 
@@ -92,7 +93,12 @@ public class NoticeImpl implements Notice {
 
     public void getList() {
         System.out.println("-----------------");
-        List<String> list = noticeDAO.getList();
+        System.out.print("페이지 번호: ");
+        int page = Integer.parseInt(scanner.nextLine());
+
+        int size = 5;
+        List<ContentDTO> list = noticeDAO.getListByPage(page, size);
+        int totalPages = noticeDAO.getTotalPages(size);
 
         if (list.isEmpty()) {
             System.out.println("-----------------");
@@ -100,7 +106,14 @@ public class NoticeImpl implements Notice {
             return;
         }
 
-        list.forEach(System.out::println);
+        list.forEach(content -> System.out.println(
+                "[" + content.getId() + "] "
+                        + content.getUserId() + " - "
+                        + content.getContent() + " - "
+                        + content.getCreated()
+        ));
+
+        System.out.println("현재 페이지: " + page + " / " + totalPages);
     }
 
     public void updateNotice() {
@@ -109,7 +122,7 @@ public class NoticeImpl implements Notice {
         }
 
         System.out.println("-----------------");
-        List<String> list = noticeDAO.getListByUserId(userId);
+        List<ContentDTO> list = noticeDAO.getListByUserId(userId);
 
         if (list.isEmpty()) {
             System.out.println("-----------------");
@@ -118,7 +131,12 @@ public class NoticeImpl implements Notice {
             return;
         }
 
-        list.forEach(System.out::println);
+        list.forEach(content -> System.out.println(
+                "[" + content.getId() + "] "
+                        + content.getUserId() + " - "
+                        + content.getContent() + " - "
+                        + content.getCreated()
+        ));
 
         System.out.println("-----------------");
         System.out.print("수정할 글 번호: ");
@@ -143,7 +161,7 @@ public class NoticeImpl implements Notice {
         }
 
         System.out.println("-----------------");
-        List<String> list = noticeDAO.getListByUserId(userId);
+        List<ContentDTO> list = noticeDAO.getListByUserId(userId);
 
         if (list.isEmpty()) {
             System.out.println("-----------------");
@@ -151,7 +169,12 @@ public class NoticeImpl implements Notice {
             return;
         }
 
-        list.forEach(System.out::println);
+        list.forEach(content -> System.out.println(
+                "[" + content.getId() + "] "
+                        + content.getUserId() + " - "
+                        + content.getContent() + " - "
+                        + content.getCreated()
+        ));
 
         System.out.println("-----------------");
         System.out.print("삭제할 글 번호: ");
@@ -201,15 +224,36 @@ public class NoticeImpl implements Notice {
             return;
         }
 
-        noticeDAO.deleteContentExc(deleteUserId);
-
-        if (noticeDAO.leaveExc(deleteUserId)) {
-            System.out.println("-----------------");
+        if (noticeDAO.leaveWithCascade(deleteUserId)) {
             System.out.println("회원 탈퇴 완료");
 
             if (deleteUserId.equals(userId)) {
                 signOut();
             }
         }
+        else {
+            System.out.println("회원 탈퇴 실패");
+        }
+    }
+
+    public void searchNotice() {
+        System.out.println("-----------------");
+        System.out.print("검색어: ");
+        String keyword = scanner.nextLine();
+
+        List<ContentDTO> list = noticeDAO.searchNotice(keyword);
+
+        if (list.isEmpty()) {
+            System.out.println("-----------------");
+            System.out.println("검색 결과 없음");
+            return;
+        }
+
+        list.forEach(content -> System.out.println(
+                "[" + content.getId() + "] "
+                        + content.getUserId() + " - "
+                        + content.getContent() + " - "
+                        + content.getCreated()
+        ));
     }
 }

@@ -10,4 +10,5 @@ public interface Notice {
     void deleteNotice();
     void signOut();
     void leave();
+    void searchNotice();
 }

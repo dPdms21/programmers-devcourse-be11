@@ -37,6 +37,9 @@ public class Start {
                     System.out.println("프로그램 종료");
                     System.out.println("=================");
                     return;
+                case 10:
+                    notice.searchNotice();
+                    break;
                 default:
                     System.out.println("잘못된 메뉴");
             }
