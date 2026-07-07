@@ -79,6 +79,12 @@ Java 기본 문법, 배열, 컬렉션, 파일 입출력, 객체지향, 자료구
 | 기아 현상 | [starvation.md](./starvation.md) | [🔗 starvation/](../../../assignments/java/src/main/java/starvation) | `wait()`, `notify()`, `notifyAll()`을 비교하며 특정 스레드가 자원을 오래 획득하지 못하는 기아 현상을 확인 |
 | 비행기 게임 | [airplane-game.md](./airplane-game.md) | [🔗 airplanegame/](../../../assignments/java/src/main/java/airplanegame) | Java Swing과 멀티스레드를 활용해 객체별 이동과 충돌 처리를 구현한 비행기 슈팅 게임 |
 
+## JDBC
+
+| 과제 | 문서 | 코드 | 설명 |
+| --- | --- | --- | --- |
+| JDBC 게시판 | [java-board.md](./java-board.md) | [🔗 javaboard/](../../../assignments/java/src/main/java/javaboard) | JDBC, DAO, DTO를 활용해 회원가입, 로그인, 게시글 CRUD, 로그아웃, 회원 탈퇴 기능을 구현한 콘솔 게시판 |
+
 ## 학습 흐름
 
 1. 기본 문법, 조건문, 반복문으로 콘솔 프로그램을 구현한다.
@@ -96,3 +102,4 @@ File I/O와 JDBC를 활용해 회원 정보를 파일과 데이터베이스에 �
 12. 인접 리스트와 방문 배열로 그래프를 표현하고, `Queue` 기반 BFS와 재귀 및 `Stack` 기반 DFS의 탐색 방식을 비교한다.
 13. 멀티스레드 실행과 동기화를 실습하고, 세마포어와 `wait()`, `notify()`, `notifyAll()`을 활용해 공유 자원 접근을 제어하며,   
 Swing 기반 비행기 게임에서 객체별 스레드와 충돌 처리를 구현한다.
+14. JDBC, DAO, DTO를 활용해 회원과 게시글 데이터를 데이터베이스에 저장하고, 로그인 상태 관리와 게시글 CRUD 흐름을 구현한다.
