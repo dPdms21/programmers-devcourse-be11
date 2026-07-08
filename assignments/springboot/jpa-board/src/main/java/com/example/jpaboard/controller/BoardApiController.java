@@ -3,10 +3,17 @@ package com.example.jpaboard.controller;
 import com.example.jpaboard.domain.entity.Board;
 import com.example.jpaboard.dto.BoardDetailResponseDto;
 import com.example.jpaboard.dto.BoardListResponseDto;
+import com.example.jpaboard.dto.BoardWriteRequestDto;
 import com.example.jpaboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @RestController
@@ -33,6 +40,16 @@ public class BoardApiController {
                 .build();
     }
 
+    @PostMapping
+    public void saveArticle(@ModelAttribute BoardWriteRequestDto request) {
+        boardService.saveArticle(
+                request.getUserId(),
+                request.getTitle(),
+                request.getContent(),
+                request.getFile()
+        );
+    }
+
     @GetMapping("/{id}")
     public BoardDetailResponseDto getBoardDetail(@PathVariable Long id) {
         Board board = boardService.getBoardDetail(id);
@@ -44,5 +61,18 @@ public class BoardApiController {
                 .userId(board.getUserId())
                 .filePath(board.getFilePath())
                 .build();
+    }
+
+    @GetMapping("/file/download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName) {
+        Resource resource = boardService.downloadFile(fileName);
+        String encoded = URLEncoder.encode(resource.getFilename(), StandardCharsets.UTF_8)
+                .replaceAll("\\+", "%20");
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename*=UTF-8''" + encoded)
+                .body(resource);
     }
 }
