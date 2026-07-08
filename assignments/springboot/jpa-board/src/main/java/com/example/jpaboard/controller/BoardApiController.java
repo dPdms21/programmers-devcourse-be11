@@ -1,13 +1,11 @@
 package com.example.jpaboard.controller;
 
 import com.example.jpaboard.domain.entity.Board;
+import com.example.jpaboard.dto.BoardDetailResponseDto;
 import com.example.jpaboard.dto.BoardListResponseDto;
 import com.example.jpaboard.service.BoardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -32,6 +30,19 @@ public class BoardApiController {
                 .boards(boards)
                 .last(last)
                 .totalPages(totalPages)
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public BoardDetailResponseDto getBoardDetail(@PathVariable Long id) {
+        Board board = boardService.getBoardDetail(id);
+
+        return BoardDetailResponseDto.builder()
+                .title(board.getTitle())
+                .content(board.getContent())
+                .created(board.getCreated())
+                .userId(board.getUserId())
+                .filePath(board.getFilePath())
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.example.jpaboard.service;
 
 import com.example.jpaboard.domain.entity.Board;
 import com.example.jpaboard.domain.repository.BoardRepository;
+import com.example.jpaboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -26,5 +27,11 @@ public class BoardService {
     @Transactional(readOnly = true)
     public int getTotalBoards() {
         return (int) boardRepository.count();
+    }
+
+    @Transactional(readOnly = true)
+    public Board getBoardDetail(Long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(() -> new BoardNotFoundException("게시글을 찾을 수 없음 id=" + id));
     }
 }

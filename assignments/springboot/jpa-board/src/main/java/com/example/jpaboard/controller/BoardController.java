@@ -4,19 +4,30 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class BoardController {
     @GetMapping("/")
     public String boardList(HttpSession session, Model model) {
         setSession(session, model);
+
         return "board-list";
     }
 
     @GetMapping("/write")
     public String write(HttpSession session, Model model) {
         setSession(session, model);
+
         return "/board-write";
+    }
+
+    @GetMapping("/detail")
+    public String boardDetail(@RequestParam Long id, HttpSession session, Model model) {
+        setSession(session, model);
+        model.addAttribute("id", id);
+
+        return "board-detail";
     }
 
     private void setSession(HttpSession session, Model model) {

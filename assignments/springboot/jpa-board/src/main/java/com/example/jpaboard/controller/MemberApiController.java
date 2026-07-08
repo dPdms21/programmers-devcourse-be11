@@ -24,7 +24,7 @@ public class MemberApiController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDto login(@ModelAttribute LoginRequestDto request, HttpSession session) {
+    public LoginResponseDto login(@RequestBody LoginRequestDto request, HttpSession session) {
         return memberService.login(request)
                 .map(
                         member -> {
