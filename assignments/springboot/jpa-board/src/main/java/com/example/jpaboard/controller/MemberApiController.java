@@ -24,17 +24,14 @@ public class MemberApiController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDto login(@RequestBody LoginRequestDto request, HttpSession session) {
+    public LoginResponseDto login(@ModelAttribute LoginRequestDto request, HttpSession session) {
         return memberService.login(request)
-                .map(
-                        member -> {
-                            session.setAttribute(SessionConst.USER_ID, member.getUserId());
-                            session.setAttribute(SessionConst.USER_NAME, member.getUserName());
+                .map(member -> {
+                    session.setAttribute(SessionConst.USER_ID, member.getUserId());
+                    session.setAttribute(SessionConst.USER_NAME, member.getUserName());
 
-                            return LoginResponseDto.success();
-                        }
-                )
-
+                    return LoginResponseDto.success();
+                })
                 .orElseGet(LoginResponseDto::fail);
     }
 }
