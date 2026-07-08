@@ -23,6 +23,8 @@ Spring Boot 학습 과정에서 진행한 HTTP, 세션, 쿠키, 외부 API 호�
 | JPA 게시판 | [jpa-board.md](./jpa-board.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | JPA로 회원 정보를 저장하고 계층 구조와 예외 공통 처리를 적용하여 회원가입 기능을 구현 |
 | JPA 게시판 2 | [jpa-board-2.md](./jpa-board-2.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | JPA로 저장된 회원 정보를 조회하고 Optional로 로그인 성공 여부를 판단한 뒤 세션에 로그인 상태를 저장 |
 | JPA 게시판 3 | [jpa-board-3.md](./jpa-board-3.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | JPA 게시글 목록을 페이지 단위로 조회하고 상세 조회와 없는 글 404 예외 처리를 구현 |
+| JPA 게시판 4 | [jpa-board-4.md](./jpa-board-4.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | 게시글 작성 시 multipart 요청으로 첨부파일을 업로드하고, 저장된 파일을 다운로드하는 기능을 구현 |
+| JPA 게시판 5 | [jpa-board-5.md](./jpa-board-5.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | JPA 변경 감지로 게시글을 수정하고 첨부파일 삭제 순서와 FileService 분리를 적용해 게시글 삭제 기능을 구현 |
 
 ## 학습 흐름
 
