@@ -2,6 +2,7 @@ package com.example.jpaboard.controller;
 
 import com.example.jpaboard.domain.entity.Board;
 import com.example.jpaboard.dto.*;
+import com.example.jpaboard.mapper.BoardMapper;
 import com.example.jpaboard.service.BoardService;
 import com.example.jpaboard.service.FileService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -40,6 +41,7 @@ import java.util.List;
 public class BoardApiController {
     private final BoardService boardService;
     private final FileService fileService;
+    private final BoardMapper boardMapper;
 
     @Operation(
             summary = "게시글 목록 조회",
@@ -47,13 +49,16 @@ public class BoardApiController {
     )
     @GetMapping
     public BoardListResponseDto getBoardList(
-            @Parameter( description = "조회할 페이지 번호 (1부터 시작)", example = "1" )
+            @Parameter(description = "조회할 페이지 번호 (1부터 시작)", example = "1")
             @RequestParam(defaultValue = "1") int page,
-            @Parameter( description = "한 페이지에 담을 게시글 수", example = "10" )
+            @Parameter(description = "한 페이지에 담을 게시글 수", example = "10")
             @RequestParam(defaultValue = "10") int size
     ) {
         // 게시글 목록
-        List<Board> boards = boardService.getBoardList(page, size);
+        List<BoardSummaryResponseDto> boards = boardService.getBoardList(page, size)
+                .stream()
+                .map(boardMapper::toSummaryDto)
+                .toList();
 
         // 전체 게시글 수 가져오기
         int totalBoards = boardService.getTotalBoards();
@@ -76,7 +81,7 @@ public class BoardApiController {
     //        파일 선택 버튼을 안 그려서 UI에서 테스트가 안 됨
     // # 해결 2가지 (둘을 같이 써야 완성):
     //   (1) 여기 @PostMapping에 consumes = MULTIPART_FORM_DATA_VALUE를 "명시"
-    //       -> springdoc이 "아, 이 API는 JSON이 아니라 multipart폼이구나"를 알고 폼 형태로 그림
+    //       -> springdoc이 "아, 이 API는 JSON이 아니라 multipart/form-data구나"를 알고 폼 형태로 그림
     //       -> 덤으로 이 엔드포인트가 multipart 요청만 받도록 더 엄격/정확 (JS는 원래 multipart로 보냄)
     //   (2) DTO의 MultipartFile 필드에 @Schema(type="string", format="binary")를 붙임
     //       -> 그래야 그 칸이 "파일 선택" 버튼으로 렌더링 (BoardWriteRequestDto 참고)
@@ -99,18 +104,12 @@ public class BoardApiController {
     })
     @GetMapping("/{id}")
     public BoardDetailResponseDto getBoardDetail(
-            @Parameter( description = "조회할 게시글 id", example = "1" )
+            @Parameter(description = "조회할 게시글 id", example = "1")
             @PathVariable long id
     ) {
         Board boardDetail = boardService.getBoardDetail(id);
 
-        return BoardDetailResponseDto.builder()
-                .title(boardDetail.getTitle())
-                .content(boardDetail.getContent())
-                .filePath(boardDetail.getFilePath())
-                .created(boardDetail.getCreated())
-                .userId(boardDetail.getUserId())
-                .build();
+        return boardMapper.toDetailDto(boardDetail);
     }
 
     // ResponseEntity는 HTTP 응답의 3가지를 직접 제어하게 해주는 상자
