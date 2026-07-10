@@ -1,5 +1,6 @@
 package com.example.jpaboard.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class MemberJoinRequestDto {
+    @Schema(description = "가입할 아이디", example = "user01")
     private String userId;
+    @Schema(description = "비밀번호", example = "pass1234")
     private String password;
+    @Schema(description = "표시할 사용자 이름", example = "홍길동")
     private String userName;
 }

@@ -1,5 +1,6 @@
 package com.example.jpaboard.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,5 +30,10 @@ public class BoardWriteRequestDto {
     //  isEmpty()             : 파일을 안 골랐거나 빈 파일이면 true
     //  getInputStream()      : 내용을 읽는 스트림
     //  transferTo(dest)      : 실제 디스크 경로로 저장
+
+    // * @Schema: 파일필드는 반드시 @Schema(type = "string", format = "binary")로 알려줘야한다.
+    // - 이게 있어야 Swagger UI 가 이 칸을 "파일 선택" 버튼으로 그린다. (없으면 그냥 텍스트..)
+    // - 컨트롤러의 consumes=multipart/form-data 설정과 짝을 이룬다.
+    @Schema( description = "첨부파일 (선택). 안고르면 비어있음", type = "string", format = "binary")
     private MultipartFile file;
 }

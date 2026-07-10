@@ -48,5 +48,9 @@ spring:
         hibernate:
           format_sql: true # 출력되는 SQL을 보기좋게 출력
 
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
 file:
   upload-dir: ./uploads
