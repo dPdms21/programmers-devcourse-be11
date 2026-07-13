@@ -106,3 +106,46 @@ tbody tr:hover {
     font-size: 1.2em;
     margin: 0 10px;
 }
+
+/* =====================================================================
+   [추가 - QueryDSL] 검색 폼 / 댓글 수 배지 스타일
+   ===================================================================== */
+
+/* 검색 폼 - 입력칸들을 한 줄로 가운데 정렬 */
+#searchForm {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 15px;
+    flex-wrap: wrap; /* 화면이 좁으면 줄바꿈 */
+}
+
+#searchForm input {
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+#searchForm .btn {
+    margin: 0; /* .btn의 기본 좌우 마진 제거 (gap으로 간격을 잡으므로) */
+}
+
+/* 초기화 버튼은 회색으로 구분 */
+.reset-btn {
+    background-color: #6c757d;
+}
+
+.reset-btn:hover:not(:disabled) {
+    background-color: #5a6268;
+}
+
+/* 댓글 수 배지 - 목록에서 댓글이 달린 글이 눈에 띄게 */
+.comment-count {
+    display: inline-block;
+    min-width: 22px;
+    padding: 2px 6px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 10px;
+    font-size: 0.85em;
+}

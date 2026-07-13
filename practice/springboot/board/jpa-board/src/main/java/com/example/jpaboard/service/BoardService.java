@@ -3,9 +3,12 @@ package com.example.jpaboard.service;
 import com.example.jpaboard.domain.entity.Board;
 import com.example.jpaboard.domain.repository.BoardRepository;
 import com.example.jpaboard.dto.BoardDeleteRequestDto;
+import com.example.jpaboard.dto.BoardListItemResponseDto;
+import com.example.jpaboard.dto.BoardSearchRequestDto;
 import com.example.jpaboard.dto.BoardUpdateRequestDto;
 import com.example.jpaboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -84,5 +87,9 @@ public class BoardService {
 
         boardRepository.deleteById(id);
         fileService.deleteFile(dto.getFilePath());
+    }
+
+    public Page<BoardListItemResponseDto> searchBoards(BoardSearchRequestDto dto, Pageable pageable) {
+        return boardRepository.searchBoards(dto, pageable);
     }
 }
