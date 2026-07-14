@@ -107,3 +107,93 @@ h1 {
     cursor: not-allowed; /* 커서를 변경하여 비활성화된 느낌을 줌 */
     color: #666666; /* 텍스트 색상 변경 */
 }
+
+/* =====================================================================
+   댓글 영역 스타일
+   ===================================================================== */
+
+/* 댓글 섹션 전체 - 본문/버튼 영역과 구분선으로 나눔 */
+.comment-section {
+    margin-top: 30px;
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+}
+
+/* 제목 옆 댓글 개수 배지 (목록 화면의 .comment-count와 같은 초록 톤) */
+.comment-total {
+    display: inline-block;
+    min-width: 22px;
+    padding: 2px 8px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 10px;
+    font-size: 0.7em;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* 배지가 비어있으면(댓글 0개 - JS가 빈 문자열을 넣음) 배지 자체를 숨김
+   - :empty = "자식(텍스트 포함)이 하나도 없는" 요소를 고르는 CSS 가상 클래스
+   - 이게 없으면 min-width/padding/배경색 때문에 내용 없는 초록 알약이 어색하게 남음 */
+.comment-total:empty {
+    display: none;
+}
+
+/* 댓글 목록 - 기본 불릿 제거 */
+#commentList {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 15px 0;
+}
+
+/* 댓글 한 개 */
+.comment-item {
+    padding: 10px 5px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 작성자 + 작성일 줄 */
+.comment-meta {
+    font-size: 0.85em;
+    color: #666;
+    margin-bottom: 4px;
+}
+
+.comment-date {
+    margin-left: 8px;
+    color: #999;
+}
+
+/* 댓글 본문 */
+.comment-content {
+    margin: 0;
+    color: #333;
+    line-height: 1.5;
+    white-space: pre-wrap; /* 줄바꿈 입력을 그대로 보여줌 */
+}
+
+/* 댓글 없음 안내 */
+.no-comment {
+    color: #999;
+    text-align: center;
+    padding: 15px 0;
+}
+
+/* 작성 폼 - 입력칸과 버튼을 세로로 쌓고 버튼은 오른쪽 정렬 */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.comment-form textarea {
+    width: 100%;
+    box-sizing: border-box; /* padding 포함 너비 계산 - 컨테이너를 넘치지 않게 */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: vertical; /* 세로 크기만 조절 허용 */
+}

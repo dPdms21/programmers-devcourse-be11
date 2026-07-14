@@ -30,10 +30,11 @@ public class Comment {
     private LocalDateTime created;
 
     // * FetchType.LAZY를 "직접 명시" 해야 하는 이유
-    // fetchType 기본적으로 어노테이션마다 다름
-    // @ManyToOne, @OneToMany -> 기본 EAGER(즉시 로딩) // 그래서 여기에 Lazy 설정을 해둠
+    // FetchType은 어노테이션마다 기본값이 다름
+    // @ManyToOne, @OneToOne -> 기본 EAGER(즉시 로딩)
     // @OneToMany, @ManyToMany -> 기본 LAZY(지연 로딩)
-    // - Eager로 두면 댓글을 꺼낼 때마다 게시글이 "필요 없어도 항상" 같이 조회
+    // - ManyToOne을 EAGER로 두면 댓글을 조회할 때 게시글이 필요 없어도 함께 조회될 수 있음
+    // - 그래서 댓글에서 게시글 방향은 LAZY로 명시
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;

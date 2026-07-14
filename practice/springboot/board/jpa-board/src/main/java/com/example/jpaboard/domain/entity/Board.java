@@ -39,7 +39,7 @@ public class Board {
     // 역방향 연관관계: "한 게시글(One)이 여러 댓글(Many)을 가짐" (1:N)
     // * mappedBy = "board"
     // - 이 관계의 "주인"은 Comment.board(FK를 가진 쪽)이고, 여기 Board.comments는 "읽기용"이
-    // - mappedBy는 "주인이 누군인지"를 알려준다. -> "Comment의 board필드가 이 관계의 주인이다"라는 뜻
+    // - mappedBy는 "주인이 누군인지"를 알려줌. -> "Comment의 board 필드가 이 관계의 주인이다"라는 뜻
     // * 이 필드를 왜 두나? -> fetch join
     // - 이게 있어야 "게시글 하나 + 그 댓글들"을 한 번의 fetch join으로 가져오는 쿼리를 만들 수 있음
     // - 반대로 이게 없으면 board.getComments()로 댓글을 순회할 수 없음
@@ -47,7 +47,7 @@ public class Board {
     private List<Comment> comments = new ArrayList<>();
 
     // * 게시글 수정
-    // 왜 setter대신 이런 메서드를 두나? + JPA 변경 감지
+    // 왜 setter 대신 이런 메서드를 두나? + JPA 변경 감지
     // 이 엔티티는 @Getter만 있고 @Setter는 없음 (아무데서나 필드를 바꾸지 못하게 막는 것)
     // - setter를 열어두면 값이 언제 어디서 바뀌는지 추적이 어려워짐
     // - 대신 "게시글을 수정한다"라는 의도가 드러나는 메서드 하나로 변경 지점을 모음 (도메인 주도 스타일)

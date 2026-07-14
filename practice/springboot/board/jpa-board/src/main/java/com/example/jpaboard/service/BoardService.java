@@ -92,4 +92,11 @@ public class BoardService {
     public Page<BoardListItemResponseDto> searchBoards(BoardSearchRequestDto dto, Pageable pageable) {
         return boardRepository.searchBoards(dto, pageable);
     }
+
+    public Board getBoardWithComments(Long id) {
+        return boardRepository.findWithComments(id)
+                .orElseThrow(
+                        () -> new BoardNotFoundException("게시글을 찾을 수 없음 id = " + id)
+                );
+    }
 }

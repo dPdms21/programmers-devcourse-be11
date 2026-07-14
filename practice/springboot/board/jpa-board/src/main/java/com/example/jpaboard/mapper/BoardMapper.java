@@ -1,9 +1,13 @@
 package com.example.jpaboard.mapper;
 
 import com.example.jpaboard.domain.entity.Board;
-import com.example.jpaboard.dto.BoardDetailResponseDto;
+import com.example.jpaboard.domain.entity.Comment;
 import com.example.jpaboard.dto.BoardSummaryResponseDto;
+import com.example.jpaboard.dto.BoardWithCommentsResponseDto;
+import com.example.jpaboard.dto.CommentResponseDto;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class BoardMapper {
@@ -17,13 +21,27 @@ public class BoardMapper {
                 .build();
     }
 
-    public BoardDetailResponseDto toDetailDto(Board board) {
-        return BoardDetailResponseDto.builder()
+    public BoardWithCommentsResponseDto toBoardWithCommentsResponseDto(Board board) {
+        List<CommentResponseDto> comments = board.getComments().stream()
+                .map(this::toCommentDto)
+                .toList();
+
+        return BoardWithCommentsResponseDto.builder()
                 .title(board.getTitle())
                 .content(board.getContent())
-                .filePath(board.getFilePath())
-                .created(board.getCreated())
                 .userId(board.getUserId())
+                .created(board.getCreated())
+                .filePath(board.getFilePath())
+                .comments(comments)
+                .build();
+    }
+
+    public CommentResponseDto toCommentDto(Comment comment) {
+        return CommentResponseDto.builder()
+                .id(comment.getId())
+                .userId(comment.getUserId())
+                .content(comment.getContent())
+                .created(comment.getCreated())
                 .build();
     }
 }

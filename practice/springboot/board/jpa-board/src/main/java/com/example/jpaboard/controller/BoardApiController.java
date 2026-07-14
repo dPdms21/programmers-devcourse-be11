@@ -35,7 +35,7 @@ import java.util.List;
 
 // * 뷰 컨트롤러(@Controller + 뷰 이름 반환)는 이 설정과 무관하게 원래 문서에 안 나옴
 // - springdoc은 @ResponseBody(= @RestController) 핸들러만 문서화 대상으로 삼기 때문
-// -(BoardController/MemberController는 "board-list" 같은 뷰 이름을 반환하므로 애초에 제외)
+// - BoardController/MemberController는 "board-list" 같은 뷰 이름을 반환하므로 애초에 제외
 
 @Tag(name = "게시글 API", description = "게시글 목록/상세 조회, 작성, 수정, 삭제, 첨부파일 다운로드")
 @RestController
@@ -98,7 +98,8 @@ public class BoardApiController {
     // @ApiResponses = "이 API가 낼 수 있는 응답들"을 상태코드별로 문서에 나열
     // - 성공(200)만이 아니라 실패(404)도 미리 적어두면, 이 API를 쓰는 사람이 어떤 상황을 대비해야 하는지 한눈에 앎
     // - 404의 응답 본문 형태(schema)를 ErrorResponseDto로 지정하면, 실패 시 무엇이 오는지까지 문서에 드러남
-    @Operation(summary = "게시글 상세 조회", description = "id로 게시글 한 건의 상세 내용을 조회한다.")
+    @Operation(summary = "게시글 상세 조회",
+            description = "id로 게시글 한 건과 댓글 목록을 함께 조회한다.")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "게시글 상세 조회 성공"),
             @ApiResponse(responseCode = "404", description = "게시글 상세 조회 실패 - 없음",
@@ -106,13 +107,13 @@ public class BoardApiController {
             )
     })
     @GetMapping("/{id}")
-    public BoardDetailResponseDto getBoardDetail(
+    public BoardWithCommentsResponseDto getBoardDetail(
             @Parameter(description = "조회할 게시글 id", example = "1")
             @PathVariable long id
     ) {
-        Board boardDetail = boardService.getBoardDetail(id);
+        Board board = boardService.getBoardWithComments(id);
 
-        return boardMapper.toDetailDto(boardDetail);
+        return boardMapper.toBoardWithCommentsResponseDto(board);
     }
 
     // ResponseEntity는 HTTP 응답의 3가지를 직접 제어하게 해주는 상자

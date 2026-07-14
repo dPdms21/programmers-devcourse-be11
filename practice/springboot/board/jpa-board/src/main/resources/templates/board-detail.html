@@ -13,7 +13,7 @@
     <input id="hiddenId" type="hidden" th:value="${id}">
     <input id="hiddenUserId" type="hidden" th:value="${userId}">
     <input id="hiddenUserName" type="hidden" th:value="${userName}">
-    <input id="hiddenFilePath" type="hidden" th:value="${filePath}">
+    <input id="hiddenFilePath" type="hidden">
 
     <div class="article-header">
         <h1 id="title">게시글 제목</h1>
@@ -39,6 +39,25 @@
         <button class="btn" th:onclick="|location.href='@{/}'|">목록으로 돌아가기</button>
         <button id="editBtn" onclick="editArticle()" class="btn edit-btn">수정</button>
         <button id="deleteBtn" onclick="deleteArticle()" class="btn delete-btn">삭제</button>
+    </div>
+
+    <!-- =====================================================================
+         댓글 영역
+         - 목록: GET /api/boards/{id}/with-comments (fetch join) 응답의 comments를 그림
+         - 작성: POST /api/boards/{id}/comments로 저장 후 목록을 다시 그림
+         - 작성자는 로그인 세션의 아이디(hiddenUserId)를 그대로 씀 (별도 입력 없음)
+         ===================================================================== -->
+    <div class="comment-section">
+        <h3>댓글 <span id="commentCount" class="comment-total"></span></h3>
+
+        <!-- 댓글 목록 - boardDetail.js 의 renderComments() 가 동적으로 채운다 -->
+        <ul id="commentList"></ul>
+
+        <!-- 댓글 작성 폼 -->
+        <div class="comment-form">
+            <textarea id="commentContent" rows="3" placeholder="댓글을 입력하세요"></textarea>
+            <button id="commentSubmitBtn" class="btn" type="button" onclick="submitComment()">댓글 등록</button>
+        </div>
     </div>
 </div>
 </body>
