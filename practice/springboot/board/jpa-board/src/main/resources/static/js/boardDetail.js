@@ -37,7 +37,6 @@ let checkSession = () => {
 }
 
 let loadBoardDetail = () => {
-
     let hId = $('#hiddenId').val();
     let hUserId = $('#hiddenUserId').val();
 
@@ -83,12 +82,13 @@ let loadBoardDetail = () => {
     });
 }
 
-// 댓글 목록을 그림 - /with-comments 응답의 comments 배열을 받음
+// 댓글 목록을 그림 - /api/boards/{id} 응답의 comments 배열을 받음
 let renderComments = (comments) => {
     const $list = $('#commentList');
-    $list.empty(); // 재호출 시 중복 방지
+    const hUserId = $('#hiddenUserId').val();
 
-    // 댓글 개수 표시 (없으면 숫자 대신 비움)
+    $list.empty();
+
     $('#commentCount').text(comments && comments.length > 0 ? comments.length : '');
 
     if (comments == null || comments.length <= 0) {
@@ -97,15 +97,26 @@ let renderComments = (comments) => {
     }
 
     comments.forEach((c) => {
-        // 한 댓글 = 작성자 + 작성일(위) / 내용(아래)
+        let actions = '';
+
+        if (hUserId === c.userId) {
+            actions = `
+                <div class="comment-actions" id="comment-actions-${c.id}">
+                    <button class="comment-btn comment-edit-btn" onclick="showCommentEditForm(${c.id})">수정</button>
+                    <button class="comment-btn comment-delete-btn" onclick="deleteComment(${c.id})">삭제</button>
+                </div>
+            `;
+        }
+
         $list.append(
             `
-            <li class="comment-item">
+            <li class="comment-item" id="comment-${c.id}">
                 <div class="comment-meta">
                     <strong>${c.userId}</strong>
                     <span class="comment-date">${c.created}</span>
                 </div>
-                <p class="comment-content">${c.content}</p>
+                <p class="comment-content" id="comment-content-${c.id}">${c.content}</p>
+                ${actions}
             </li>
             `
         );
@@ -138,6 +149,73 @@ let submitComment = () => {
         error: (error) => {
             console.error('오류 발생:', error);
             alert('댓글 등록 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+// 댓글 수정
+let updateComment = (commentId) => {
+    let hId = $('#hiddenId').val();
+    let hUserId = $('#hiddenUserId').val();
+    let content = $('#comment-edit-' + commentId).val();
+
+    if (content == null || content.trim() === '') {
+        alert('댓글 내용을 입력해주세요.');
+        return;
+    }
+
+    $.ajax({
+        type: 'PUT',
+        url: '/api/boards/' + hId + '/comments/' + commentId,
+        contentType: 'application/json',
+        data: JSON.stringify({ userId: hUserId, content: content }),
+        success: () => {
+            loadBoardDetail();
+        },
+        error: (error) => {
+            console.error('오류 발생:', error);
+            alert('댓글 수정 중 오류가 발생했습니다.');
+        }
+    });
+}
+
+let showCommentEditForm = (commentId) => {
+    let currentContent = $('#comment-content-' + commentId).text();
+
+    $('#comment-content-' + commentId).replaceWith(
+        `
+        <textarea class="comment-edit-textarea" id="comment-edit-${commentId}" rows="3">${currentContent}</textarea>
+        `
+    );
+
+    $('#comment-actions-' + commentId).html(
+        `
+        <button class="comment-btn comment-edit-btn" onclick="updateComment(${commentId})">저장</button>
+        <button class="comment-btn comment-cancel-btn" onclick="loadBoardDetail()">취소</button>
+        `
+    );
+}
+
+// 댓글 삭제
+let deleteComment = (commentId) => {
+    let hId = $('#hiddenId').val();
+    let hUserId = $('#hiddenUserId').val();
+
+    if (!confirm('댓글을 삭제하시겠습니까?')) {
+        return;
+    }
+
+    $.ajax({
+        type: 'DELETE',
+        url: '/api/boards/' + hId + '/comments/' + commentId,
+        contentType: 'application/json',
+        data: JSON.stringify({ userId: hUserId }),
+        success: () => {
+            loadBoardDetail();
+        },
+        error: (error) => {
+            console.error('오류 발생:', error);
+            alert('댓글 삭제 중 오류가 발생했습니다.');
         }
     });
 }

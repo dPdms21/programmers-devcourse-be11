@@ -77,15 +77,6 @@ h1 {
     color: #666666; /* 텍스트 색상 변경 */
 }
 
-
-
-/* 버튼이 비활성화된 경우 스타일 */
-#editBtn:disabled {
-    background-color: #cccccc; /* 비활성화 상태의 색 */
-    cursor: not-allowed; /* 커서를 변경하여 비활성화된 느낌을 줌 */
-    color: #666666; /* 텍스트 색상 변경 */
-}
-
 #deleteBtn {
     background-color: #f44336; /* 빨간색 배경 */
     color: white;
@@ -196,4 +187,59 @@ h1 {
     font-family: inherit;
     font-size: 1em;
     resize: vertical; /* 세로 크기만 조절 허용 */
+}
+
+/* 댓글 수정/삭제 버튼 영역 */
+.comment-actions {
+    margin-top: 6px;
+    text-align: right;
+}
+
+/* 댓글 버튼 공통 - 게시글 버튼보다 작게 */
+.comment-btn {
+    color: white;
+    padding: 5px 9px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 0.8em;
+}
+
+/* 댓글 수정 버튼 - 게시글 수정 버튼과 같은 색 */
+.comment-edit-btn {
+    background-color: #008CBA;
+}
+
+.comment-edit-btn:hover {
+    background-color: #007bb5;
+}
+
+.comment-edit-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 1em;
+    resize: vertical;
+    margin-top: 5px;
+}
+
+.comment-cancel-btn {
+    background-color: #999;
+}
+
+.comment-cancel-btn:hover {
+    background-color: #777;
+}
+
+/* 댓글 삭제 버튼 - 게시글 삭제 버튼과 같은 색 */
+.comment-delete-btn {
+    background-color: #f44336;
+}
+
+.comment-delete-btn:hover {
+    background-color: #e53935;
 }
