@@ -23,3 +23,4 @@
 | Date                          | Summary                                                  |
 |-------------------------------|----------------------------------------------------------|
 | [2026-07-13](./2026-07-13.md) | Spring Boot JPA 게시판 Querydsl 검색 · 댓글 수 조회 실습 / PBL Mission 07 TODO API 구현 / Repoary GitHub OAuth 로그인 · JWT 인증 구현 |
+| [2026-07-14](./2026-07-14.md) | Spring Boot JPA 게시판 댓글 작성 · 조회 · 수정 삭제 실습 / PBL Mission 08 · 09 구현 / Repoary GitHub 저장소 조회 · 연결 기능 구현과 배포 환경 설정 |
