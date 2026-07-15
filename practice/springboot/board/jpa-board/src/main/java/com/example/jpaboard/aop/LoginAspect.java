@@ -1,6 +1,7 @@
 package com.example.jpaboard.aop;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -17,6 +18,16 @@ import java.util.Arrays;
 // - "AOP 규칙을 담고 있다"는 표시일 뿐, 스프링이 관리하는 빈으로 등록해주지 않음
 // - 스프링 컨테이너에 빈으로 등록해야, 스프링이 이 Aspect를 찾아서 실제로 적용
 @Aspect
+@Slf4j
+// * System.out.println -> @Slf4j 로거로 교체한 이유
+// (1) 레벨이 없음: 전부 같은 급이라, 운영에서 "디버그성 출력만 끄기" 같은 제어가 불가능
+// (2) 맥락이 없음: 시간/스레드/클래스 이름이 자동으로 안 붙음 (문제 추적이 힘듦)
+// (3) 목적지가 고정: 콘솔에만 나감. 파일 저장, 날짜별 분할(롤링) 같은 걸 못 함
+// (4) 성능에 불리: 동기 출력이라 요청이 몰리면 병목이 될 수 있음
+// # log.info(...)로 바꾸면 위 네 가지가 전부 해결 - 출력 형태를 보면 차이가 바로 보임:
+//   System.out: [요청 시작] GET /api/boards -> ...
+//   log.info: 2026-07-14T10:00:00.123+09:00  INFO 12345 --- [nio-8080-exec-1] c.e.s.b.aop.LoggingAspect: [요청 시작] ...
+//               └ 시간 ──────────────────────┘ └레벨┘ └PID┘  └── 스레드 ──────┘ └── 어느 클래스가 찍었나 ┘
 @Component
 public class LoginAspect {
     // * Pointcut: "어디에" 적용할지 정의
@@ -59,9 +70,9 @@ public class LoginAspect {
         }
 
         // === 대상 메서드 실행 "전" 로깅 ===
-        System.out.println("[요청 시작] " + httpInfo + " -> " + method);
+        log.info("[요청 시작] {} -> {} ", httpInfo, method);
 
-        System.out.println("[파라미터] " + Arrays.toString(joinPoint.getArgs()));
+        log.info("[파라미터] {}", Arrays.toString(joinPoint.getArgs()) );
 
         long start = System.currentTimeMillis();
 
@@ -71,14 +82,14 @@ public class LoginAspect {
 
             // === 대상 메서드가 "정상 종료"된 후 로깅 ===
             long end = System.currentTimeMillis() - start; // 걸린 시간
-            System.out.println("[요청 완료] " + method + " : " + end + "ms");
+            log.info("[요청 완료] {} : {} ms", method, end);
 
             return result;
         }
         catch (Throwable e) {
             // === 대상 메서드가 "예외를 던졌을 때" 로깅 ===
             long end = System.currentTimeMillis() - start; // 걸린 시간
-            System.out.println("[요청 실패] " + method + " : " + end + "ms" + " : 예외 메시지 " + e.getMessage());
+            log.warn("[요청 실패] {} : {} ms : 예외메시지 {}", method, end, e.getMessage());
 
             // 잡은 예외를 다시 던짐
             // - 여기서 예외를 삼켜버리면 컨트롤러는 정상 처리된 것처럼 보여 버그가 됨

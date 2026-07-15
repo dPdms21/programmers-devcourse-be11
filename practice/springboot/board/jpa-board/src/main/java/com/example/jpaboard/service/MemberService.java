@@ -7,11 +7,37 @@ import com.example.jpaboard.dto.MemberJoinRequestDto;
 import com.example.jpaboard.exception.DuplicateUserIdException;
 import com.example.jpaboard.mapper.MemberMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+// * @Slf4j로 서비스 레벨 로깅하기 (lombok)
+// lombok을 안쓰면 ...
+// private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(MemberService.class);
+
+// 로그 레벨 5단계 - "이 메시지가 얼마나 중요한가"의 등급
+// trace < debug < info < warn < error
+// - trace/debug: 개발 중 흐름 추적용 (운영 기본 설정에선 안 찍힘)
+// - info: 의미 있는 비즈니스 이벤트(가입 완료, 글 등록 등 "정상인데 기록할 가치가 있는 일")
+// - warn: 이상하지만 서비스는 계속되는 상황(로그인 실패, 중복 가입 시도 등)
+// - error: 예상 못한 실패 (500 계열)
+
+// {} 플레이스홀더 - "문자열 + 값" 대신 반드시 이걸 씀
+// log.debug("가입 요청: " + dto.getUserId()); // (X) - 레벨이 꺼져 있어도 문자열 연결 비용은 발생
+// log.debug("가입 요청: userId={}", dto.getUserId()); // (O) - 실제로 찍힐 때만 조립 (지연 평가)
+
+// 민감한 정보는 로그에 남기지 않음
+// - 객체를 통째로 찍으면 그 안의 값들이 그대로 로그에 남음
+// - 로그 파일은 오래 보관되고 여러 사람이 보므로, 비밀번호/토큰/주민번호 등은 제외해야 함
+
+// AOP와의 역할 분담
+// - AOP: "무엇이 호출됐고 몇 ms 걸렸나" (기계적/공통 - 모든 요청에 일괄)
+// - 서비스 로그: "비즈니스에 무슨 일이 있었나" (선별적/의미 - 분기점, 상태 변화, 실패 지점만)
+// -> 그래서 서비스에서는 "메서드 시작/끝" 로그를 찍지 않음
+
+@Slf4j
 @Service
 // 이 클래스의 모든 메서드에 기본 적용됨
 // - readOnly = true의 효과
@@ -28,11 +54,14 @@ public class MemberService {
     public void join(MemberJoinRequestDto dto) {
         // 아이디 중복 체크
         if (memberRepository.existsByUserId(dto.getUserId())) {
+            // 실패지만 "예상 범위 안의" 실패
+            log.warn("회원가입 실패(아이디 중복): userId={}", dto.getUserId());
             // 예외 공통화
             throw new DuplicateUserIdException("[회원가입] 이미 존재하는 아이디");
         }
 
         memberRepository.save(memberMapper.toEntity(dto));
+        log.info("회원가입 완료: userId={}, userName={}", dto.getUserId(), dto.getUserName());
     }
 
     // * Optional<Member>: NPE(NullPointerException) 예방
@@ -90,7 +119,15 @@ public class MemberService {
         //  return Optional.empty();          // 실패: 빈 Optional 반환
         //
         //  => 위 if 분기(널 체크 + 비밀번호 비교)를 .filter(람다) 한 줄로 압축한 것이 아래 코드
-        return memberRepository.findByUserId(dto.getUsername())
+        Optional<Member> result = memberRepository.findByUserId(dto.getUsername())
                 .filter(member -> member.getPassword().equals(dto.getPassword()));
+
+        if (result.isEmpty()) {
+            log.warn("로그인 실패: username={}", dto.getUsername());
+        } else {
+            log.info("로그인 성공: username={}", dto.getUsername());
+        }
+
+        return result;
     }
 }

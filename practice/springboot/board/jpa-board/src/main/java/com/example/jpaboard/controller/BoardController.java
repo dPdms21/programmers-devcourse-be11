@@ -47,6 +47,12 @@ public class BoardController {
         return "/board-update";
     }
 
+    @GetMapping("/stats")
+    public String stats(HttpSession session, Model model) {
+        setSession(session, model);
+        return "/board-stats";
+    }
+
     private void setSession(HttpSession session, Model model) {
         String userId = (String) session.getAttribute("userId");
         String userName = (String) session.getAttribute("userName");

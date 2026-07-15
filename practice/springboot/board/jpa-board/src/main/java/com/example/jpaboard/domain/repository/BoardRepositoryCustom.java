@@ -1,11 +1,13 @@
 package com.example.jpaboard.domain.repository;
 
 import com.example.jpaboard.domain.entity.Board;
+import com.example.jpaboard.dto.BoardAuthorStatsResponseDto;
 import com.example.jpaboard.dto.BoardListItemResponseDto;
 import com.example.jpaboard.dto.BoardSearchRequestDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
 import java.util.Optional;
 
 // * "직접 짠 쿼리(QueryDSL)"를 위한 커스텀 레포지토리 인터페이스
@@ -20,4 +22,5 @@ import java.util.Optional;
 public interface BoardRepositoryCustom {
     Page<BoardListItemResponseDto> searchBoards(BoardSearchRequestDto condition, Pageable pageable);
     Optional<Board> findWithComments(Long id);
+    List<BoardAuthorStatsResponseDto> countBoardsByAuthor(long minCount);
 }

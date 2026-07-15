@@ -2,10 +2,7 @@ package com.example.jpaboard.service;
 
 import com.example.jpaboard.domain.entity.Board;
 import com.example.jpaboard.domain.repository.BoardRepository;
-import com.example.jpaboard.dto.BoardDeleteRequestDto;
-import com.example.jpaboard.dto.BoardListItemResponseDto;
-import com.example.jpaboard.dto.BoardSearchRequestDto;
-import com.example.jpaboard.dto.BoardUpdateRequestDto;
+import com.example.jpaboard.dto.*;
 import com.example.jpaboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -98,5 +95,9 @@ public class BoardService {
                 .orElseThrow(
                         () -> new BoardNotFoundException("게시글을 찾을 수 없음 id = " + id)
                 );
+    }
+
+    public List<BoardAuthorStatsResponseDto> getAuthorStats(long minCount) {
+        return boardRepository.countBoardsByAuthor(minCount);
     }
 }

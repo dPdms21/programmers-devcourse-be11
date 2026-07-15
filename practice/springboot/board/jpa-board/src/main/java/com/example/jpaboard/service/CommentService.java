@@ -9,11 +9,13 @@ import com.example.jpaboard.dto.CommentUpdateRequestDto;
 import com.example.jpaboard.dto.CommentWriteRequestDto;
 import com.example.jpaboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -34,6 +36,7 @@ public class CommentService {
                 .build();
 
         commentRepository.save(comment);
+        log.info("댓글 등록: commentId = {}, boardId = {}, userId = {}", comment.getId(), boardId, dto.getUserId());
     }
 
     @Transactional
