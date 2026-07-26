@@ -8,6 +8,15 @@
 
 ---
 
+## Projects
+
+| 구분 | 프로젝트 | 기간 | 역할 | 설명 |
+| --- | --- | --- | --- | --- |
+| 개인 프로젝트 | [Repoary](https://github.com/prgrms-be-devcourse/NBE11-13-myproject-parkyeeun) | 2026.07 ~ 진행 중 | Backend 중심 Full Stack | GitHub 커밋과 변경 파일을 분석해 TIL 초안과 월별 README 생성을 지원하는 학습 기록 서비스 |
+| 1차 팀 프로젝트 | [Compose Bean](https://github.com/prgrms-be-devcourse/NBE11-13-1-Team01) | 2026.07.16 ~ 2026.07.24 | 팀장 / Backend | 비회원 커피 주문 서비스에서 상품 도메인·이미지 관리·소프트 딜리트, 공통 예외 처리, Slack 주문 알림, 기능 통합·테스트 및 프로젝트 문서화를 담당 |
+
+---
+
 ## Directory Guide
 
 | Path                          | Description                      |
