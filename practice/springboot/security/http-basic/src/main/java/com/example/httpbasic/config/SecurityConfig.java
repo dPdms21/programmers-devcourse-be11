@@ -23,7 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 // - 요청 -> DelegatingFilterProxy -> FilterChainProxy -> [보안 필터 체인] -> DispatcherServlet -> Controller
 
 // * DelegatingFilterProxy: "서블릿 컨테이너(톰캣)의 세계와 스프링의 세계를 이어주는 다리 역할을 하는 필터"
-// - Delegating(위임) +  Filter + Proxy(대리인): 실제 일은 다른 녀석에게 위임하는 껍데기 필터
+// - Delegating(위임) + Filter + Proxy(대리인): 실제 일은 다른 녀석에게 위임하는 껍데기 필터
 // 왜 이런 게 필요한가
 // 핵심은 톰캣과 스프링이 서로 다른 세계라는 점
 
@@ -99,8 +99,10 @@ public class SecurityConfig {
                 // BasicAuthenticationFilter가 필터 체인에 등록이 됨
                 // 즉 "이제부터 Authorization: Basic 헤더를 읽어서 인증을 처리하겠다"는 선언
                 // Customizer.withDefaults(): 아무것도 커스터마이징하지 않고 기본값을 씀
-                .httpBasic( Customizer.withDefaults() )
-                .authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated() );
+                .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(authorize ->
+                        authorize.anyRequest().authenticated()
+                );
 
         return http.build();
     }
