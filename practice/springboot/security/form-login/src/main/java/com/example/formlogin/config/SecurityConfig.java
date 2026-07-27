@@ -17,7 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 // * 전체 동작 흐름
 // 로그인부터 그 이후 흐름까지의 과정
 // 1. 보호된 자원 접근 -> 로그인 페이지로 리다이렉트
-// 인증 안 된 사용자가 보호된 페이지에 접근하면, 로그인 페이지로(/login)로 리다이렉트됨
+// 인증되지 않은 사용자가 보호된 페이지에 접근하면 로그인 페이지(/login)로 리다이렉트됨
 // 이 처리는 AuthenticationEntryPoint(폼 로그인용 구현체 LoginUrlAuthenticationEntryPoint)가 담당
 // 2. 사용자가 폼에 입력하고 제출
 // 3. UsernamePasswordAuthenticationFilter가 가로챔
@@ -41,7 +41,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests( auth -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/join",
                                 "/api/users/join",

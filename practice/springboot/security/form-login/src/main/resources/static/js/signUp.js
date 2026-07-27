@@ -1,7 +1,5 @@
 $(document).ready(() => {
-
     $('#signup').click(() => {
-
         let userId = $('#user_id').val();
         let password = $('#password').val();
         let userName = $('#user_name').val();
@@ -11,7 +9,6 @@ $(document).ready(() => {
             password : password,
             userName : userName
         }
-
 
         $.ajax({
             type: 'POST',
@@ -31,9 +28,5 @@ $(document).ready(() => {
                 alert('회원가입 중 오류가 발생했습니다.');
             }
         });
-
     });
-
-
-
 });
