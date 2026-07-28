@@ -1,0 +1,13 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/signIn.js}"></script>
+</head>
+<body>
+<h2>로그인</h2>
+<input type="text" id="user_id" placeholder="아이디를 입력하세요" required>
+<input type="password" id="password" placeholder="비밀번호를 입력하세요" required>
+<input id="signin" type="submit" value="로그인">
+<a href="/users/join">회원가입</a>
+</body>
+</html>
