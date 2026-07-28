@@ -1,6 +1,6 @@
 # Spring Boot 과제 정리
 
-Spring Boot 학습 과정에서 진행한 HTTP, 세션, 쿠키, 외부 API 호출, JPA 기반 웹 애플리케이션 과제 모음이다.
+Spring Boot 학습 과정에서 진행한 HTTP, 세션, 쿠키, 외부 API 호출, JPA, Spring Security 기반 웹 애플리케이션 과제 모음이다.
 
 각 과제는 문서와 실제 Java 구현 코드를 함께 확인할 수 있도록 정리한다.
 
@@ -27,8 +27,16 @@ Spring Boot 학습 과정에서 진행한 HTTP, 세션, 쿠키, 외부 API 호�
 | JPA 게시판 5 | [jpa-board-5.md](./jpa-board-5.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | JPA 변경 감지로 게시글을 수정하고 첨부파일 삭제 순서와 FileService 분리를 적용해 게시글 삭제 기능을 구현 |
 | JPA 게시판 6 | [jpa-board-6.md](./jpa-board-6.md) | [🔗 jpa-board/](../../../assignments/springboot/jpa-board/src/main) | AOP로 컨트롤러 요청 로깅을 적용하고 서비스, 리포지토리, 컨트롤러 계층 테스트를 작성해 게시판 기능을 검증 |
 
+## Spring Security
+
+| 과제 | 문서 | 코드 | 설명 |
+| --- | --- | --- | --- |
+| HTTP Basic 인증 | [http-basic.md](./http-basic.md) | [🔗 http-basic/](../../../assignments/springboot/http-basic/src/main) | Spring Security 필터 체인에 HTTP Basic 인증을 적용하고 인메모리 사용자 인증과 브라우저 자격 증명 캐싱을 확인 |
+| Form Login 인증 | [form-login.md](./form-login.md) | [🔗 form-login/](../../../assignments/springboot/form-login/src/main) | DB 회원 정보를 BCrypt로 암호화하고 Spring Security 필터와 세션을 이용해 회원가입, 로그인과 로그아웃을 구현 |
+
 ## 학습 흐름
 
 1. 세션과 쿠키에서는 로그인 상태와 사용자 설정의 저장 위치를 구분하고, 세션 기반 접근 제어와 쿠키 기반 상태 유지를 구현한다.
 2. 외부 API 호출에서는 OpenFeign으로 외부 API를 선언형으로 호출하고, 쿼리 파라미터와 서비스키를 전달하며 중첩 JSON 응답을 DTO로 매핑한다.
 3. JPA에서는 계층 구조를 분리해 회원과 게시판 도메인을 구현하고, 데이터 저장·조회·예외 처리와 AOP 로깅, 계층별 테스트를 적용해 JPA 기반 웹 애플리케이션 흐름을 정리한다.
+4. Spring Security에서는 HTTP Basic과 Form Login을 적용하고, 필터 기반 인증과 사용자 조회, 비밀번호 검증, 세션 기반 로그인 유지 및 로그아웃 흐름을 정리한다.
