@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: token
+
+  config:
+    import: optional:file:.env[.properties]
+
+  datasource:
+    url: ${DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+# openssl rand -base64 64 | tr -d '\n'
+jwt:
+  issuer: ${JWT_ISSUER}
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-validity: 2h
+  refresh-token-validity: 7d
