@@ -33,6 +33,7 @@ Spring Boot 학습 과정에서 진행한 HTTP, 세션, 쿠키, 외부 API 호�
 | --- | --- | --- | --- |
 | HTTP Basic 인증 | [http-basic.md](./http-basic.md) | [🔗 http-basic/](../../../assignments/springboot/http-basic/src/main) | Spring Security 필터 체인에 HTTP Basic 인증을 적용하고 인메모리 사용자 인증과 브라우저 자격 증명 캐싱을 확인 |
 | Form Login 인증 | [form-login.md](./form-login.md) | [🔗 form-login/](../../../assignments/springboot/form-login/src/main) | DB 회원 정보를 BCrypt로 암호화하고 Spring Security 필터와 세션을 이용해 회원가입, 로그인과 로그아웃을 구현 |
+| JWT 토큰 인증 | [token.md](./token.md) | [🔗 token/](../../../assignments/springboot/token/src/main) | JWT Access·Refresh Token을 발급하고 Bearer 인증 필터와 역할 기반 인가, 토큰 재발급 흐름을 구현 |
 
 ## 학습 흐름
 
