@@ -1,16 +1,26 @@
 package com.example.token.config;
 
 import com.example.token.config.filter.TokenAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.io.IOException;
 
 // * JWT(JSON Web Token)
 // JWT는 당사자 간에 정보를 JSON 객체로 안전하게 전달하기 위한 토큰 표준
@@ -59,6 +69,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
@@ -91,17 +102,31 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
+                                "/users/login",
                                 "/users/join",
+                                "/", // 페이지(HTML)는 공개, 데이터는 보호 - 브라우저 페이지 이동은 Bearer 헤더를 못 실으므로 페이지 인가는 API가 담당
+                                "/admin",
+                                "/api/users/login",
                                 "/api/users/join",
+                                "/api/tokens/refresh",
                                 "/css/**",
-                                "/js/**"
+                                "/js/**",
+                                "/access-denied",
+                                "/error" // 404 등 에러 포워딩 경로. 막으면 인증 리다이렉트 생김
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 // JWT 필터를 UsernamePasswordAuthenticationFilter (폼 로그인 필터) 자리 앞에 끼워 넣음
                 // 인가 판단은 체인 맨 끝에서 일어나므로,
                 // 그 전에 토큰을 검증해 SecurityContext를 채워둬야 "인증된 요청"으로 취급
-                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                // 인가 실패의 두 갈래:
+                // - 401 (미인증): 누군지 모름 -> authenticationEntryPoint
+                // - 403 (권한 부족): 누군지는 알지만 자격 없음 -> accessDeniedHandler
+                .exceptionHandling(exception -> exception
+                        .accessDeniedHandler(accessDeniedHandler())
+                        .authenticationEntryPoint(authenticationEntryPoint())
+                );
 
         return http.build();
     }
@@ -109,5 +134,51 @@ public class SecurityConfig {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    // 아이디/비밀번호 검증의 진입점
+    // form-login에서는 필터가 내부적으로 호출했지만,
+    // 토큰 방식에서는 UserSerivce.login()이 직접 호출
+    // authentication() -> DaoAuthenticationProvider -> UserDetailService.loadUserByUsername() -> 비밀번호 대조
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public RoleHierarchy roleHierarchy() {
+        return RoleHierarchyImpl.withDefaultRolePrefix() // "ROLE_" 접두사 자동 부착
+                .role("ADMIN").implies("USER")
+                .build();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return ((request, response, accessDeniedException) -> {
+            if (request.getRequestURI().startsWith("/api")) {
+                sendError(response, HttpServletResponse.SC_FORBIDDEN, "접근 권한이 없습니다.");
+            } else {
+                response.sendRedirect("/access-denied");
+            }
+        });
+    }
+
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return ((request, response, authException) -> {
+            if (request.getRequestURI().startsWith("/api")) {
+                sendError(response, HttpServletResponse.SC_UNAUTHORIZED, "인증이 필요합니다.");
+            } else {
+                response.sendRedirect("/access-denied");
+            }
+        });
+    }
+
+    private void sendError(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json;charset=UTF-8");
+        response.getWriter().write("status code : " + status + ", message : " + message);
     }
 }
