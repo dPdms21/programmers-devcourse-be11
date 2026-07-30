@@ -46,3 +46,4 @@
 | [2026-07-27](./2026-07-27.md) | Spring Security HTTP Basic 인증 · 회원가입과 보안 접근 설정 실습 / 취업역량 강화 특강 · 프로젝트 경험 정리와 취업 준비 계획 작성 |
 | [2026-07-28](./2026-07-28.md) | Spring Security Form Login 인증 · 로그인 성공, 실패와 로그아웃 처리 실습 / HTTP Basic 기본 인증 · Form Login 회원가입과 세션 인증 과제 |
 | [2026-07-29](./2026-07-29.md) | Spring Security JWT 토큰 생성 · 검증과 인증 필터 실습 / Repoary 저장소 규칙 생성·관리와 Swagger API 문서 정리 |
+| [2026-07-30](./2026-07-30.md) | Spring Security JWT 로그인 · 토큰 발급과 재발급 · 권한별 접근 제어 실습 / JWT 인증과 인가 과제 |
