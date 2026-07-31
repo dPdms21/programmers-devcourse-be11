@@ -1,40 +1,37 @@
 $(document).ready(() => {
-
     $('#signin').click(() => {
+        const userId = $('#user_id').val();
+        const password = $('#password').val();
 
-        let userId = $('#user_id').val();
-        let password = $('#password').val();
-
-        let formData = {
-            username : userId,
-            password : password
-        }
+        const formData = {
+            userId: userId,
+            password: password
+        };
 
         $.ajax({
             type: 'POST',
-            url: '/api/members/login', // 서버의 엔드포인트 URL
+            url: '/api/members/login',
             data: formData,
             dataType: 'json',
+
             success: (response) => {
-                console.log('res :: ', response)
+                localStorage.setItem(
+                    'accessToken',
+                    response.accessToken
+                );
 
-                alert(response.message);
-
-                if (response.loggedIn) {
-                    window.location.href = response.url;
-                }
+                window.location.href = '/';
             },
+
             error: (error) => {
                 console.error('오류 발생:', error);
 
-                if (error.responseJSON) {
+                if (error.responseJSON?.message) {
                     alert(error.responseJSON.message);
                 } else {
-                    alert('로그인 요청 중 오류가 발생했습니다.');
+                    alert('아이디 또는 비밀번호가 올바르지 않습니다.');
                 }
             }
         });
-
     });
-
 });

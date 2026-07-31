@@ -11,6 +11,5 @@ import org.springframework.web.multipart.MultipartFile;
 public class BoardWriteRequestDto {
     private String title;
     private String content;
-    private String userId;
     private MultipartFile file;
 }

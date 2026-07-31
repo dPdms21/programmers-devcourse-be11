@@ -1,80 +1,139 @@
+let currentMember = null;
+
 $(document).ready(() => {
-    checkSession();
-    loadBoardDetail();
+    $('#editBtn').hide();
+    $('#deleteBtn').hide();
+
+    restoreAccessToken()
+        .always(() => {
+            loadCurrentMember();
+        });
 });
 
-let editArticle = () => {
-    let resourceId = $('#hiddenId').val();
-    window.location.href = "/update/" + resourceId;
-}
+const loadCurrentMember = () => {
+    const accessToken = getAccessToken();
 
-let deleteArticle = () => {
+    if (!accessToken) {
+        loadBoardDetail();
+        return;
+    }
 
-    let resourceId = $('#hiddenId').val();
-    let filePath = $('#hiddenFilePath').val();
-
-    $.ajax({
-        type: 'DELETE',
-        url: '/api/boards/' + resourceId, // 실제 서버 API URL 및 삭제할 리소스 ID
-        data: JSON.stringify({ filePath: filePath }), // filePath를 JSON으로 서버에 전송
-        contentType: 'application/json', // JSON 형식으로 전송
-        success: (response) => {
-            alert('리소스가 성공적으로 삭제되었습니다.');
-            window.location.href = '/'; // 성공 후 목록 페이지로 이동
-        },
-        error: (error) => {
-            alert('리소스 삭제 중 오류가 발생했습니다.');
-            console.error('Error:', error);
-        }
-    });
-}
-
-let checkSession = () => {
-    let hUserId = $('#hiddenUserId').val();
-
-    if (hUserId == null || hUserId === '')
-        window.location.href = "/members/login";
-}
-
-let loadBoardDetail = () => {
-
-    let hId = $('#hiddenId').val();
-    let hUserId = $('#hiddenUserId').val();
     $.ajax({
         type: 'GET',
-        url: '/api/boards/' + hId,
+        url: '/api/members/info',
+
+        success: (member) => {
+            currentMember = member;
+            loadBoardDetail();
+        },
+
+        error: function(xhr) {
+            if (xhr.status === 401) {
+                return;
+            }
+
+            console.error('회원 정보 조회 오류:', xhr);
+            loadBoardDetail();
+        }
+    });
+};
+
+const loadBoardDetail = () => {
+    const resourceId = $('#hiddenId').val();
+
+    $.ajax({
+        type: 'GET',
+        url: `/api/boards/${resourceId}`,
+
         success: (response) => {
             $('#title').text(response.title);
             $('#content').text(response.content);
             $('#userId').text(response.userId);
             $('#created').text(response.created);
 
-            if (hUserId != response.userId) {
-                $('#editBtn').prop('disabled', true);
-                $('#deleteBtn').prop('disabled', true);
-            }
-
-            // 파일 목록이 있는 경우, 파일 다운로드 링크 추가
-            if (response.filePath && response.filePath.length > 0) {
-                let filePath = response.filePath;
-                $('#hiddenFilePath').val(filePath)
-                // 저장된 전체 경로에서 파일명만 추출
-                // 경로 구분자는 OS마다 다르므로(mac/리눅스: '/', 윈도우: '\') 백슬래시를 '/'로 통일한 뒤 마지막 '/' 뒤를 자름
-                let normalized = filePath.replace(/\\/g, '/');
-                let fileName = normalized.substring(normalized.lastIndexOf('/') + 1);
-                let fileElement = `
-                            <li>
-                                <a href="/api/boards/file/download/${fileName}">${fileName}</a> <!-- 다운로드 링크 -->
-                            </li>`;
-                $('#fileList').append(fileElement);
-            } else {
-                $('#fileList').append('<li>첨부된 파일이 없습니다.</li>');
-            }
-
+            updateActionButtons(response.userId);
+            renderFile(response.filePath);
         },
-        error: function (error) {
-            console.error('오류 발생:', error);
+
+        error: function(xhr) {
+            if (xhr.status === 401) {
+                return;
+            }
+
+            console.error('게시글 상세 조회 오류:', xhr);
             alert('상세 데이터를 불러오는데 오류가 발생했습니다.');
         }
     });
-}
+};
+
+const updateActionButtons = (articleUserId) => {
+    const canManage =
+        currentMember !== null &&
+        (
+            currentMember.userId === articleUserId ||
+            currentMember.role === 'ROLE_ADMIN'
+        );
+
+    if (canManage) {
+        $('#editBtn').show();
+        $('#deleteBtn').show();
+    } else {
+        $('#editBtn').hide();
+        $('#deleteBtn').hide();
+    }
+};
+
+const renderFile = (filePath) => {
+    $('#fileList').empty();
+
+    if (!filePath) {
+        $('#fileList').append('<li>첨부된 파일이 없습니다.</li>');
+        return;
+    }
+
+    const normalized = filePath.replace(/\\/g, '/');
+    const fileName = normalized.substring(
+        normalized.lastIndexOf('/') + 1
+    );
+
+    $('#fileList').append(`
+        <li>
+            <a href="/api/boards/file/download/${fileName}">
+                ${fileName}
+            </a>
+        </li>
+    `);
+};
+
+const editArticle = () => {
+    const resourceId = $('#hiddenId').val();
+    window.location.href = `/update/${resourceId}`;
+};
+
+const deleteArticle = () => {
+    const resourceId = $('#hiddenId').val();
+
+    $.ajax({
+        type: 'DELETE',
+        url: `/api/boards/${resourceId}`,
+
+        success: () => {
+            alert('게시글이 삭제되었습니다.');
+            window.location.href = '/';
+        },
+
+        error: function(xhr) {
+            if (xhr.status === 401) {
+                return;
+            }
+
+            if (xhr.status === 403) {
+                alert('게시글을 삭제할 권한이 없습니다.');
+                return;
+            }
+
+            console.error('게시글 삭제 오류:', xhr);
+            alert('게시글 삭제 중 오류가 발생하였습니다.');
+        }
+    });
+};

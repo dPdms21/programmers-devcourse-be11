@@ -27,3 +27,8 @@ spring:
 file:
   upload-dir: ./uploads
 
+jwt:
+  issuer: jpa-board
+  secret-key: ${JWT_SECRET_KEY}
+  access-token-expiration: 1800000
+  refresh-token-expiration: 1209600000

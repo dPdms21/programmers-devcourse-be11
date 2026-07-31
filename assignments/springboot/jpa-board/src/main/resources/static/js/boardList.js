@@ -1,20 +1,62 @@
 $(document).ready(() => {
-    checkSession();
-    loadBoard(1); // 처음엔 1페이지를 보여줌
+    restoreAccessToken()
+        .always(() => {
+            loadBoard(1);
+            updateLoginView();
+        });
+
+    $('#logoutBtn').click(() => {
+        logout();
+    });
 });
 
-const PAGE_SIZE = 10; // 한 페이지에 보여줄 게시글 수
+const PAGE_SIZE = 10;
 
-// 로그인(세션) 확인 - 로그인 정보가 없으면 로그인 페이지로 보냄
-let checkSession = () => {
-    let hUserId = $('#hiddenUserId').val();
+const updateLoginView = () => {
+    const accessToken = localStorage.getItem('accessToken');
 
-    if (hUserId == null || hUserId === '')
-        window.location.href = "/members/login";
-}
+    if (!accessToken) {
+        showGuestView();
+        return;
+    }
 
-// 특정 페이지의 게시글 + 하단 페이지 번호를 로드하는 함수
-let loadBoard = (page) => {
+    $.ajax({
+        type: 'GET',
+        url: '/api/members/info',
+
+        success: (member) => {
+            $('#welcomeMessage').text(
+                `${member.userName}님 환영합니다.`
+            );
+
+            $('#roleBadge').text(
+                member.role === 'ROLE_ADMIN'
+                    ? '관리자'
+                    : '일반 회원'
+            );
+
+            $('#guestMenu').hide();
+            $('#memberMenu').show();
+        },
+
+        error: (error) => {
+            console.error('회원 정보 조회 실패:', error);
+
+            localStorage.removeItem('accessToken');
+            showGuestView();
+        }
+    });
+};
+
+const showGuestView = () => {
+    $('#welcomeMessage').text('게시판');
+    $('#roleBadge').text('');
+
+    $('#memberMenu').hide();
+    $('#guestMenu').show();
+};
+
+const loadBoard = (page) => {
     $.ajax({
         type: 'GET',
         url: '/api/boards',
@@ -22,65 +64,71 @@ let loadBoard = (page) => {
             page: page,
             size: PAGE_SIZE
         },
+
         success: (response) => {
-            renderBoards(response.boards);                 // 게시글 목록 그리기
-            renderPagination(page, response.totalPages);   // 하단 1,2,3... 페이지 번호 그리기
+            renderBoards(response.boards);
+            renderPagination(page, response.totalPages);
         },
-        error: function (error) {
-            console.error('오류 발생:', error);
+
+        error: (error) => {
+            console.error('게시판 조회 실패:', error);
             alert('게시판 데이터를 불러오는 데 오류가 발생했습니다.');
         }
     });
-}
+};
 
-// 게시글 목록을 테이블에 그림
-let renderBoards = (boards) => {
+const renderBoards = (boards) => {
     const $content = $('#boardContent');
-    $content.empty(); // 기존 게시글 내용 비우기
 
-    if (boards == null || boards.length <= 0) {
-        // 게시글이 없는 경우 메시지 출력
-        $content.append(
-            `<tr>
-                <td colspan="4" style="text-align: center;">글이 존재하지 않습니다.</td>
-            </tr>`
-        );
+    $content.empty();
+
+    if (boards == null || boards.length === 0) {
+        $content.append(`
+            <tr>
+                <td colspan="4" style="text-align: center;">
+                    글이 존재하지 않습니다.
+                </td>
+            </tr>
+        `);
+
         return;
     }
 
     boards.forEach((item) => {
-        $content.append(
-            `
+        $content.append(`
             <tr>
                 <td>${item.id}</td>
-                <td><a href="/detail?id=${item.id}">${item.title}</a></td>
+                <td>
+                    <a href="/detail?id=${item.id}">
+                        ${item.title}
+                    </a>
+                </td>
                 <td>${item.userId}</td>
                 <td>${item.created}</td>
             </tr>
-            `
-        );
+        `);
     });
-}
+};
 
-// 하단에 페이지 번호(1,2,3...)를 그림
-// currentPage: 지금 보고 있는 페이지, totalPages: 전체 페이지 수 (서버가 내려줌)
-let renderPagination = (currentPage, totalPages) => {
+const renderPagination = (currentPage, totalPages) => {
     const $pagination = $('#pagination');
-    $pagination.empty(); // 기존 번호 버튼 비우기
 
-    // 1번부터 전체 페이지 수까지 버튼을 만듦
-    for (let p = 1; p <= totalPages; p++) {
-        const $btn = $(`<button class="btn page-btn">${p}</button>`);
+    $pagination.empty();
 
-        if (p === currentPage) {
-            // 현재 페이지는 강조하고 클릭할 수 없게 막음
-            $btn.addClass('active');
-            $btn.prop('disabled', true);
+    for (let page = 1; page <= totalPages; page++) {
+        const $button = $(
+            `<button class="btn page-btn">${page}</button>`
+        );
+
+        if (page === currentPage) {
+            $button.addClass('active');
+            $button.prop('disabled', true);
         }
 
-        // 버튼을 누르면 그 페이지를 로드
-        $btn.on('click', () => loadBoard(p));
+        $button.on('click', () => {
+            loadBoard(page);
+        });
 
-        $pagination.append($btn);
+        $pagination.append($button);
     }
-}
+};

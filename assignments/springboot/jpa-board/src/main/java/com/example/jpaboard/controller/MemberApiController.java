@@ -1,20 +1,25 @@
 package com.example.jpaboard.controller;
 
-import com.example.jpaboard.constant.SessionConst;
-import com.example.jpaboard.dto.LoginRequestDto;
-import com.example.jpaboard.dto.LoginResponseDto;
-import com.example.jpaboard.dto.MemberJoinRequestDto;
-import com.example.jpaboard.dto.MemberJoinResponseDto;
+import com.example.jpaboard.config.security.CustomUserDetails;
+import com.example.jpaboard.domain.entity.Member;
+import com.example.jpaboard.dto.*;
 import com.example.jpaboard.service.MemberService;
-import jakarta.servlet.http.HttpSession;
+import com.example.jpaboard.service.TokenService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("/api/members")
 @RequiredArgsConstructor
 public class MemberApiController {
     private final MemberService memberService;
+    private final TokenService tokenService;
 
     @PostMapping("/join")
     public MemberJoinResponseDto join(@RequestBody MemberJoinRequestDto request) {
@@ -24,14 +29,57 @@ public class MemberApiController {
     }
 
     @PostMapping("/login")
-    public LoginResponseDto login(@ModelAttribute LoginRequestDto request, HttpSession session) {
-        return memberService.login(request)
-                .map(member -> {
-                    session.setAttribute(SessionConst.USER_ID, member.getUserId());
-                    session.setAttribute(SessionConst.USER_NAME, member.getUserName());
+    public ResponseEntity<LoginTokenResponseDto> login(
+            @ModelAttribute LoginRequestDto request
+    ) {
+        TokenPair tokenPair = tokenService.login(
+                request.getUserId(),
+                request.getPassword()
+        );
 
-                    return LoginResponseDto.success();
-                })
-                .orElseGet(LoginResponseDto::fail);
+        ResponseCookie refreshTokenCookie = ResponseCookie
+                .from("refreshToken", tokenPair.refreshToken())
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(Duration.ofDays(14))
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString())
+                .body(new LoginTokenResponseDto(tokenPair.accessToken()));
+    }
+
+    @GetMapping("/info")
+    public MemberInfoResponseDto info(
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        Member member = userDetails.getMember();
+
+        return new MemberInfoResponseDto(
+                member.getUserId(),
+                member.getUserName(),
+                member.getRole().name()
+        );
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout() {
+        ResponseCookie expiredRefreshTokenCookie = ResponseCookie
+                .from("refreshToken", "")
+                .httpOnly(true)
+                .secure(false)
+                .sameSite("Lax")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.noContent()
+                .header(
+                        HttpHeaders.SET_COOKIE,
+                        expiredRefreshTokenCookie.toString()
+                )
+                .build();
     }
 }

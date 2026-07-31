@@ -1,5 +1,6 @@
 package com.example.jpaboard.controller;
 
+import com.example.jpaboard.config.security.CustomUserDetails;
 import com.example.jpaboard.domain.entity.Board;
 import com.example.jpaboard.dto.*;
 import com.example.jpaboard.service.BoardService;
@@ -9,6 +10,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URLEncoder;
@@ -41,9 +43,12 @@ public class BoardApiController {
     }
 
     @PostMapping
-    public void saveArticle(@ModelAttribute BoardWriteRequestDto request) {
+    public void saveArticle(
+            @ModelAttribute BoardWriteRequestDto request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
         boardService.saveArticle(
-                request.getUserId(),
+                userDetails.getUsername(),
                 request.getTitle(),
                 request.getContent(),
                 request.getFile()
@@ -77,12 +82,28 @@ public class BoardApiController {
     }
 
     @PutMapping("/{id}")
-    public void updateArticle(@PathVariable Long id, @ModelAttribute BoardUpdateRequestDto request) {
-        boardService.updateArticle(id, request);
+    public void updateArticle(
+            @PathVariable Long id,
+            @ModelAttribute BoardUpdateRequestDto request,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        boardService.updateArticle(
+                id,
+                request,
+                userDetails.getUsername(),
+                userDetails.getMember().getRole()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void deleteArticle(@PathVariable Long id, @RequestBody BoardDeleteRequestDto request) {
-        boardService.deleteArticle(id, request);
+    public void deleteArticle(
+            @PathVariable Long id,
+            @AuthenticationPrincipal CustomUserDetails userDetails
+    ) {
+        boardService.deleteArticle(
+                id,
+                userDetails.getUsername(),
+                userDetails.getMember().getRole()
+        );
     }
 }

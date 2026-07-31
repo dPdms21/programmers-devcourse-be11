@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/auth.js}"></script>
     <script th:src="@{/js/boardWrite.js}"></script>
     <link th:href="@{/css/boardWrite.css}" rel="stylesheet">
     <title>글쓰기</title>
@@ -13,19 +14,9 @@
     <h1>글쓰기</h1>
 
     <form id="writeForm" enctype="multipart/form-data">
-        <!-- 서버로 실제 전송되는 작성자 아이디 (DTO 의 userId 필드와 name 이 같아야 바인딩된다) -->
-        <input id="hiddenUserId" name="userId" type="hidden" th:value="${userId}">
-        <input id="hiddenUserName" name="hiddenUserName" type="hidden" th:value="${userName}">
-
         <div class="form-group">
             <label for="title">제목</label>
             <input type="text" id="title" name="title" placeholder="제목을 입력하세요" required>
-        </div>
-
-        <div class="form-group">
-            <label for="userId">작성자</label>
-            <!-- 화면 표시용 (disabled라 서버로 전송되지 않음). 실제 전송은 위의 hidden name="userId" 가 담당 -->
-            <input type="text" id="userId" th:value="${userName}" disabled>
         </div>
 
         <div class="form-group">

@@ -1,7 +1,6 @@
 let selectedFile = null; // 파일은 1개만 선택 가능
 
 $(document).ready(() => {
-    checkSession();
     loadBoardDetail();
     updated();
     fileChanged();
@@ -27,9 +26,18 @@ let updated = () => {
                 // 성공 후 다른 페이지로 이동하거나 처리할 코드 작성 가능
                 window.location.href = '/';
             },
-            error: function(error) {
-                // 실패 시 실행될 콜백 함수
-                console.error('오류 발생:', error);
+            error: function(xhr) {
+                console.error('오류 발생:', xhr);
+
+                if (xhr.status === 401) {
+                    return;
+                }
+
+                if (xhr.status === 403) {
+                    alert('게시글을 수정할 권한이 없습니다.');
+                    return;
+                }
+
                 alert('게시글 수정 중 오류가 발생하였습니다.');
             }
         });
@@ -69,13 +77,6 @@ let updateFileList = () => {
     }
 }
 
-let checkSession = () => {
-    let hUserId = $('#hiddenUserId').val();
-
-    if (hUserId == null || hUserId === '')
-        window.location.href = "/members/login";
-}
-
 let loadBoardDetail = () => {
 
     let hId = $('#hiddenId').val();
@@ -113,8 +114,13 @@ let loadBoardDetail = () => {
             }
 
         },
-        error: function (error) {
-            console.error('오류 발생:', error);
+        error: function(xhr) {
+            console.error('오류 발생:', xhr);
+
+            if (xhr.status === 401) {
+                return;
+            }
+
             alert('상세 데이터를 불러오는데 오류가 발생했습니다.');
         }
     });

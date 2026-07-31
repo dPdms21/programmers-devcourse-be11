@@ -1,14 +1,15 @@
 package com.example.jpaboard.service;
 
 import com.example.jpaboard.domain.entity.Board;
+import com.example.jpaboard.domain.entity.Role;
 import com.example.jpaboard.domain.repository.BoardRepository;
-import com.example.jpaboard.dto.BoardDeleteRequestDto;
 import com.example.jpaboard.dto.BoardUpdateRequestDto;
 import com.example.jpaboard.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,9 +54,19 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateArticle(Long id, BoardUpdateRequestDto request) {
+    public void updateArticle(
+            Long id,
+            BoardUpdateRequestDto request,
+            String loginUserId,
+            Role role
+    ) {
         Board board = boardRepository.findById(id)
-                .orElseThrow(() -> new BoardNotFoundException("게시글을 찾을 수 없음 id=" + id));
+                .orElseThrow(() ->
+                        new BoardNotFoundException("게시글을 찾을 수 없음 id=" + id)
+                );
+
+        validateAuthorOrAdmin(board, loginUserId, role);
+
         String filePath = board.getFilePath();
 
         if (request.isFileFlag()) {
@@ -63,16 +74,40 @@ public class BoardService {
             filePath = fileService.storeFile(request.getFile());
         }
 
-        board.update(request.getTitle(), request.getContent(), filePath);
+        board.update(
+                request.getTitle(),
+                request.getContent(),
+                filePath
+        );
     }
 
     @Transactional
-    public void deleteArticle(Long id, BoardDeleteRequestDto request) {
-        if (!boardRepository.existsById(id)) {
-            throw new BoardNotFoundException("게시글을 찾을 수 없음 id=" + id);
-        }
+    public void deleteArticle(
+            Long id,
+            String loginUserId,
+            Role role
+    ) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(() ->
+                        new BoardNotFoundException("게시글을 찾을 수 없음 id=" + id)
+                );
 
-        boardRepository.deleteById(id);
-        fileService.deleteFile(request.getFilePath());
+        validateAuthorOrAdmin(board, loginUserId, role);
+
+        boardRepository.delete(board);
+        fileService.deleteFile(board.getFilePath());
+    }
+
+    private void validateAuthorOrAdmin(
+            Board board,
+            String loginUserId,
+            Role role
+    ) {
+        boolean author = board.getUserId().equals(loginUserId);
+        boolean admin = role == Role.ROLE_ADMIN;
+
+        if (!author && !admin) {
+            throw new AccessDeniedException("게시글을 수정하거나 삭제할 권한이 없습니다.");
+        }
     }
 }
