@@ -17,33 +17,39 @@
 <div class="container">
     <h1 id="welcomeMessage">게시판</h1>
 
-    <div id="guestMenu">
-        <a id="loginBtn"
-           th:href="@{/members/login}"
-           class="btn">
-            로그인
-        </a>
+    <div class="board-header">
+        <div class="member-status">
+            <span id="roleBadge"></span>
+        </div>
 
-        <a th:href="@{/members/join}"
-           class="btn">
-            회원가입
-        </a>
-    </div>
+        <div id="guestMenu" class="board-actions">
+            <a id="loginBtn"
+               th:href="@{/members/login}"
+               class="btn">
+                로그인
+            </a>
 
-    <div id="memberMenu" style="display: none;">
-        <span id="roleBadge"></span>
+            <a th:href="@{/members/join}"
+               class="btn">
+                회원가입
+            </a>
+        </div>
 
-        <a id="writeBtn"
-           th:href="@{/write}"
-           class="btn">
-            글쓰기
-        </a>
+        <div id="memberMenu"
+             class="board-actions"
+             style="display: none;">
+            <a id="writeBtn"
+               th:href="@{/write}"
+               class="btn">
+                글쓰기
+            </a>
 
-        <button id="logoutBtn"
-                type="button"
-                class="btn">
-            로그아웃
-        </button>
+            <button id="logoutBtn"
+                    type="button"
+                    class="btn logout-btn">
+                로그아웃
+            </button>
+        </div>
     </div>
 
     <div id="board">

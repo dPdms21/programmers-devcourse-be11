@@ -1,0 +1,154 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0;
+    padding: 40px 20px;
+    font-family: Arial, sans-serif;
+    color: #2f3437;
+    background: #f4f6f8;
+}
+
+.container {
+    width: min(100%, 800px);
+    margin: 0 auto;
+    padding: 36px;
+    background: #fff;
+    border: 1px solid #e7eaee;
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+}
+
+h1 {
+    margin: 0 0 30px;
+    color: #222;
+    font-size: 28px;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+input[type="text"],
+textarea,
+input[type="file"] {
+    width: 100%;
+    border: 1px solid #d7dce1;
+    border-radius: 7px;
+    background: #fff;
+    font: inherit;
+}
+
+input[type="text"],
+textarea {
+    padding: 12px 13px;
+}
+
+input[type="file"] {
+    padding: 10px;
+    background: #fafbfc;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+input[type="file"]:focus {
+    border-color: #3f7d5a;
+    outline: 3px solid rgba(63, 125, 90, 0.12);
+}
+
+input:disabled {
+    color: #6e757c;
+    background: #f0f2f4;
+}
+
+textarea {
+    min-height: 240px;
+    line-height: 1.6;
+    resize: vertical;
+}
+
+.uploaded-files {
+    margin-top: -4px;
+    color: #555d65;
+    font-size: 14px;
+}
+
+#fileList {
+    margin: 0;
+    padding-left: 20px;
+}
+
+#fileList:empty {
+    display: none;
+}
+
+#fileList li {
+    margin-top: 7px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 28px;
+}
+
+.btn {
+    min-width: 110px;
+    min-height: 42px;
+    padding: 10px 18px;
+    border: 0;
+    border-radius: 7px;
+    color: #fff;
+    background: #3f7d5a;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.15s;
+}
+
+.btn:hover {
+    background: #326548;
+    transform: translateY(-1px);
+}
+
+.cancel-btn {
+    background: #6b727a;
+}
+
+.cancel-btn:hover {
+    background: #555c63;
+}
+
+@media (max-width: 640px) {
+    body {
+        padding: 20px 12px;
+    }
+
+    .container {
+        padding: 24px 18px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
