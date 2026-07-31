@@ -1,6 +1,6 @@
 package com.example.jpaboard;
 
-import com.example.jpaboard.config.jwt.JwtProperties;
+import com.example.jpaboard.auth.config.jwt.JwtProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
