@@ -1,21 +1,18 @@
 package com.example.jpaboard.service;
 
 import com.example.jpaboard.domain.entity.Member;
+import com.example.jpaboard.domain.entity.Role;
 import com.example.jpaboard.domain.repository.MemberRepository;
-import com.example.jpaboard.dto.LoginRequestDto;
 import com.example.jpaboard.dto.MemberJoinRequestDto;
 import com.example.jpaboard.exception.DuplicateUserIdException;
 import com.example.jpaboard.mapper.MemberMapper;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -24,35 +21,68 @@ import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceTest {
-    @Mock MemberRepository memberRepository;
-    @Mock MemberMapper memberMapper;
-    @InjectMocks MemberService memberService;
+
+    @Mock
+    MemberRepository memberRepository;
+
+    @Mock
+    MemberMapper memberMapper;
+
+    @Mock
+    PasswordEncoder passwordEncoder;
+
+    @InjectMocks
+    MemberService memberService;
 
     @Test
-    void login_성공() {
+    void join_성공() {
+        MemberJoinRequestDto request = new MemberJoinRequestDto();
+        request.setUserId("hong");
+        request.setPassword("1234");
+        request.setUserName("홍길동");
+
+        String encodedPassword = "encoded-password";
+
         Member member = Member.builder()
                 .userId("hong")
-                .password("1234")
+                .password(encodedPassword)
                 .userName("홍길동")
+                .role(Role.ROLE_USER)
                 .build();
-        given(memberRepository.findByUserId("hong")).willReturn(Optional.of(member));
 
-        LoginRequestDto dto = new LoginRequestDto();
-        dto.setUsername("hong");
-        dto.setPassword("1234");
+        given(memberRepository.existsByUserId("hong"))
+                .willReturn(false);
 
-        Optional<Member> result = memberService.login(dto);
-        assertThat(result).isPresent();
+        given(passwordEncoder.encode("1234"))
+                .willReturn(encodedPassword);
+
+        given(memberMapper.toEntity(request, encodedPassword))
+                .willReturn(member);
+
+        memberService.join(request);
+
+        verify(memberRepository).existsByUserId("hong");
+        verify(passwordEncoder).encode("1234");
+        verify(memberMapper).toEntity(request, encodedPassword);
+        verify(memberRepository).save(member);
     }
 
     @Test
-    void join_중복이면_예외() {
-        MemberJoinRequestDto dto = new MemberJoinRequestDto();
-        dto.setUserId("hong");
-        given(memberRepository.existsByUserId("hong")).willReturn(true);
+    void join_중복된_아이디면_예외가_발생한다() {
+        MemberJoinRequestDto request = new MemberJoinRequestDto();
+        request.setUserId("hong");
+        request.setPassword("1234");
+        request.setUserName("홍길동");
 
-        assertThatThrownBy(() -> memberService.join(dto))
+        given(memberRepository.existsByUserId("hong"))
+                .willReturn(true);
+
+        assertThatThrownBy(() -> memberService.join(request))
                 .isInstanceOf(DuplicateUserIdException.class);
+
+        verify(memberRepository).existsByUserId("hong");
+        verify(passwordEncoder, never()).encode(any());
+        verify(memberMapper, never()).toEntity(any(), any());
         verify(memberRepository, never()).save(any());
     }
 }

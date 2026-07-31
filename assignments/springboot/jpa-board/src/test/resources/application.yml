@@ -15,3 +15,9 @@ spring:
   sql:
     init:
       mode: never
+
+jwt:
+  issuer: jpa-board-test
+  secret-key: dGVzdC1zZWNyZXQta2V5LWZvci1oczUxMi1tdXN0LWJlLWF0LWxlYXN0LTY0LWJ5dGVzLWxvbmctMTIzNDU2Nzg5MA==
+  access-token-expiration: 60000
+  refresh-token-expiration: 120000
