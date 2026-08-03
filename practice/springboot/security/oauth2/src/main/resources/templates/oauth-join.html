@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/oauthJoin.js}"></script>
+    <link th:href="@{/css/signUp.css}" rel="stylesheet">
+    <title>소셜 회원가입</title>
+</head>
+<body>
+
+<div class="signup-container">
+    <h2>소셜 회원가입</h2>
+    <div>
+        <p>카카오 계정 인증이 완료되었습니다.<br>아래 정보로 가입하시겠습니까?</p>
+
+        <!-- 표시 값은 oauthJoin.js가 가입 토큰의 payload를 디코딩해 채움
+             (JWT payload는 암호화가 아니라 인코딩이라 브라우저에서도 읽을 수 있음 — 학습 포인트!
+              단, "읽기"만 가능할 뿐 값을 고치면 서명 불일치로 서버 검증에서 거부됨) -->
+        <div class="form-group">
+            <label>닉네임</label>
+            <input type="text" id="oauth_name" readonly>
+        </div>
+
+        <div class="form-group">
+            <label>이메일</label>
+            <input type="text" id="oauth_email" readonly>
+        </div>
+
+        <!-- 닉네임/이메일은 카카오에서 온 값이라 readonly지만, 권한은 "가입 시점에 사용자가
+             선택하는 값"이므로 자체 가입 폼과 동일한 select를 제공 (권한 실습용 예제 설정) -->
+        <div class="form-group">
+            <label for="role">권한</label>
+            <select id="role">
+                <option value="ROLE_USER" selected>일반 사용자</option>
+                <option value="ROLE_ADMIN">관리자</option>
+            </select>
+        </div>
+
+        <input id="oauth-join" type="submit" value="동의하고 가입하기">
+
+        <div class="page-link">
+            <a href="/users/login">가입하지 않고 돌아가기</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
