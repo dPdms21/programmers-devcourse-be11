@@ -46,10 +46,12 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
             else if (status == TokenStatus.EXPIRED) {
+                // 1) /api/users/info <- 401
+                // 2) /api/tokens/refresh(access token 만료 상태) <- 401
                 log.warn("{}, Token is expired", requestURI);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-                return;
+//                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//
+//                return;
             }
         }
 
