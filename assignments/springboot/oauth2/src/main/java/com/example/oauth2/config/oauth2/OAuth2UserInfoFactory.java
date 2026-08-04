@@ -1,0 +1,16 @@
+package com.example.oauth2.config.oauth2;
+
+import java.util.Map;
+
+public class OAuth2UserInfoFactory {
+    private OAuth2UserInfoFactory() {
+
+    }
+
+    public static OAuth2UserInfo of(AuthProvider provider, Map<String, Object> attributes) {
+        return switch (provider) {
+            case KAKAO -> new KakaoUserInfo(attributes);
+            case LOCAL -> throw new IllegalArgumentException("local");
+        };
+    }
+}
