@@ -34,10 +34,11 @@ Spring Boot 학습 과정에서 진행한 HTTP, 세션, 쿠키, 외부 API 호�
 | HTTP Basic 인증 | [http-basic.md](./http-basic.md) | [🔗 http-basic/](../../../assignments/springboot/http-basic/src/main) | Spring Security 필터 체인에 HTTP Basic 인증을 적용하고 인메모리 사용자 인증과 브라우저 자격 증명 캐싱을 확인 |
 | Form Login 인증 | [form-login.md](./form-login.md) | [🔗 form-login/](../../../assignments/springboot/form-login/src/main) | DB 회원 정보를 BCrypt로 암호화하고 Spring Security 필터와 세션을 이용해 회원가입, 로그인과 로그아웃을 구현 |
 | JWT 토큰 인증 | [token.md](./token.md) | [🔗 token/](../../../assignments/springboot/token/src/main) | JWT Access·Refresh Token을 발급하고 Bearer 인증 필터와 역할 기반 인가, 토큰 재발급 흐름을 구현 |
+| OAuth2 소셜 로그인 | [oauth2.md](./oauth2.md) | [🔗 oauth2/](../../../assignments/springboot/oauth2/src/main) | 카카오 OAuth2 인가 코드 방식으로 소셜 회원을 인증하고 가입 동의 후 기존 JWT 인증 체계와 연결 |
 
 ## 학습 흐름
 
 1. 세션과 쿠키에서는 로그인 상태와 사용자 설정의 저장 위치를 구분하고, 세션 기반 접근 제어와 쿠키 기반 상태 유지를 구현한다.
 2. 외부 API 호출에서는 OpenFeign으로 외부 API를 선언형으로 호출하고, 쿼리 파라미터와 서비스키를 전달하며 중첩 JSON 응답을 DTO로 매핑한다.
 3. JPA에서는 계층 구조를 분리해 회원과 게시판 도메인을 구현하고, 데이터 저장·조회·예외 처리와 AOP 로깅, 계층별 테스트를 적용해 JPA 기반 웹 애플리케이션 흐름을 정리한다.
-4. Spring Security에서는 HTTP Basic과 Form Login을 적용하고, 필터 기반 인증과 사용자 조회, 비밀번호 검증, 세션 기반 로그인 유지 및 로그아웃 흐름을 정리한다.
+4. Spring Security에서는 HTTP Basic, Form Login, JWT 토큰 인증과 OAuth2 소셜 로그인을 적용하고, 인증 방식별 처리 주체와 상태 관리, 토큰 재발급, 역할별 인가 및 소셜 회원 연동 흐름을 정리한다.
