@@ -48,6 +48,25 @@ public class UserApiController {
         return signInResponseDto;
     }
 
+    @PostMapping("/oauth-join")
+    public SignInResponseDto oauthJoin(
+            @RequestBody OAuthSignUpRequestDto requestDto,
+            HttpServletResponse response
+    ) {
+        SignInResponseDto signInResponseDto = userService.oauthSignUp(requestDto);
+
+        CookieUtil.addCookie(
+                response,
+                CookieUtil.REFRESH_TOKEN_COOKIE,
+                signInResponseDto.getRefreshToken(),
+                (int) jwtProperties.getRefreshTokenValidity().toSeconds()
+        );
+
+        signInResponseDto.setRefreshToken(null);
+
+        return signInResponseDto;
+    }
+
     @PostMapping("/logout")
     public LogoutResponseDto logout(
             HttpServletRequest request,

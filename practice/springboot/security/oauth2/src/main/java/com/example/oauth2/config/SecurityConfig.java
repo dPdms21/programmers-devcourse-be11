@@ -1,6 +1,9 @@
 package com.example.oauth2.config;
 
 import com.example.oauth2.config.filter.TokenAuthenticationFilter;
+import com.example.oauth2.config.oauth2.OAuth2FailureHandler;
+import com.example.oauth2.config.oauth2.OAuth2SuccessHandler;
+import com.example.oauth2.service.CustomOAuth2UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -94,6 +97,49 @@ import java.io.IOException;
 // 닉네임, 이메일 설정 변경(상태 : 필수동의)
 
 // ** 프로젝트에서의 OAuth2 로그인 흐름 **
+// 1. 진입 - 카카오 로그인 버튼 클릭
+//    login.html의 <a href="/oauth2/authorization/kakao">
+//    → 이 URL을 받는 컨트롤러는 없음. OAuth2AuthorizationRequestRedirectFilter가 가로채는 규약 경로
+//    → 필터가 state를 생성해 세션에 잠시 보관하고, application.yaml 의 registration/provider 설정으로
+//      카카오 인가 페이지 URL(client_id, redirect_uri, scope, state)을 조립해 리다이렉트 (표준 흐름 1)
+
+// 2. 카카오 화면에서의 로그인 +동의 (서버는 관여하지 않는 구간)
+//    → 카카오가 GET /login/oauth2/code/kakao?code=...&state=...로 브라우저를 돌려보냄
+
+// 3. 콜백 처리 - 역시 컨트롤러 없음 OAuth2LoginAuthenticationFilter가 가로챔
+//    ├─ [프레임워크] state 검증 (1에서 세션에 보관한 값과 대조)
+//    ├─ [프레임워크] code + client_secret → 카카오 토큰 엔드포인트에서 access token 교환
+//    └─ [프레임워크] 그 토큰으로 user-info(kapi.kakao.com/v2/user/me) 조회
+
+// 4. CustomOAuth2UserService.loadUser(): 우리 코드가 처음 실행되는 지점
+//    ├─ super.loadUser() 결과를 OAuth2UserInfoFactory → KakaoUserInfo로 파싱 (제공자별 차이 흡수)
+//    ├─ 이메일 없으면 OAuth2AuthenticationException → 곧장 실패 경로(7)로
+//    └─ UserRepository.findByProviderIdAndProvider()로 우리 회원과 연결
+//         ├─ 기존 회원: 프로필 갱신 후 CustomOAuth2User(registered) 반환
+//         └─ 미가입: DB에 저장하지 ★않고★ CustomOAuth2User.unregistered 반환 (명시적 가입 정책)
+
+// 5. 인증성공 -> OAuth2SuccessHandler가 principal.isRegistered()로 분기
+//    ├─ 기존 회원: TokenService.issueToken()로 JWT 쌍 발급
+//    │   → refresh token만 HttpOnly 쿠키에 심고 "/" 리다이렉트
+//    │   → 도착한 hello.js가 refresh 쿠키로 POST /api/tokens/refresh → access token 획득 (기존 인프라 재사용)
+//    └─ 미가입: SNS 프로필을 담은 10분짜리 "가입 토큰"을 발급해
+//        /users/oauth-join?signupToken=... 으로 리다이렉트 (동의 전에는 DB에 아무 행도 없음)
+
+// 6. 소셜 가입 확정
+//    oauthJoin.js가 동의 버튼 클릭 시 POST /api/users/oauth-join (signupToken + 선택한 role)
+//    → UserApiController → UserService.oauthSignUp()
+//       ├─ TokenProvider.getSignupPayload() 로 서명·만료·용도 검증 후 SNS 프로필 복원
+//       ├─ 이미 있으면 그대로, 없으면 User 저장 (멱등 — 새로고침해도 중복 가입 없음)
+//       └─ TokenService.issueToken() → 가입 즉시 로그인 상태 (자체 로그인과 여기서 완전히 합류)
+
+// 7. 인증실패 -> OAuth2FailureHandler
+//    실패 사유를 ?error= 에 실어 /users/login 으로 리다이렉트 → login.html이 메시지 표시
+//    (ajax가 아니라 브라우저 리다이렉트 흐름이라 JSON 대신 리다이렉트로 응답)
+
+// 8. 이후 요청 -  소셜/자체 로그인 구분 없이 동일(stateless)
+//    브라우저가 Authorization: Bearer {access token} 헤더 전송
+//    → TokenAuthenticationFilter가 검증 후 SecurityContext 복원
+//    → 카카오 토큰은 4~5에서 사용자 정보를 읽는 데 한 번 쓰고 버림. 이후 인증은 전부 JWT
 
 @Configuration
 @EnableWebSecurity
@@ -101,6 +147,11 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
+
+    // OAuth2로그인 파이프라인에서 "개발자가 구현하는 훅"들
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final OAuth2FailureHandler oAuth2FailureHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -115,17 +166,28 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/users/login",
                                 "/users/join",
+                                "/users/oauth-join",
                                 "/", // 페이지(HTML)는 공개, 데이터는 보호 - 브라우저 페이지 이동은 Bearer 헤더를 못 실으므로 페이지 인가는 API가 담당
                                 "/admin",
                                 "/api/users/login",
                                 "/api/users/join",
                                 "/api/tokens/refresh",
+                                "/api/users/oauth-join",
                                 "/css/**",
                                 "/js/**",
                                 "/access-denied",
                                 "/error" // 404 등 에러 포워딩 경로. 막으면 인증 리다이렉트 생김
                         ).permitAll()
                         .anyRequest().authenticated()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        // user-info 조회 "직후" 호출될 서비스 교체
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+                        // 인증 성공
+                        .successHandler(oAuth2SuccessHandler)
+                        // 인증 실패
+                        .failureHandler(oAuth2FailureHandler)
                 )
                 // JWT 필터를 UsernamePasswordAuthenticationFilter (폼 로그인 필터) 자리 앞에 끼워 넣음
                 // 인가 판단은 체인 맨 끝에서 일어나므로,

@@ -21,7 +21,7 @@ import java.util.Map;
 @Getter
 @RequiredArgsConstructor
 public class CustomOAuth2User implements OAuth2User {
-    // 우리 DB 회원. SuccessHandler가 JWT 발급에 사용
+    // DB 회원. SuccessHandler가 JWT 발급에 사용
     private final User user;
 
     // 어떤 SNS로 인증했는지
@@ -38,6 +38,15 @@ public class CustomOAuth2User implements OAuth2User {
     // 원시 맵에서 "사용자 식별자"를 가리키는 것. 제공자마다 다름 (kakao=id, google=sub)
     // application.yaml provider의 user-name-attribute 값이 여기까지 흘러들어옴
     private final String nameAttributeKey;
+
+    public static CustomOAuth2User unregistered(
+            AuthProvider provider,
+            OAuth2UserInfo userInfo,
+            Map<String, Object> attributes,
+            String nameAttributeKey
+    ) {
+        return new CustomOAuth2User(null, provider, userInfo, attributes, nameAttributeKey);
+    }
 
     // DB에 이미 가입된 회원. SuccessHandler가 "로그인 완료 vs 가입 안내" 분기에 사용
     public boolean isRegistered() {

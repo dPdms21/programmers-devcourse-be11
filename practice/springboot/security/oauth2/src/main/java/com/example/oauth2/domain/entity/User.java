@@ -38,4 +38,12 @@ public class User {
 
     @Column(length = 100)
     private String providerId;
+
+    // 로그인할 때마다 SNS의 최신 프로필로 갱신
+    // 영속 상태 엔티티의 필드를 바꾸면 트랜잭션 커밋 시
+    // JPA 변경감지(dirty checking)로 자동 UPDATE 됨 (별도 save 불필요)
+    public User updateProfile(String name) {
+        this.name = name;
+        return this;
+    }
 }
