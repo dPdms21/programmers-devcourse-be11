@@ -28,3 +28,4 @@
 | [2026-08-18](./2026-08-18.md) | Gudit Redis 한정판매 흐름 및 정책 점검 / Payment 예외 처리, API 문서 보완 / 프론트 API 연동 / 인증 및 Sale 상태 동기화 수정 요청 |
 | [2026-08-19](./2026-08-19.md) | Gudit 프론트 API 연동 마무리 / 결제 취소 및 구매내역 보완 / Redis 재설계 코드리뷰 및 동작 검증 / 초기 데이터 구성 |
 | [2026-08-20](./2026-08-20.md) | Gudit Purchase · Payment 통합 검증 / 구매 · 결제 흐름 보완 / Toss Payments Webhook 상태 보정 |
+| [2026-08-21](./2026-08-21.md) | Gudit Toss Payments Webhook 실제 연동 검증 / k6 결제 동시성 테스트 / 락 순서 · Redis 재고 정합성 개선 |
