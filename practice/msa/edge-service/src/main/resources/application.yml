@@ -1,0 +1,27 @@
+server:
+  port: 8000
+
+spring:
+  application:
+    name: edge-service
+
+  cloud:
+    gateway:
+      server:
+        webmvc:
+          # 라우팅 규칙 - 위에서부터 순서대로 매칭
+          # 포괄 패턴(/api/**)은 마지막에 배치
+          routes:
+            - id: auth
+              uri: http://localhost:8082
+              predicates:
+                - Path=/api/auth/**,/api/users/**,/api/tokens/**
+            - id: oauth2-login
+              uri: http://localhost:8082
+              predicates:
+                - Path=/oauth2/**,/login/oauth2/**
+            - id: board
+              uri: http://localhost:8081
+              predicates:
+                - Path=/api/**
+          trusted-proxies: "127\\.0\\.0\\.1|0:0:0:0:0:0:0:1|::1"

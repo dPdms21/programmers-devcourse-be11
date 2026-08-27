@@ -1,0 +1,47 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: auth-service
+
+  # [설정 중앙화] 기동 시 config-service에서 공유 설정을 받아옴
+  # optional: 접두사 = config server가 죽어 있어도 기동은 되게 함
+  # 운영이라면 optional을 떼서 "설정 없이 뜨는 것"보다 "빨리 실패"를 택하는 게 보통
+  # 지금은 개발 편의상 사용
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  datasource:
+    url: ${AUTH_DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${AUTH_DB_USERNAME}
+    password: ${AUTH_DB_PASSWORD}
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: "{baseUrl}/login/oauth2/code/kakao"
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_post
+            client-name: kakao
+            scope:
+              - profile_nickname
+              - account_email
+
+        provider:
+          authorization-uri: https://kauth.kakao.com/oauth/authorize
+          token-uri: https://kauth.kakao.com/oauth/token
+          user-info-uri: https://kapi.kakao.com/v2/user/me
+          user-name-attribute: id
+
+  jwt:
+    issuer: test@naver.com
+    access-token-validity: 2h
+    refresh-token-validity: 7d
+
+  # OAuth2 핸들러들이 리다이렉트할 때 사용
+  web-service:
+    url: http://localhost:8080

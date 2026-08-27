@@ -1,0 +1,20 @@
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-service
+
+  profiles:
+    active: native # 파일시스템 백엔드 - config-repo 폴더의 yml을 "그대로" 서빙 (git 불필요)
+
+  cloud:
+    config:
+      server:
+        native:
+          search-locations: file:///D:/dev/programmers-devcourse-be11/practice/msa/config-repo
+
+# Config Server 설정 조회
+# curl.exe http://localhost:8888/{서비스이름}/{프로필}
+# curl.exe http://localhost:8888/auth-service/default
+# curl.exe http://localhost:8888/application/default

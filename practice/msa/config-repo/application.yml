@@ -1,0 +1,8 @@
+# application.yml -> "모든" 클라이언트 서비스에 적용
+# {서비스이름}.yml -> 특정 서비스에 적용
+
+jwt:
+  secret_key: ${JWT_SECRET_KEY}
+
+service:
+  token: ${SERVICE_TOKEN}
