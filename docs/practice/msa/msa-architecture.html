@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>MSA 게시판 아키텍처</title>
+
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;600;700&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #5a5fcf; } a:hover { color: #43479e; }
+  </style>
+
+</head>
+<body>
+
+<div style="position: relative; width: 1400px; height: 1030px; background: #fbfaf8; font-family: 'IBM Plex Sans KR', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif; color: #26282e; overflow: hidden;">
+
+  <svg width="1400" height="1030" viewBox="0 0 1400 1030" style="position: absolute; left: 0; top: 0;" fill="none">
+    <defs>
+      <marker id="arwIndigo" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" stroke="#5a5fcf" stroke-width="1.6" fill="none"></path></marker>
+      <marker id="arwTeal" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" stroke="#1f9e8e" stroke-width="1.6" fill="none"></path></marker>
+      <marker id="arwGray" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" stroke="#9aa0a8" stroke-width="1.6" fill="none"></path></marker>
+      <marker id="arwAmber" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" stroke="#c99312" stroke-width="1.6" fill="none"></path></marker>
+      <marker id="arwSlate" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M1 1 L8 4.5 L1 8" stroke="#7b828c" stroke-width="1.6" fill="none"></path></marker>
+      <marker id="arwAmberBack" markerWidth="9" markerHeight="9" refX="2" refY="4.5" orient="auto"><path d="M8 1 L1 4.5 L8 8" stroke="#c99312" stroke-width="1.6" fill="none"></path></marker>
+    </defs>
+
+    <line x1="200" y1="194" x2="200" y2="294" stroke="#5a5fcf" stroke-width="2" marker-end="url(#arwIndigo)"></line>
+    <polyline points="280,194 280,250 660,250 660,294" stroke="#c99312" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arwAmber)"></polyline>
+    <line x1="364" y1="352" x2="554" y2="352" stroke="#5a5fcf" stroke-width="2" marker-end="url(#arwIndigo)"></line>
+    <line x1="690" y1="424" x2="690" y2="554" stroke="#5a5fcf" stroke-width="2" marker-end="url(#arwIndigo)"></line>
+    <polyline points="820,424 820,480 1170,480 1170,554" stroke="#5a5fcf" stroke-width="2" marker-end="url(#arwIndigo)"></polyline>
+    <line x1="324" y1="140" x2="1114" y2="140" stroke="#c99312" stroke-width="2" stroke-dasharray="6 5" marker-start="url(#arwAmberBack)" marker-end="url(#arwAmber)"></line>
+    <polyline points="864,600 970,600 970,240 1230,240 1230,198" stroke="#c99312" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arwAmber)"></polyline>
+    <line x1="1016" y1="612" x2="866" y2="612" stroke="#1f9e8e" stroke-width="2" marker-end="url(#arwTeal)"></line>
+    <line x1="864" y1="662" x2="1014" y2="662" stroke="#1f9e8e" stroke-width="2" marker-end="url(#arwTeal)"></line>
+    <line x1="364" y1="616" x2="554" y2="616" stroke="#9aa0a8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arwGray)"></line>
+    <polyline points="220,684 220,742 1130,742 1130,704" stroke="#9aa0a8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arwGray)"></polyline>
+    <line x1="220" y1="776" x2="220" y2="686" stroke="#9aa0a8" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arwGray)"></line>
+    <line x1="690" y1="704" x2="690" y2="794" stroke="#7b828c" stroke-width="2" marker-end="url(#arwSlate)"></line>
+    <line x1="1170" y1="704" x2="1170" y2="794" stroke="#7b828c" stroke-width="2" marker-end="url(#arwSlate)"></line>
+  </svg>
+
+  <div style="position: absolute; left: 80px; top: 26px; display: flex; flex-direction: column; gap: 4px;">
+    <div style="font-size: 24px; font-weight: 700; letter-spacing: -0.01em;">MSA 게시판 시스템 아키텍처</div>
+    <div style="font-size: 13px; color: #6b7079;">세션 모놀리스 → 토큰 기반 5개 서비스 분리 · DB per service</div>
+  </div>
+
+  <div style="position: absolute; left: 80px; top: 110px; width: 240px; height: 84px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; box-shadow: 0 1px 3px rgba(38,40,46,0.06); display: flex; align-items: center; gap: 12px; padding: 0 18px;">
+    <svg width="26" height="26" viewBox="0 0 24 24" stroke="#26282e" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="2"></rect><path d="M8 21h8M12 17v4"></path></svg>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-size: 15px; font-weight: 600;">브라우저</div>
+      <div style="font-size: 12px; color: #6b7079;">사용자 · JS는 access 토큰 보관</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 1120px; top: 110px; width: 220px; height: 84px; box-sizing: border-box; background: #fffdf5; border: 1.5px dashed #c99312; border-radius: 10px; display: flex; align-items: center; gap: 12px; padding: 0 18px;">
+    <svg width="24" height="24" viewBox="0 0 24 24" stroke="#c99312" stroke-width="1.6" fill="none" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3c2.5 2.6 3.8 5.7 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.7-3.8-9S9.5 5.6 12 3z"></path></svg>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-size: 15px; font-weight: 600; color: #8a660c;">카카오</div>
+      <div style="font-size: 12px; color: #8a7a4a;">외부 인증 제공자</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 80px; top: 300px; width: 284px; height: 124px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; box-shadow: 0 1px 3px rgba(38,40,46,0.06); display: flex; flex-direction: column; overflow: hidden;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #e9f4f7; border-bottom: 1px solid #d3e6ec;">
+      <div style="font-size: 15px; font-weight: 700; color: #16697d;">web-service</div>
+      <div style="font-size: 11.5px; font-family: 'SF Mono', Menlo, monospace; background: #ffffff; border: 1px solid #cfe0e6; border-radius: 5px; padding: 1px 7px; color: #16697d;">:8080</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; padding: 12px 16px; font-size: 12px; color: #4c5158; line-height: 1.45;">
+      <div>Thymeleaf 페이지 · 정적 리소스</div>
+      <div>Feign <b>BFF 프록시</b> — /api/** 중계</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 560px; top: 300px; width: 284px; height: 124px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; box-shadow: 0 1px 3px rgba(38,40,46,0.06); display: flex; flex-direction: column; overflow: hidden;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #ececfa; border-bottom: 1px solid #dcdcf2;">
+      <div style="font-size: 15px; font-weight: 700; color: #43479e;">edge-service</div>
+      <div style="font-size: 11.5px; font-family: 'SF Mono', Menlo, monospace; background: #ffffff; border: 1px solid #d5d5ee; border-radius: 5px; padding: 1px 7px; color: #43479e;">:8000</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; padding: 12px 16px; font-size: 12px; color: #4c5158; line-height: 1.45;">
+      <div>Spring Cloud Gateway — 단일 진입점</div>
+      <div>라우팅 · <b>X-Forwarded</b> 부착 (trusted-proxies)</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 560px; top: 560px; width: 304px; height: 144px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; box-shadow: 0 1px 3px rgba(38,40,46,0.06); display: flex; flex-direction: column; overflow: hidden;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #faf1dc; border-bottom: 1px solid #efe2c2;">
+      <div style="font-size: 15px; font-weight: 700; color: #8a660c;">auth-service</div>
+      <div style="font-size: 11.5px; font-family: 'SF Mono', Menlo, monospace; background: #ffffff; border: 1px solid #e8dcba; border-radius: 5px; padding: 1px 7px; color: #8a660c;">:8082</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; padding: 12px 16px; font-size: 12px; color: #4c5158; line-height: 1.45;">
+      <div>JWT <b>발급</b>·재발급 (HS512) · 계정 소유</div>
+      <div>카카오 OAuth2 로그인</div>
+      <div>탈퇴 saga <b>오케스트레이터</b></div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 1020px; top: 560px; width: 304px; height: 144px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; box-shadow: 0 1px 3px rgba(38,40,46,0.06); display: flex; flex-direction: column; overflow: hidden;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #e5f3ea; border-bottom: 1px solid #d0e7d8;">
+      <div style="font-size: 15px; font-weight: 700; color: #256b41;">board-service</div>
+      <div style="font-size: 11.5px; font-family: 'SF Mono', Menlo, monospace; background: #ffffff; border: 1px solid #cbe2d3; border-radius: 5px; padding: 1px 7px; color: #256b41;">:8081</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; padding: 12px 16px; font-size: 12px; color: #4c5158; line-height: 1.45;">
+      <div>게시판 · 댓글 API (QueryDSL)</div>
+      <div>토큰 <b>검증</b> — STATELESS</div>
+      <div>탈퇴 saga 참여자 (멱등 정리)</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 80px; top: 560px; width: 284px; height: 124px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; box-shadow: 0 1px 3px rgba(38,40,46,0.06); display: flex; flex-direction: column; overflow: hidden;">
+    <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #f1ebf8; border-bottom: 1px solid #e2d7ef;">
+      <div style="font-size: 15px; font-weight: 700; color: #6a4a9e;">config-service</div>
+      <div style="font-size: 11.5px; font-family: 'SF Mono', Menlo, monospace; background: #ffffff; border: 1px solid #ddd0ec; border-radius: 5px; padding: 1px 7px; color: #6a4a9e;">:8888</div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 5px; padding: 12px 16px; font-size: 12px; color: #4c5158; line-height: 1.45;">
+      <div>Spring Cloud Config Server</div>
+      <div>공유 설정의 <b>단일 출처</b></div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 80px; top: 780px; width: 284px; height: 70px; box-sizing: border-box; background: #f4f4f2; border: 1px solid #dfe2e8; border-radius: 10px; display: flex; align-items: center; gap: 12px; padding: 0 16px;">
+    <svg width="22" height="22" viewBox="0 0 24 24" stroke="#6b7079" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-size: 14px; font-weight: 600;">config-repo</div>
+      <div style="font-size: 11.5px; color: #6b7079;">JWT secret · 서비스 토큰 · 카카오 키 (env 우선)</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 600px; top: 800px; width: 220px; height: 78px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; display: flex; align-items: center; gap: 12px; padding: 0 16px;">
+    <svg width="22" height="26" viewBox="0 0 22 26" stroke="#7b828c" stroke-width="1.6" fill="none"><ellipse cx="11" cy="5" rx="8.5" ry="3.4"></ellipse><path d="M2.5 5v16c0 1.9 3.8 3.4 8.5 3.4s8.5-1.5 8.5-3.4V5"></path><path d="M2.5 13c0 1.9 3.8 3.4 8.5 3.4s8.5-1.5 8.5-3.4"></path></svg>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-size: 13.5px; font-weight: 600; font-family: 'SF Mono', Menlo, monospace;">board_auth</div>
+      <div style="font-size: 11.5px; color: #6b7079;">MySQL — user (계정)</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 1060px; top: 800px; width: 220px; height: 78px; box-sizing: border-box; background: #ffffff; border: 1px solid #dfe2e8; border-radius: 10px; display: flex; align-items: center; gap: 12px; padding: 0 16px;">
+    <svg width="22" height="26" viewBox="0 0 22 26" stroke="#7b828c" stroke-width="1.6" fill="none"><ellipse cx="11" cy="5" rx="8.5" ry="3.4"></ellipse><path d="M2.5 5v16c0 1.9 3.8 3.4 8.5 3.4s8.5-1.5 8.5-3.4V5"></path><path d="M2.5 13c0 1.9 3.8 3.4 8.5 3.4s8.5-1.5 8.5-3.4"></path></svg>
+    <div style="display: flex; flex-direction: column; gap: 2px;">
+      <div style="font-size: 13.5px; font-weight: 600; font-family: 'SF Mono', Menlo, monospace;">board_app</div>
+      <div style="font-size: 11.5px; color: #6b7079;">MySQL — board · comment</div>
+    </div>
+  </div>
+
+  <div style="position: absolute; left: 92px; top: 234px; font-size: 11.5px; color: #43479e; background: rgba(251,250,248,0.92); padding: 1px 4px;">페이지 + /api (같은 출처)</div>
+  <div style="position: absolute; left: 330px; top: 256px; font-size: 11.5px; color: #8a660c; background: rgba(251,250,248,0.92); padding: 1px 4px;">카카오 로그인 (페이지 이동 /oauth2/**)</div>
+  <div style="position: absolute; left: 375px; top: 328px; font-size: 11.5px; color: #43479e; background: rgba(251,250,248,0.92); padding: 1px 4px;">Feign 중계 /api/**</div>
+  <div style="position: absolute; left: 700px; top: 468px; font-size: 11.5px; color: #43479e; background: rgba(251,250,248,0.92); padding: 1px 4px; width: 108px; line-height: 1.4;">/api/users·tokens<br>+ X-Forwarded</div>
+  <div style="position: absolute; left: 930px; top: 456px; font-size: 11.5px; color: #43479e; background: rgba(251,250,248,0.92); padding: 1px 4px;">/api/boards</div>
+  <div style="position: absolute; left: 596px; top: 116px; font-size: 11.5px; color: #8a660c; background: rgba(251,250,248,0.92); padding: 1px 4px;">인가 페이지 · 리다이렉트</div>
+  <div style="position: absolute; left: 980px; top: 330px; font-size: 11.5px; color: #8a660c; background: rgba(251,250,248,0.92); padding: 1px 4px; width: 92px; line-height: 1.4;">code → 토큰 교환 (서버 간)</div>
+  <div style="position: absolute; left: 868px; top: 578px; font-size: 11.5px; color: #14756a; background: rgba(251,250,248,0.92); padding: 1px 4px; width: 148px; text-align: center;">이름 벌크 조회</div>
+  <div style="position: absolute; left: 868px; top: 668px; font-size: 11.5px; color: #14756a; background: rgba(251,250,248,0.92); padding: 1px 4px; width: 148px; text-align: center;">탈퇴 saga (정리 지시)</div>
+  <div style="position: absolute; left: 876px; top: 626px; font-size: 10.5px; font-family: 'SF Mono', Menlo, monospace; color: #14756a; background: #e2f2ef; border: 1px solid #c4e4de; border-radius: 999px; padding: 2px 10px;">X-Service-Token</div>
+  <div style="position: absolute; left: 380px; top: 592px; font-size: 11.5px; color: #6b7079; background: rgba(251,250,248,0.92); padding: 1px 4px;">공유 설정 (기동 시)</div>
+  <div style="position: absolute; left: 560px; top: 748px; font-size: 11.5px; color: #6b7079; background: rgba(251,250,248,0.92); padding: 1px 4px;">공유 설정 (기동 시)</div>
+  <div style="position: absolute; left: 232px; top: 720px; font-size: 11.5px; color: #6b7079; background: rgba(251,250,248,0.92); padding: 1px 4px;">yml 읽기 (native)</div>
+
+  <div style="position: absolute; left: 80px; top: 940px; display: flex; align-items: center; gap: 28px; font-size: 12px; color: #4c5158;">
+    <div style="font-weight: 700; font-size: 12.5px;">범례</div>
+    <div style="display: flex; align-items: center; gap: 8px;"><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#5a5fcf" stroke-width="2"></line></svg><span>사용자 요청 (프록시 경유)</span></div>
+    <div style="display: flex; align-items: center; gap: 8px;"><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#1f9e8e" stroke-width="2"></line></svg><span>서버 간 내부 호출 (X-Service-Token)</span></div>
+    <div style="display: flex; align-items: center; gap: 8px;"><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#9aa0a8" stroke-width="2" stroke-dasharray="6 5"></line></svg><span>설정 흐름</span></div>
+    <div style="display: flex; align-items: center; gap: 8px;"><svg width="34" height="8"><line x1="0" y1="4" x2="34" y2="4" stroke="#c99312" stroke-width="2" stroke-dasharray="6 5"></line></svg><span>카카오 OAuth2 흐름</span></div>
+  </div>
+
+</div>
+
+</body>
+</html>

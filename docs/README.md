@@ -8,7 +8,7 @@
 | ------------------------------------------- | ----------------------- |
 | [assignments/java/](./assignments/java)     | Java 과제 설명 및 구현 안내 문서   |
 | [assignments/spring/](./assignments/spring) | Spring 과제 설명 및 구현 안내 문서 |
-| [practice/](./practice)                     | Java 실습 보조자료            |
+| [practice/](./practice)                     | 실습 보조자료            |
 
 ## 과제 보조자료
 
@@ -20,14 +20,16 @@
 
 ## 실습 보조자료
 
-| 주제        | 자료                                                                  | 설명                                                                 |
-| --------- | ------------------------------------------------------------------- | ------------------------------------------------------------------ |
-| 이중 연결 리스트 | [🔗 시각화](./practice/collections/doubly-linked-list-visualizer.html) | `prev`와 `next`를 이용한 노드 연결 구조를 확인하기 위해 제공된 시각화 자료                   |
-| HashMap 체이닝 | [🔗 시각화](./practice/collections/hashmap-chaining-visualizer.html) | 해시 함수를 통한 버킷 선택과 충돌 발생 시 노드가 체이닝되는 과정을 확인하는 시각화 자료 |
-| TreeMap   | [🔗 시각화](./practice/collections/treemap-visualizer.html)            | 이진 검색 트리 기반의 `put`, `get`, `remove` 동작과 중위 순회 결과를 단계별로 확인하는 시각화 자료 |
-| BFS | [🔗 시각화](./practice/algorithms/bfs-visualizer.html) | `Queue`와 방문 배열을 이용해 가까운 정점부터 탐색하는 과정을 확인하는 시각화 자료 |
-| DFS 재귀 | [🔗 시각화](./practice/algorithms/dfs-recursive-visualizer.html) | 재귀 호출 스택과 백트래킹을 따라가며 깊이 우선 탐색 과정을 확인하는 시각화 자료 |
-| DFS 스택 | [🔗 시각화](./practice/algorithms/dfs-stack-visualizer.html) | `Stack`과 방문 배열을 이용해 깊이 우선 탐색이 진행되는 과정을 확인하는 시각화 자료 |
+| 주제           | 자료                                                                  | 설명                                                                 |
+| ------------ | ------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| 이중 연결 리스트    | [🔗 시각화](./practice/collections/doubly-linked-list-visualizer.html) | `prev`와 `next`를 이용한 노드 연결 구조를 확인하기 위해 제공된 시각화 자료                   |
+| HashMap 체이닝  | [🔗 시각화](./practice/collections/hashmap-chaining-visualizer.html)   | 해시 함수를 통한 버킷 선택과 충돌 발생 시 노드가 체이닝되는 과정을 확인하는 시각화 자료                 |
+| TreeMap      | [🔗 시각화](./practice/collections/treemap-visualizer.html)            | 이진 검색 트리 기반의 `put`, `get`, `remove` 동작과 중위 순회 결과를 단계별로 확인하는 시각화 자료 |
+| BFS          | [🔗 시각화](./practice/algorithms/bfs-visualizer.html)                 | `Queue`와 방문 배열을 이용해 가까운 정점부터 탐색하는 과정을 확인하는 시각화 자료                  |
+| DFS 재귀       | [🔗 시각화](./practice/algorithms/dfs-recursive-visualizer.html)       | 재귀 호출 스택과 백트래킹을 따라가며 깊이 우선 탐색 과정을 확인하는 시각화 자료                      |
+| DFS 스택       | [🔗 시각화](./practice/algorithms/dfs-stack-visualizer.html)           | `Stack`과 방문 배열을 이용해 깊이 우선 탐색이 진행되는 과정을 확인하는 시각화 자료                 |
+| MSA 게시판 아키텍처 | [🔗 시각화](./practice/msa/msa-architecture.html)                      | 게시판 시스템을 여러 서비스로 분리한 MSA 구조와 서비스 간 요청·인증·설정 흐름을 확인하는 시각화 자료        |
+
 
 ## 관리 기준
 
