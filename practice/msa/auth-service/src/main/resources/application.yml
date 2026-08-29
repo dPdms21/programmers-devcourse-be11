@@ -32,16 +32,17 @@ spring:
               - account_email
 
         provider:
-          authorization-uri: https://kauth.kakao.com/oauth/authorize
-          token-uri: https://kauth.kakao.com/oauth/token
-          user-info-uri: https://kapi.kakao.com/v2/user/me
-          user-name-attribute: id
+          kakao:
+            authorization-uri: https://kauth.kakao.com/oauth/authorize
+            token-uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user-name-attribute: id
 
-  jwt:
-    issuer: test@naver.com
-    access-token-validity: 2h
-    refresh-token-validity: 7d
+jwt:
+  issuer: test@naver.com
+  access-token-validity: 2h
+  refresh-token-validity: 7d
 
-  # OAuth2 핸들러들이 리다이렉트할 때 사용
-  web-service:
-    url: http://localhost:8080
+# OAuth2 핸들러들이 리다이렉트할 때 사용
+web-service:
+  url: http://localhost:8080

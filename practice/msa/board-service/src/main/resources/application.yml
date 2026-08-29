@@ -4,3 +4,39 @@ server:
 spring:
   application:
     name: board-service
+
+  config:
+    import: "optional:configserver:http://localhost:8888"
+
+  datasource:
+    url: ${BOARD_DB_URL}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${BOARD_DB_USERNAME}
+    password: ${BOARD_DB_PASSWORD}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    root: info
+    com.example.boardservice: debug
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+file:
+  upload-dir: ./uploads
