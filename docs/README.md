@@ -8,6 +8,7 @@
 | ------------------------------------------- | ----------------------- |
 | [assignments/java/](./assignments/java)     | Java 과제 설명 및 구현 안내 문서   |
 | [assignments/spring/](./assignments/spring) | Spring 과제 설명 및 구현 안내 문서 |
+| [assignments/springboot/](./assignments/springboot) | Spring Boot 과제 설명 및 구현 안내 문서 |
 | [practice/](./practice)                     | 실습 보조자료            |
 
 ## 과제 보조자료
@@ -30,9 +31,9 @@
 | DFS 스택       | [🔗 시각화](./practice/algorithms/dfs-stack-visualizer.html)           | `Stack`과 방문 배열을 이용해 깊이 우선 탐색이 진행되는 과정을 확인하는 시각화 자료                 |
 | MSA 게시판 아키텍처 | [🔗 시각화](./practice/msa/msa-architecture.html)                      | 게시판 시스템을 여러 서비스로 분리한 MSA 구조와 서비스 간 요청·인증·설정 흐름을 확인하는 시각화 자료        |
 
-
 ## 관리 기준
 
 * `assignments/java/`에는 Java 과제 설명과 과제 수행 과정에서 만든 보조자료를 정리한다.
 * `assignments/spring/`에는 Spring 과제 설명과 관련 문서를 정리한다.
+* `assignments/springboot/`에는 Spring Boot 과제 설명과 관련 문서를 정리한다.
 * `practice/`에는 수업 중 실습과 직접 연결된 보조자료를 정리한다.
