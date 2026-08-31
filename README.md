@@ -4,28 +4,29 @@
 
 프로그래머스 데브코스 백엔드 11기 과정에서 학습한 내용을 정리하는 저장소입니다.
 
-강의 정리, Java·Spring·Spring Boot 실습과 과제, Java·SQL 코딩 테스트, TIL을 분리하여 관리합니다.
+강의 정리, 백엔드 수업 실습과 과제, Java·SQL 코딩 테스트, TIL을 분리하여 관리합니다.
 
 ---
 
 ## Projects
 
 | 구분 | 프로젝트 | 기간 | 역할 | 설명 |
-| --- | --- | --- | --- | --- |
+| --- | ------- | --- | ---- | --- |
 | 개인 프로젝트 | [Repoary](https://github.com/prgrms-be-devcourse/NBE11-13-myproject-parkyeeun) | 2026.07 ~ 진행 중 | Backend 중심 Full Stack | GitHub 커밋과 변경 파일을 분석해 TIL 초안과 월별 README 생성을 지원하는 학습 기록 서비스 |
 | 1차 팀 프로젝트 | [Compose Bean](https://github.com/prgrms-be-devcourse/NBE11-13-1-Team01) | 2026.07.16 ~ 2026.07.24 | 팀장 / Backend | 비회원 커피 주문 서비스에서 상품 도메인·이미지 관리·소프트 딜리트, 공통 예외 처리, Slack 주문 알림, 기능 통합·테스트 및 프로젝트 문서화를 담당 |
+| 2차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-2-Team03) | 2026.08.07 ~ 2026.08.25 | Backend - Purchase·Payment / Frontend | 한정 수량 굿즈 타임세일 서비스에서 구매·결제 도메인과 Toss 결제 연동을 담당하고, 구매·결제 상태 전환의 동시성과 경합 상황을 검증 |
 
 ---
 
 ## Directory Guide
 
-| Path                          | Description                      |
-| ----------------------------- | -------------------------------- |
-| [assignments/](./assignments) | Java·Spring·Spring Boot 과제 코드    |
+| Path                          | Description                           |
+| ----------------------------- | ------------------------------------- |
+| [assignments/](./assignments) | Java·Spring·Spring Boot 과제 코드      |
 | [codingtest/](./codingtest)   | Java·SQL 코딩 테스트 풀이               |
-| [docs/](./docs)               | 과제 문서 및 실습 보조자료                  |
-| [lectures/](./lectures)       | 강의 내용 및 개념 정리                    |
-| [practice/](./practice)       | Java·Spring·Spring Boot 수업 실습 코드 |
+| [docs/](./docs)               | 과제 문서 및 실습 보조자료               |
+| [lectures/](./lectures)       | 강의 내용 및 개념 정리                  |
+| [practice/](./practice)       | Java·Kotlin·Spring·Spring Boot·MSA 수업 실습 코드 |
 | [til/](./til)                 | 날짜별 학습 회고                        |
 
 ---
@@ -56,6 +57,8 @@ programmers-devcourse-be11/
 │
 ├── practice/
 │   ├── java/                   # Java 수업 실습 코드
+│   ├── kotlin/                 # Kotlin 수업 실습 코드
+│   ├── msa/                    # MSA 수업 실습 코드
 │   ├── spring/                 # Spring 수업 실습 코드
 │   └── springboot/             # Spring Boot 수업 실습 코드
 │
@@ -74,6 +77,7 @@ docs(practice): 실습 보조자료 정리
 docs(til): YYYY-MM-DD 학습 회고 정리
 
 study(java): YYYY-MM-DD Java 실습·과제 및 학습 코드 작성
+study(kotlin): YYYY-MM-DD Kotlin 실습 및 학습 코드 작성
 study(spring): YYYY-MM-DD Spring 실습·과제 및 학습 코드 작성
 study(springboot): YYYY-MM-DD Spring Boot 실습·과제 및 학습 코드 작성
 
@@ -86,4 +90,4 @@ refactor(scope): scope 코드 구조 개선
 chore(project): 프로젝트 설정 및 구조 변경
 ```
 
-※ `scope`에는 `java`, `spring`, `springboot` 등 실제 변경 영역을 작성한다.
+※ `scope`에는 `java`, `kotlin`, `spring`, `springboot` 등 실제 변경 영역을 작성한다.
