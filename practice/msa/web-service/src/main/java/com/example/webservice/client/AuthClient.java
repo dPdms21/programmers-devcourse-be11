@@ -1,13 +1,13 @@
 package com.example.webservice.client;
 
-import com.example.webservice.dto.SignInRequestDto;
-import com.example.webservice.dto.SignInResponseDto;
-import com.example.webservice.dto.SignUpRequestDto;
-import com.example.webservice.dto.SignUpResponseDto;
+import com.example.webservice.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 // ResponseEntity로 받는 메서드들
 // auth-service가 refresh token을 Set-Cookie 헤더로 내려주는 응답과
@@ -20,4 +20,7 @@ public interface AuthClient {
 
     @PostMapping("/api/users/login")
     ResponseEntity<SignInResponseDto> login(@RequestBody SignInRequestDto signInRequestDto);
+
+    @GetMapping("/api/users/info")
+    UserInfoResponseDto getUserInfo(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorization);
 }

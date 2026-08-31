@@ -1,19 +1,18 @@
 package com.example.authservice.controller;
 
 import com.example.authservice.config.jwt.JwtProperties;
-import com.example.authservice.dto.SignInRequestDto;
-import com.example.authservice.dto.SignInResponseDto;
-import com.example.authservice.dto.SignUpRequestDto;
-import com.example.authservice.dto.SignUpResponseDto;
+import com.example.authservice.config.security.CustomUserDetails;
+import com.example.authservice.domain.entity.User;
+import com.example.authservice.dto.*;
 import com.example.authservice.service.UserService;
 import com.example.authservice.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import lombok.ToString;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
+@ToString
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -47,5 +46,17 @@ public class UserApiController {
         logined.setRefreshToken(null);
 
         return logined;
+    }
+
+    @GetMapping("/info")
+    public UserInfoResponseDto getUserInfo(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+
+        return UserInfoResponseDto.builder()
+                .id(user.getId())
+                .userId(user.getUserId())
+                .userName(user.getName())
+                .role(user.getRole())
+                .build();
     }
 }
