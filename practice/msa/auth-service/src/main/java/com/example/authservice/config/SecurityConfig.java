@@ -30,6 +30,7 @@ import java.io.IOException;
 public class SecurityConfig {
     @Value("${web-service.url}")
     private String webServiceUrl;
+
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
 
     @Bean
@@ -46,13 +47,13 @@ public class SecurityConfig {
                                 "/api/users/login",
                                 "/api/tokens/refresh",
                                 "/api/users/oauth-join",
-                                "/api/users/name",
+                                "/api/users/names",
                                 "/error"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(exception ->  exception
+                .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())
                         .authenticationEntryPoint(authenticationEntryPoint())
                 );
