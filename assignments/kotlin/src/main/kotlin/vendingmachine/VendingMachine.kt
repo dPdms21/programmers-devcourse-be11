@@ -17,14 +17,29 @@ fun printMenu(totalMoney: Int) {
 fun getChoice(): Int {
     println("메뉴 선택: ")
 
-    return readln().toInt()
+    return readln().toIntOrNull() ?: -1
 }
 
 fun getMoney(): Int {
     println("----------------------------------------")
     println("금액 투입: ")
 
-    return readln().toInt()
+    val money = readln().toIntOrNull()
+
+    if (money == null) {
+        println("----------------------------------------")
+        println("잘못된 입력. 숫자로 입력!")
+        return 0
+    }
+
+    if (money % 100 != 0) {
+        println("----------------------------------------")
+        println("100원 단위로 넣기")
+
+        return 0
+    }
+
+    return money
 }
 
 fun calcMoney(totalMoney: Int, price: Int): Int {
@@ -36,63 +51,33 @@ fun calcMoneyException() {
     println("잔돈 부족")
 }
 
+fun buy(totalMoney: Int, price: Int, name: String): Int {
+    val result = calcMoney(totalMoney, price)
+
+    if (result < 0) {
+        calcMoneyException()
+
+        return totalMoney
+    }
+
+    println("----------------------------------------")
+    println("${name} 나옴")
+
+    return result
+}
+
 fun main() {
     var totalMoney = 0
 
     while (true) {
         printMenu(totalMoney)
         val choice = getChoice()
-        var result = -1
 
         when (choice) {
-            1 -> {
-                result = calcMoney(totalMoney, COKE)
-
-                if (result < 0) {
-                    calcMoneyException()
-                }
-                else {
-                    totalMoney = result
-                    println("----------------------------------------")
-                    println("콜라 나옴")
-                }
-            }
-            2 -> {
-                result = calcMoney(totalMoney, CIDER)
-
-                if (result < 0) {
-                    calcMoneyException()
-                }
-                else {
-                    totalMoney = result
-                    println("----------------------------------------")
-                    println("사이다 나옴")
-                }
-            }
-            3 -> {
-                result = calcMoney(totalMoney, FANTA)
-
-                if (result < 0) {
-                    calcMoneyException()
-                }
-                else {
-                    totalMoney = result
-                    println("----------------------------------------")
-                    println("환타 나옴")
-                }
-            }
-            4 -> {
-                result = calcMoney(totalMoney, WATER)
-
-                if (result < 0) {
-                    calcMoneyException()
-                }
-                else {
-                    totalMoney = result
-                    println("----------------------------------------")
-                    println("물 나옴")
-                }
-            }
+            1 -> totalMoney = buy(totalMoney, COKE, "콜라")
+            2 -> totalMoney = buy(totalMoney, CIDER, "사이다")
+            3 -> totalMoney = buy(totalMoney, FANTA, "환타")
+            4 -> totalMoney = buy(totalMoney, WATER, "물")
             5 -> totalMoney += getMoney()
             6 -> {
                 println("----------------------------------------")
