@@ -3,13 +3,19 @@ package membermanagement
 var totalCnt = 0
 var memberCnt = 0
 
+typealias Members = Array<Array<String>>
+
+const val NAME = 0
+const val EMAIL = 1
+const val PHONE = 2
+
 fun printPricePlan(): Int {
     println("===============================================")
     println("[요금제 선택]")
     println("[1]Lite : 10명 [2]Basic : 20명 [3]Premium : 30명")
     print("> ")
 
-    return readln().toInt()
+    return readln().toIntOrNull() ?: -1
 }
 
 fun printMenu(): Int {
@@ -20,10 +26,10 @@ fun printMenu(): Int {
     println("[7]프로그램 종료")
     print("> ")
 
-    return readln().toInt()
+    return readln().toIntOrNull() ?: -1
 }
 
-fun addMember(members: Array<Array<String>>) {
+fun addMember(members: Members) {
     if (memberCnt == totalCnt) {
         println("-----------------------------------------------")
         println("회원 초과!")
@@ -39,26 +45,33 @@ fun addMember(members: Array<Array<String>>) {
     print("연락처 입력: ")
     val phone = readln()
 
-    if (findIndex(members, 1, email) != -1) {
+    if (name.isBlank() || email.isBlank() || phone.isBlank()) {
+        println("-----------------------------------------------")
+        println("빈 값 입력 불가")
+
+        return
+    }
+
+    if (findIndex(members, EMAIL, email) != -1) {
         println("-----------------------------------------------")
         println("이미 존재하는 회원")
 
         return
     }
 
-    members[memberCnt][0] = name
-    members[memberCnt][1] = email
-    members[memberCnt][2] = phone
+    members[memberCnt][NAME] = name
+    members[memberCnt][EMAIL] = email
+    members[memberCnt][PHONE] = phone
     memberCnt++
     println("-----------------------------------------------")
     println("회원 등록 완료")
 }
 
 fun printMember(member: Array<String>) {
-    println("[이름] ${member[0]}, [이메일] ${member[1]}, [연락처] ${member[2]}")
+    println("[이름] ${member[NAME]}, [이메일] ${member[EMAIL]}, [연락처] ${member[PHONE]}")
 }
 
-fun findIndex(members: Array<Array<String>>, col: Int, value: String): Int {
+fun findIndex(members: Members, col: Int, value: String): Int {
     for (i in 0 until memberCnt) {
         if (value == members[i][col]) {
             return i
@@ -68,12 +81,12 @@ fun findIndex(members: Array<Array<String>>, col: Int, value: String): Int {
     return -1
 }
 
-fun selectEmail(members: Array<Array<String>>) {
+fun selectEmail(members: Members) {
     println("-----------------------------------------------")
     print("이메일 입력: ")
     val email = readln()
 
-    val idx = findIndex(members, 1, email)
+    val idx = findIndex(members, EMAIL, email)
 
     if (idx == -1) {
         println("-----------------------------------------------")
@@ -85,12 +98,12 @@ fun selectEmail(members: Array<Array<String>>) {
     printMember(members[idx])
 }
 
-fun selectName(members: Array<Array<String>>) {
+fun selectName(members: Members) {
     println("-----------------------------------------------")
     print("이름 입력: ")
     val name = readln()
 
-    val idx = findIndex(members, 0, name)
+    val idx = findIndex(members, NAME, name)
 
     if (idx == -1) {
         println("-----------------------------------------------")
@@ -102,7 +115,7 @@ fun selectName(members: Array<Array<String>>) {
     printMember(members[idx])
 }
 
-fun selectAll(members: Array<Array<String>>) {
+fun selectAll(members: Members) {
     if (memberCnt == 0) {
         println("-----------------------------------------------")
         println("회원 없음")
@@ -116,12 +129,12 @@ fun selectAll(members: Array<Array<String>>) {
     }
 }
 
-fun updateMember(members: Array<Array<String>>) {
+fun updateMember(members: Members) {
     println("-----------------------------------------------")
     print("수정할 회원의 이메일 입력: ")
     val email = readln()
 
-    val idx = findIndex(members, 1, email)
+    val idx = findIndex(members, EMAIL, email)
 
     if (idx == -1) {
         println("-----------------------------------------------")
@@ -136,22 +149,33 @@ fun updateMember(members: Array<Array<String>>) {
 
     println("-----------------------------------------------")
     print("새 이름 입력: ")
-    members[idx][0] = readln()
+    val newName = readln()
     print("새 이메일 입력: ")
-    members[idx][1] = readln()
+    val newEmail = readln()
     print("새 연락처 입력: ")
-    members[idx][2] = readln()
+    val newPhone = readln()
+
+    if (newName.isBlank() || newEmail.isBlank() || newPhone.isBlank()) {
+        println("-----------------------------------------------")
+        println("빈 값 입력 불가")
+
+        return
+    }
+
+    members[idx][NAME] = newName
+    members[idx][EMAIL] = newEmail
+    members[idx][PHONE] = newPhone
 
     println("-----------------------------------------------")
     println("수정 완료")
 }
 
-fun deleteMember(members: Array<Array<String>>) {
+fun deleteMember(members: Members) {
     println("-----------------------------------------------")
     print("삭제할 회원 이메일 입력: ")
     val email = readln()
 
-    val idx = findIndex(members, 1, email)
+    val idx = findIndex(members, EMAIL, email)
 
     if (idx == -1) {
         println("-----------------------------------------------")
@@ -161,23 +185,34 @@ fun deleteMember(members: Array<Array<String>>) {
     }
 
     for (i in idx until memberCnt-1) {
-        members[i][0] = members[i+1][0]
-        members[i][1] = members[i+1][1]
-        members[i][2] = members[i+1][2]
+        members[i][NAME] = members[i + 1][NAME]
+        members[i][EMAIL] = members[i + 1][EMAIL]
+        members[i][PHONE] = members[i + 1][PHONE]
     }
 
     memberCnt--
 
-    members[memberCnt][0] = ""
-    members[memberCnt][1] = ""
-    members[memberCnt][2] = ""
+    members[memberCnt][NAME] = ""
+    members[memberCnt][EMAIL] = ""
+    members[memberCnt][PHONE] = ""
 
     println("-----------------------------------------------")
     println("삭제 완료")
 }
 
 fun main() {
-    val num = printPricePlan()
+    var num: Int
+
+    while (true) {
+        num = printPricePlan()
+
+        if (num in 1..3) {
+            break
+        }
+
+        println("올바른 번호 입력!")
+    }
+
     totalCnt = num * 10
     val members = Array(totalCnt) { Array(3) { "" } }
 
