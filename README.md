@@ -22,7 +22,7 @@
 
 | Path                          | Description                           |
 | ----------------------------- | ------------------------------------- |
-| [assignments/](./assignments) | Java·Spring·Spring Boot 과제 코드      |
+| [assignments/](./assignments) | Java·Kotlin·Spring·Spring Boot 과제 코드 |
 | [codingtest/](./codingtest)   | Java·SQL 코딩 테스트 풀이               |
 | [docs/](./docs)               | 과제 문서 및 실습 보조자료               |
 | [lectures/](./lectures)       | 강의 내용 및 개념 정리                  |
@@ -38,6 +38,7 @@ programmers-devcourse-be11/
 │
 ├── assignments/
 │   ├── java/                   # Java 과제 코드
+│   ├── kotlin/                 # Kotlin 과제 코드
 │   ├── spring/                 # Spring 과제 코드
 │   └── springboot/             # Spring Boot 과제 코드
 │
@@ -48,6 +49,7 @@ programmers-devcourse-be11/
 ├── docs/
 │   ├── assignments/
 │   │   ├── java/               # Java 과제 문서
+│   │   ├── kotlin/             # Kotlin 과제 문서
 │   │   ├── spring/             # Spring 과제 문서
 │   │   └── springboot/         # Spring Boot 과제 문서
 │   │

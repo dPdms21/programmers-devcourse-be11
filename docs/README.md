@@ -4,12 +4,13 @@
 
 ## Directory Guide
 
-| Path                                        | Description             |
-| ------------------------------------------- | ----------------------- |
-| [assignments/java/](./assignments/java)     | Java 과제 설명 및 구현 안내 문서   |
-| [assignments/spring/](./assignments/spring) | Spring 과제 설명 및 구현 안내 문서 |
+| Path                                                | Description                  |
+| --------------------------------------------------- | ---------------------------- |
+| [assignments/java/](./assignments/java)             | Java 과제 설명 및 구현 안내 문서        |
+| [assignments/kotlin/](./assignments/kotlin)         | Kotlin 과제 설명 및 구현 안내 문서      |
+| [assignments/spring/](./assignments/spring)         | Spring 과제 설명 및 구현 안내 문서      |
 | [assignments/springboot/](./assignments/springboot) | Spring Boot 과제 설명 및 구현 안내 문서 |
-| [practice/](./practice)                     | 실습 보조자료            |
+| [practice/](./practice)                             | 실습 보조자료                      |
 
 ## 과제 보조자료
 
@@ -34,6 +35,7 @@
 ## 관리 기준
 
 * `assignments/java/`에는 Java 과제 설명과 과제 수행 과정에서 만든 보조자료를 정리한다.
+* `assignments/kotlin/`에는 Kotlin 과제 설명과 관련 문서를 정리한다.
 * `assignments/spring/`에는 Spring 과제 설명과 관련 문서를 정리한다.
 * `assignments/springboot/`에는 Spring Boot 과제 설명과 관련 문서를 정리한다.
 * `practice/`에는 수업 중 실습과 직접 연결된 보조자료를 정리한다.
