@@ -83,19 +83,22 @@ fun findIndex(members: Members, col: Int, value: String): Int {
 
 fun selectEmail(members: Members) {
     println("-----------------------------------------------")
-    print("이메일 입력: ")
-    val email = readln()
+    print("이메일 키워드 입력: ")
+    val keyword = readln()
 
-    val idx = findIndex(members, EMAIL, email)
+    var count = 0
 
-    if (idx == -1) {
-        println("-----------------------------------------------")
-        println("정보 없음!")
-
-        return
+    for (i in 0 until memberCnt) {
+        if (members[i][EMAIL].contains(keyword)) {
+            printMember(members[i])
+            count++
+        }
     }
 
-    printMember(members[idx])
+    if (count == 0) {
+        println("-----------------------------------------------")
+        println("정보 없음!")
+    }
 }
 
 fun selectName(members: Members) {
@@ -103,16 +106,19 @@ fun selectName(members: Members) {
     print("이름 입력: ")
     val name = readln()
 
-    val idx = findIndex(members, NAME, name)
+    var count = 0
 
-    if (idx == -1) {
-        println("-----------------------------------------------")
-        println("정보 없음!")
-
-        return
+    for (i in 0 until memberCnt) {
+        if (members[i][NAME] == name) {
+            printMember(members[i])
+            count++
+        }
     }
 
-    printMember(members[idx])
+    if (count == 0) {
+        println("-----------------------------------------------")
+        println("정보 없음!")
+    }
 }
 
 fun selectAll(members: Members) {
@@ -123,9 +129,13 @@ fun selectAll(members: Members) {
         return
     }
 
-    for (i in 0 until memberCnt) {
-        print("${i + 1}. ")
-        printMember(members[i])
+    val sortedMembers = members
+        .take(memberCnt)
+        .sortedBy { it[NAME] }
+
+    for ((index, member) in sortedMembers.withIndex()) {
+        print("${index + 1}. ")
+        printMember(member)
     }
 }
 
