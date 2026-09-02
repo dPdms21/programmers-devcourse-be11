@@ -1,10 +1,12 @@
 package com.example.boardservice.service;
 
 import com.example.boardservice.client.AuthClient;
+import com.example.boardservice.domain.entity.Board;
 import com.example.boardservice.domain.repository.BoardRepository;
 import com.example.boardservice.dto.BoardListItemResponseDto;
 import com.example.boardservice.dto.BoardSearchRequestDto;
 import com.example.boardservice.dto.UserNameResponseDto;
+import com.example.boardservice.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -42,6 +44,13 @@ public class BoardService {
                 item.getCommentCount(),
                 item.getCreated()
         ));
+    }
+
+    public Board getBoardWithComments(Long boardId) {
+        return boardRepository.findWithComments(boardId)
+                .orElseThrow(
+                        () -> new BoardNotFoundException("게시글을 찾을 수 없습니다. Id = " + boardId)
+                );
     }
 
     // auth가 죽어도 게시판 조회 자체는 살아야 하므로 (부분 실패 허용)
