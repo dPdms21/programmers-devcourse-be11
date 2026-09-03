@@ -5,6 +5,7 @@ import com.example.boardservice.domain.entity.Board;
 import com.example.boardservice.domain.repository.BoardRepository;
 import com.example.boardservice.dto.BoardListItemResponseDto;
 import com.example.boardservice.dto.BoardSearchRequestDto;
+import com.example.boardservice.dto.BoardUpdateRequestDto;
 import com.example.boardservice.dto.UserNameResponseDto;
 import com.example.boardservice.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -23,6 +26,7 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
     private final AuthClient authClient;
+    private final FileService fileService;
 
     // repository는 userId까지만 채워서 돌려줌
     // 페이지에 등장한 userId를 "모아서 한 번" auth에 요청 (벌크)
@@ -75,5 +79,43 @@ public class BoardService {
                 .map(UserNameResponseDto::getUserName)
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Transactional
+    public void saveBoard(String userId, String title, String content, MultipartFile file) {
+        String filePath = fileService.storeFile(file);
+
+        boardRepository.save(
+                Board.builder()
+                        .userId(userId)
+                        .title(title)
+                        .content(content)
+                        .filePath(filePath)
+                        .created(LocalDateTime.now())
+                        .build()
+        );
+    }
+
+    public Board getBoardDetail(long id) {
+        return boardRepository.findById(id)
+                .orElseThrow(
+                        () -> new BoardNotFoundException("[BOARD] 게시글을 찾을 수 없습니다. id = " + id)
+                );
+    }
+
+    public void updateBoard(long id, BoardUpdateRequestDto dto) {
+        Board board = boardRepository.findById(id)
+                .orElseThrow(
+                        () -> new BoardNotFoundException("[BOARD] 수정할 게시글을 찾을 수 없습니다. id = " + id)
+                );
+
+        String filePath = board.getFilePath();
+
+        if (dto.isFileFlag()) {
+            fileService.deleteFile(filePath);
+            filePath = fileService.storeFile(dto.getFile());
+        }
+
+        board.update(dto.getTitle(), dto.getContent(), filePath);
     }
 }

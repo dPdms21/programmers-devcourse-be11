@@ -1,9 +1,6 @@
 package com.example.webservice.controller;
 
-import com.example.webservice.dto.BoardPageResponseDto;
-import com.example.webservice.dto.BoardSearchRequestDto;
-import com.example.webservice.dto.BoardWithCommentsResponseDto;
-import com.example.webservice.dto.BoardWriteRequestDto;
+import com.example.webservice.dto.*;
 import com.example.webservice.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -42,5 +39,31 @@ public class BoardApiController {
             @ModelAttribute BoardWriteRequestDto dto
     ) {
         boardService.saveBoard(authorization, dto);
+    }
+
+    @GetMapping("/{id}")
+    public BoardDetailResponseDto getBoardDetail(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id
+    ) {
+        return boardService.getBoardDetail(authorization, id);
+    }
+
+    @PutMapping("/{id}")
+    public void updateBoard(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id,
+            @ModelAttribute BoardUpdateRequestDto dto
+    ) {
+        boardService.updateBoard(authorization, id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable long id,
+            @RequestBody BoardDeleteRequestDto dto
+    ) {
+        boardService.deleteBoard(authorization, id, dto);
     }
 }
