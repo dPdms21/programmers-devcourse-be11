@@ -4,17 +4,26 @@ import com.example.boardservice.domain.entity.Board;
 import com.example.boardservice.dto.*;
 import com.example.boardservice.mapper.BoardMapper;
 import com.example.boardservice.service.BoardService;
+import com.example.boardservice.service.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/boards")
 public class BoardApiController {
     private final BoardService boardService;
+    private final FileService fileService;
     private final BoardMapper boardMapper;
 
     @GetMapping("/search")
@@ -56,5 +65,33 @@ public class BoardApiController {
             @ModelAttribute BoardUpdateRequestDto dto
     ) {
         boardService.updateBoard(id, dto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteBoard(
+            @PathVariable long id,
+            @RequestBody BoardDeleteRequestDto dto
+    ) {
+        boardService.deleteBoard(id, dto);
+    }
+
+    @GetMapping("/file/download/{fileName}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable("fileName") String fileName) {
+        Resource resource = fileService.downloadFile(fileName);
+
+        String encodedFileName = URLEncoder.encode(resource.getFilename(), StandardCharsets.UTF_8)
+                .replaceAll("\\+", "%20");
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename*=UTF-8''" + encodedFileName)
+                .body(resource);
+    }
+
+    @GetMapping("/stats/authors")
+    public List<BoardAuthorStatsResponseDto> getAuthors(
+            @RequestParam long minCount
+    ) {
+        return boardService.getAuthorStats(minCount);
     }
 }

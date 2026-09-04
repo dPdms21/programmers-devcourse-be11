@@ -29,4 +29,9 @@ public class BoardController {
         model.addAttribute("id", id);
         return "board/board-update";
     }
+
+    @GetMapping("/stats")
+    public String stats() {
+        return "board/board-stats";
+    }
 }

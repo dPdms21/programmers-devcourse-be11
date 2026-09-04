@@ -36,6 +36,6 @@ public class CommentService {
                 .build();
         commentRepository.save(comment);
 
-        log.info("댓글 등록: commentId : {}", comment.getId());
+        log.info("댓글 등록: commentId: {}", comment.getId());
     }
 }

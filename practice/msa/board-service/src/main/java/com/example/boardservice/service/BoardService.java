@@ -3,10 +3,8 @@ package com.example.boardservice.service;
 import com.example.boardservice.client.AuthClient;
 import com.example.boardservice.domain.entity.Board;
 import com.example.boardservice.domain.repository.BoardRepository;
-import com.example.boardservice.dto.BoardListItemResponseDto;
-import com.example.boardservice.dto.BoardSearchRequestDto;
-import com.example.boardservice.dto.BoardUpdateRequestDto;
-import com.example.boardservice.dto.UserNameResponseDto;
+import com.example.boardservice.domain.repository.CommentRepository;
+import com.example.boardservice.dto.*;
 import com.example.boardservice.exception.BoardNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
     private final AuthClient authClient;
     private final FileService fileService;
 
@@ -117,5 +116,34 @@ public class BoardService {
         }
 
         board.update(dto.getTitle(), dto.getContent(), filePath);
+    }
+
+    public void deleteBoard(long id, BoardDeleteRequestDto dto) {
+        if (!boardRepository.existsById(id)) {
+            throw new BoardNotFoundException("[BOARD] 삭제할 게시글을 찾을 수 없습니다. id = " + id);
+        }
+
+        // comment
+        commentRepository.deleteByBoardId(id);
+        // board
+        boardRepository.deleteById(id);
+        // file
+        fileService.deleteFile(dto.getFilePath());
+    }
+
+    public List<BoardAuthorStatsResponseDto> getAuthorStats(long minCount) {
+        List<BoardAuthorStatsResponseDto> stats = boardRepository.countBoardsByAuthor(minCount);
+
+        List<UserNameResponseDto> userNames = fetchNames(
+                stats.stream().map(BoardAuthorStatsResponseDto::getUserId).distinct().toList()
+        );
+
+        return stats.stream()
+                .map(item -> new BoardAuthorStatsResponseDto(
+                        item.getUserId(),
+                        userNameOf(userNames, item.getUserId()),
+                        item.getBoardCount()
+                ))
+                .toList();
     }
 }

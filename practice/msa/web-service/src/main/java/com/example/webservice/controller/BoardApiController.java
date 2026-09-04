@@ -5,7 +5,10 @@ import com.example.webservice.service.BoardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -65,5 +68,21 @@ public class BoardApiController {
             @RequestBody BoardDeleteRequestDto dto
     ) {
         boardService.deleteBoard(authorization, id, dto);
+    }
+
+    @GetMapping("/file/download/{fileName}")
+    public ResponseEntity<byte[]> downloadFile(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @PathVariable String fileName
+    ) {
+        return boardService.downloadFile(authorization, fileName);
+    }
+
+    @GetMapping("/stats/authors")
+    public List<BoardAuthorStatsResponseDto> getAuthorStats(
+            @RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String authorization,
+            @RequestParam(defaultValue = "1") long minCount
+    ) {
+        return boardService.getAuthorStats(authorization, minCount);
     }
 }

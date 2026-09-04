@@ -5,8 +5,11 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 // 헤더를 파라미터로 받는 이유
 // Feign은 서블릿 요청과 무관한 새 HTTP 요청을 만들기 때문에,
@@ -68,5 +71,17 @@ public interface BoardClient {
             @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
             @PathVariable long id,
             @RequestBody BoardDeleteRequestDto dto
+    );
+
+    @GetMapping("/api/boards/file/download/{fileName}")
+    ResponseEntity<byte[]> downloadFile(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @PathVariable String fileName
+    );
+
+    @GetMapping("/api/boards/stats/authors")
+    List<BoardAuthorStatsResponseDto> getAuthorStats(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String authorization,
+            @RequestParam long minCount
     );
 }

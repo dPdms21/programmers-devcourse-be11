@@ -6,15 +6,14 @@ import com.example.authservice.domain.entity.User;
 import com.example.authservice.dto.*;
 import com.example.authservice.service.UserService;
 import com.example.authservice.util.CookieUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@ToString
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/users")
@@ -48,6 +47,18 @@ public class UserApiController {
         logined.setRefreshToken(null);
 
         return logined;
+    }
+
+    @PostMapping("/logout")
+    public LogoutResponseDto logout(
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        CookieUtil.deleteCookie(request, response, CookieUtil.REFRESH_TOKEN_COOKIE);
+        return LogoutResponseDto.builder()
+                .url("/users/login")
+                .message("로그아웃이 되었습니다.")
+                .build();
     }
 
     @GetMapping("/info")

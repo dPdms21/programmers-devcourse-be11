@@ -20,6 +20,14 @@ public class AuthService {
     }
 
     public UserInfoResponseDto getUserInfo(String authorization) {
-        return  authClient.getUserInfo(authorization);
+        return authClient.getUserInfo(authorization);
+    }
+
+    public ResponseEntity<LogoutResponseDto> logout(String authorization, String cookie) {
+        return authClient.logout(authorization, cookie);
+    }
+
+    public ResponseEntity<RefreshTokenResponseDto> refreshToken(String cookie) {
+        return authClient.refreshToken(cookie);
     }
 }
