@@ -2,7 +2,11 @@ package membermanagement2
 
 abstract class Member(var name: String, var email: String, var phone: String) {
     abstract val grade: String
-    abstract fun monthlyFee(): Int
+    abstract val discountRate: Int
+
+    fun monthlyFee(): Int {
+        return 10000 * (100 - discountRate) / 100
+    }
 
     override fun toString(): String {
         println("-------------------------------------------------------")
@@ -13,14 +17,19 @@ abstract class Member(var name: String, var email: String, var phone: String) {
 
 class NormalMember(name: String, email: String, phone: String) : Member(name, email, phone) {
     override val grade = "일반"
-    override fun monthlyFee() = 10000
+    override val discountRate = 0
 }
 
 class VipMember(name: String, email: String, phone: String) : Member(name, email, phone) {
     override val grade = "VIP"
-    override fun monthlyFee() = 8000
+    override val discountRate = 20
 
     fun sendGift() {
         println(" -> ${name}님께 VIP 사은품 보냄")
     }
+}
+
+class StudentMember(name: String, email: String, phone: String) : Member(name, email, phone) {
+    override val grade = "학생"
+    override val discountRate = 50
 }

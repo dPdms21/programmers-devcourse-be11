@@ -10,7 +10,9 @@ class MemberApp(private val manager: MemberManager) {
                 4 -> selectAll()
                 5 -> updateMember()
                 6 -> deleteMember()
-                7 -> {
+                7 -> upgradeMember()
+                8 -> selectVip()
+                9 -> {
                     println("=======================================================")
                     println("프로그램 종료")
                     println("=======================================================")
@@ -30,7 +32,7 @@ class MemberApp(private val manager: MemberManager) {
         println("[수행할 업무 선택 - 현재 회원수: ${manager.memberCnt}/${manager.totalCnt}]")
         println("[1]회원추가 [2]회원조회(메일) [3]회원조회(이름)")
         println("[4]회원전체조회 [5]회원정보 수정 [6]회원삭제")
-        println("[7]프로그램 종료")
+        println("[7]등급 승급 [8]VIP 조회 [9]프로그램 종료")
         print("> ")
 
         return readln().toIntOrNull() ?: -1
@@ -52,14 +54,21 @@ class MemberApp(private val manager: MemberManager) {
         print("연락처 입력: ")
         val phone = readln()
 
+        if (name.isBlank() || email.isBlank() || phone.isBlank()) {
+            println("-----------------------------------------------")
+            println("빈 값 입력 불가")
+
+            return
+        }
+
         println("-------------------------------------------------------")
-        println("등급 선택 [1]일반(10000원) [2]VIP(8000원)")
+        println("등급 선택 [1]일반(10000원) [2]VIP(8000원) [3]학생(5000원)")
         val gradeNo = readln().toIntOrNull() ?: 1
 
-        val member = if (gradeNo == 2) {
-            VipMember(name, email, phone)
-        } else {
-            NormalMember(name, email, phone)
+        val member = when (gradeNo) {
+            3 -> StudentMember(name, email, phone)
+            2 -> VipMember(name, email, phone)
+            else -> NormalMember(name, email, phone)
         }
 
         if (manager.add(member)) {
@@ -141,7 +150,6 @@ class MemberApp(private val manager: MemberManager) {
             return
         }
 
-        println("-------------------------------------------------------")
         println("현재 정보 → $member")
 
         println("-------------------------------------------------------")
@@ -152,12 +160,20 @@ class MemberApp(private val manager: MemberManager) {
         print("새 연락처 입력: ")
         val newPhone = readln()
 
-        member.name = newName
-        member.email = newEmail
-        member.phone = newPhone
+        if (newName.isBlank() || newEmail.isBlank() || newPhone.isBlank()) {
+            println("-----------------------------------------------")
+            println("빈 값 입력 불가")
 
-        println("-------------------------------------------------------")
-        println("수정 완료")
+            return
+        }
+
+        if (manager.update(email, newName, newEmail, newPhone)) {
+            println("-------------------------------------------------------")
+            println("수정 완료")
+        } else {
+            println("-------------------------------------------------------")
+            println("수정 실패")
+        }
     }
 
     private fun deleteMember() {
@@ -171,6 +187,35 @@ class MemberApp(private val manager: MemberManager) {
         } else {
             println("-------------------------------------------------------")
             println("회원 없음")
+        }
+    }
+
+    private fun upgradeMember() {
+        println("-------------------------------------------------------")
+        print("승급할 회원 이메일 입력: ")
+        val email = readln()
+
+        if (manager.upgrade(email)) {
+            println("-------------------------------------------------------")
+            println("VIP 승급 완료")
+        } else {
+            println("-------------------------------------------------------")
+            println("회원 없음")
+        }
+    }
+
+    private fun selectVip() {
+        val vipMembers = manager.getVipMembers()
+
+        if (vipMembers.isEmpty()) {
+            println("-------------------------------------------------------")
+            println("VIP 회원 없음")
+
+            return
+        }
+
+        for (i in vipMembers.indices) {
+            println("${i + 1}. ${vipMembers[i]}")
         }
     }
 }
