@@ -12,6 +12,8 @@ class ArrayMemberStorage(planNo: Int) : MemberStorage {
     override val isFull: Boolean
         get() = memberCnt == totalCnt
 
+    override val capacity = totalCnt
+
     private fun findIndex(email: String): Int {
         for (i in 0 until memberCnt) {
             if (members[i].email == email) {

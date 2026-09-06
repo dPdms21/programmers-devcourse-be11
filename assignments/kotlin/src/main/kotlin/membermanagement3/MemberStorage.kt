@@ -4,6 +4,7 @@ interface MemberStorage {
     val storageName: String
     val memberCnt: Int
     val isFull: Boolean
+    val capacity: Int
 
     fun add(member: Member): Boolean
     fun findByEmail(email: String): Member?

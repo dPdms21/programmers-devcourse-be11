@@ -14,6 +14,8 @@ fun main() {
 
     // val storage: MemberStorage = ArrayMemberStorage(planNo)
     val storage: MemberStorage = LoggingMemberStorage(ArrayMemberStorage(planNo))
+    // val storage: MemberStorage = EmptyMemberStorage()
+    // val storage: MemberStorage = LoggingMemberStorage(CountingMemberStorage(ArrayMemberStorage(planNo)))
 
     val app = MemberApp(storage)
     app.start()

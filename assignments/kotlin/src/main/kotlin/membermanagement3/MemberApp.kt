@@ -1,9 +1,5 @@
 package membermanagement3
 
-import membermanagement.EMAIL
-import membermanagement.NAME
-import membermanagement.PHONE
-
 class MemberApp(private val storage: MemberStorage) {
     fun start() {
         println("저장소: ${storage.storageName}")
@@ -34,7 +30,7 @@ class MemberApp(private val storage: MemberStorage) {
 
     private fun printMenu(): Int {
         println("=======================================================")
-        println("[수행할 업무 선택 - 현재 회원수: ${storage.memberCnt}]")
+        println("[수행할 업무 선택 - 현재 회원수: ${storage.memberCnt}/${storage.capacity}]")
         println("[1]회원추가 [2]회원조회(메일) [3]회원조회(이름)")
         println("[4]회원전체조회 [5]회원정보 수정 [6]회원삭제")
         println("[7]프로그램 종료")

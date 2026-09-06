@@ -16,4 +16,11 @@ class LoggingMemberStorage(private val origin: MemberStorage) : MemberStorage by
 
         return result
     }
+
+    override fun findByEmail(email: String): Member? {
+        val result = origin.findByEmail(email)
+        println("  [LOG] findByEmail($email) -> $result")
+
+        return result
+    }
 }
