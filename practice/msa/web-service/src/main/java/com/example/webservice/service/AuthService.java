@@ -30,4 +30,12 @@ public class AuthService {
     public ResponseEntity<RefreshTokenResponseDto> refreshToken(String cookie) {
         return authClient.refreshToken(cookie);
     }
+
+    public ResponseEntity<SignInResponseDto> oauthSignUp(OAuthSignUpRequestDto dto) {
+        return authClient.oauthSignUp(dto);
+    }
+
+    public ResponseEntity<WithdrawResponseDto> withdraw(String authorization, String cookie) {
+        return authClient.withdraw(authorization, cookie);
+    }
 }

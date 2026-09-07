@@ -48,4 +48,33 @@ public class User {
 
     // saga
     private LocalDateTime statusUpdatedAt;
+
+    public User updateProfile(String name) {
+        this.name = name;
+
+        return this;
+    }
+
+    // ==== 탈퇴 saga 상태 전이 — setter 대신 의도가 드러나는 도메인 메서드 ====
+    public User startWithdrawal() {
+        this.status = UserStatus.WITHDRAWING;
+        this.statusUpdatedAt = LocalDateTime.now();
+
+        return this;
+    }
+
+    public User completeWithdrawal() {
+        this.status = UserStatus.WITHDRAWN;
+        this.statusUpdatedAt = LocalDateTime.now();
+
+        return this;
+    }
+
+    // 보상(compensation): 참여자(board) 실패 시 이미 커밋한 상태 변경을 "반대 연산"으로 되돌림
+    public User cancelWithdrawal() {
+        this.status = UserStatus.ACTIVE;
+        this.statusUpdatedAt = LocalDateTime.now();
+
+        return this;
+    }
 }

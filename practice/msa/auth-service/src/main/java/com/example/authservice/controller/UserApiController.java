@@ -30,6 +30,24 @@ public class UserApiController {
                 .build();
     }
 
+    @PostMapping("/oauth-join")
+    public SignInResponseDto oauthJoin(
+            @RequestBody OAuthSignUpRequestDto requestDto,
+            HttpServletResponse response
+    ) {
+        SignInResponseDto signInResponseDto = userService.oauthSignUp(requestDto);
+
+        CookieUtil.addCookie(
+                response,
+                CookieUtil.REFRESH_TOKEN_COOKIE,
+                signInResponseDto.getRefreshToken(),
+                (int) jwtProperties.getRefreshTokenValidity().toSeconds()
+        );
+        signInResponseDto.setRefreshToken(null);
+
+        return signInResponseDto;
+    }
+
     @PostMapping("/login")
     public SignInResponseDto login(
             @RequestBody SignInRequestDto signInRequestDto,
@@ -77,4 +95,18 @@ public class UserApiController {
     public List<UserNameResponseDto> getUserNames(@RequestParam List<String> userIds) {
         return userService.getUserNames(userIds);
     }
+
+    @DeleteMapping("/me")
+    public WithDrawResponseDto withdraw(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        WithDrawResponseDto dto = userService.withDraw(userDetails.getUser().getUserId());
+
+        CookieUtil.deleteCookie(request, response, CookieUtil.REFRESH_TOKEN_COOKIE);
+
+        return dto;
+    }
+
 }

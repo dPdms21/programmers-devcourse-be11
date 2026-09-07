@@ -56,7 +56,7 @@ public class BoardService {
                 );
     }
 
-    // auth가 죽어도 게시판 조회 자체는 살아야 하므로 (부분 실패 허용)
+    // auth가 죽어도 게시판 조회 자체는 살아야하므로 (부분 실패 허용)
     // 실패 시 빈 목록을 돌려 이름 없이 응답 -> 장애 전파를 끊음
     private List<UserNameResponseDto> fetchNames(List<String> userIds) {
         if (userIds == null || userIds.isEmpty()) {
@@ -145,5 +145,18 @@ public class BoardService {
                         item.getBoardCount()
                 ))
                 .toList();
+    }
+
+    public void deleteUserContents(String userId) {
+        // 내 글에 달린 남의 댓글
+        long commentsOnBoards = commentRepository.deleteByBoardUserId(userId);
+
+        // 남의 글에 단 내 댓글
+        long myComments = commentRepository.deleteByUserId(userId);
+
+        // 내 게시글
+        long myBoards = boardRepository.deleteByUserId(userId);
+
+        log.info("[탈퇴 처리] userId: {}, 글 {}건, 댓글 {}건 삭제", userId, myBoards, (commentsOnBoards + myComments));
     }
 }

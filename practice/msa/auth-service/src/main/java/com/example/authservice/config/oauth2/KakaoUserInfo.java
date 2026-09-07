@@ -32,7 +32,7 @@ public record KakaoUserInfo(Map<String, Object> attributes) implements OAuth2Use
     public String name() {
         Map<String, Object> nickname = profile();
 
-        return nickname == null ? null : String.valueOf(nickname.get("name"));
+        return nickname == null ? null : String.valueOf(nickname.get("nickname"));
     }
 
     @Override
@@ -43,7 +43,7 @@ public record KakaoUserInfo(Map<String, Object> attributes) implements OAuth2Use
     }
 
     private Map<String, Object> kakaoAccount() {
-        return (Map<String, Object>) attributes.get("kakao account");
+        return (Map<String, Object>) attributes.get("kakao_account");
     }
 
     private Map<String, Object> profile() {
