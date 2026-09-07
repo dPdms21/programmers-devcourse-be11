@@ -67,6 +67,7 @@ public class BoardService {
             return authClient.getUserNames(userIds);
         } catch (Exception e) {
             log.warn("[작성자 이름 조회 실패] auth-service 호출 불가 — userId로 대체 표시. {}", e.getMessage());
+
             return List.of();
         }
     }
@@ -102,6 +103,7 @@ public class BoardService {
                 );
     }
 
+    @Transactional
     public void updateBoard(long id, BoardUpdateRequestDto dto) {
         Board board = boardRepository.findById(id)
                 .orElseThrow(
@@ -118,6 +120,7 @@ public class BoardService {
         board.update(dto.getTitle(), dto.getContent(), filePath);
     }
 
+    @Transactional
     public void deleteBoard(long id, BoardDeleteRequestDto dto) {
         if (!boardRepository.existsById(id)) {
             throw new BoardNotFoundException("[BOARD] 삭제할 게시글을 찾을 수 없습니다. id = " + id);
@@ -145,5 +148,24 @@ public class BoardService {
                         item.getBoardCount()
                 ))
                 .toList();
+    }
+
+    @Transactional
+    public void deleteUserContents(String userId) {
+        // 내 글에 달린 남의 댓글
+        long commentsOnBoards = commentRepository.deleteByBoardUserId(userId);
+
+        // 남의 글에 단 내 댓글
+        long myComments = commentRepository.deleteByUserId(userId);
+
+        // 내 게시글
+        long myBoards = boardRepository.deleteByUserId(userId);
+
+        log.info(
+                "[탈퇴 처리] userId: {}, 글 {}건, 댓글 {}건 삭제",
+                userId,
+                myBoards,
+                commentsOnBoards + myComments
+        );
     }
 }

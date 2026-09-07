@@ -1,6 +1,75 @@
 server:
   port: 8082
 
+  # [X-Forwarded 헤더를 왜 쓰는가 ①: 문제의 뿌리 — 프록시 뒤의 서버는 자기 주소를 착각함]
+  #
+  # edge를 거치는 순간, 이 서버가 받는 요청은 브라우저의 요청이 아니라 edge가 "새로 만든" 요청:
+  #
+  #   브라우저 ──(연결 A: localhost:8000으로)──> edge ──(연결 B: localhost:8082로)──> auth
+  #
+  # auth가 볼 수 있는 사실은 연결 B의 것뿐 — 접속 상대는 edge이고, Host 헤더는
+  # localhost:8082(edge가 요청을 만들 때 쓴 대상 주소). "브라우저가 원래 8000을 쳤다"는
+  # 사실은 연결 A에 있었고, 연결 A는 edge에서 끝났으므로 여기까지 오지 않음
+  #
+  # [②: 그런데 왜 알아야 하나 — 절대 URL을 만드는 순간]
+  # 대부분의 API 응답은 자기 주소가 필요 없어서 문제가 안 됨. 문제는 서버가
+  # "자기 주소가 포함된 절대 URL"을 만들어야 할 때. 이 프로젝트에선 카카오 로그인 시작이 그 순간:
+  #
+  #   GET /oauth2/authorization/kakao
+  #   → redirect_uri = {baseUrl}/login/oauth2/code/kakao 를 "지금 받은 요청"에서 계산(Host 기반)
+  #
+  # [②-1: redirect_uri의 정체 — 검증용 값이 아니라 "브라우저가 실제로 이동할 배달 주소"]
+  # 카카오 로그인은 브라우저를 302로 릴레이하는 흐름:
+  #   ① auth: "302, 카카오로 가라" (이때 redirect_uri=X가 쿼리로 실려 감)
+  #   ② 브라우저가 카카오 화면에서 로그인 + 동의 (우리 서버 무관 구간)
+  #   ③ 카카오: "302, 이제 X로 가라" — Location: X?code=인가코드
+  # 카카오는 인가 코드를 서버로 직접 보내지 않음 (위치를 모르고, localhost면 접속 자체가 불가)
+  # 대신 브라우저를 배달부로 씀 — 브라우저가 X에 접속하는 행위가 곧 code 전달
+  # 콘솔 "등록"은 이 배달 주소의 화이트리스트 검증일 뿐 (code 가로채기 방지),
+  # 실제 어디로 갈지는 ①에서 실려 간 redirect_uri "값"이 정함
+  #
+  # 그래서 X-Forwarded 없이 baseUrl = http://localhost:8082로 조립되면 두 겹으로 잘못됨:
+  #   1) 콘솔에는 8000이 등록돼 있어 불일치 거절 (KOE006 — 실제로 겪었던 에러)
+  #   2) 8082를 등록해 통과시켜도, ③에서 카카오가 브라우저에게 "8082로 가라"고 하므로
+  #      브라우저가 edge를 우회해 내부 서버에 직접 접속함 — "진입점은 edge 하나" 원칙 붕괴
+  #      로컬에선 콜백 필터가 auth에 있으니 "동작은 해서" 문제를 못 느끼지만,
+  #      운영에서 auth가 사설망이면 브라우저가 8082에 닿지 못해 로그인 자체가 실패함
+  # 즉 auth는 "브라우저가 나를 뭐라고 부르는가"(8000) 기준으로 URL을 만들어야 하는데,
+  # 스스로 아는 건 "edge가 나를 뭐라고 부르는가"(8082)뿐
+  #
+  # [②-2: 왜 "절대 URL"일 때만 문제인가 — URL의 빈칸으로 보기]
+  #
+  #   http://localhost:8000/login/oauth2/code/kakao
+  #   └─┬─┘  └────┬──────┘└──────────┬────────────┘
+  #   scheme    host:port           path
+  #
+  # 상대 경로("/users/login")는 path만 적고 scheme·host:port를 "빈칸"으로 둔 주소
+  # 그 빈칸은 받는 쪽(브라우저)이 자기 주소창의 현재 origin으로 채움 — 그래서 auth가
+  # JSON에 상대 경로를 담아 보내는 경로(login/refresh 등)는 같은 프록시를 거쳐도
+  # 자기 주소를 몰라 문제가 없었음. 완성을 브라우저에 미루니까
+  #
+  # 반면 redirect_uri를 받는 자는 브라우저가 아니라 "카카오 서버". 카카오에는 우리 문맥이
+  # 없어 빈칸을 채워줄 수 없으므로, auth가 응답을 만드는 그 자리에서 세 칸을 전부 적어야 함
+  # 그 재료를 auth는 "지금 받은 요청"에서 꺼냄:
+  #   scheme ← getScheme() / host·port ← getServerName()·getServerPort() (출처는 Host 헤더)
+  # 즉 조립 로직은 성실한데, ①에서 오염된 재료가 그대로 결과가 되는 것. 그래서 해법도
+  # 코드 수정이 아니라 "오염 전 재료를 보존해 나르는" X-Forwarded(⑤)
+  #
+  # 뒤집으면, 원래 주소·IP를 쓰지 않는 경로는 배선 없이도 동작함. 유실은 거기서도
+  # 일어나고 있을 뿐이며, IP 감사 로그·rate limit 같은 기능이 생기는 순간 같은 배선이 필요해짐
+  #
+  # [③: 해법 — 연결 A를 아는 유일한 존재(edge)가 헤더로 실어 나른다]
+  # edge가 X-Forwarded-Host(원래 주소)/-Proto(원래 프로토콜)/-For(원래 클라이언트 IP)를
+  # 붙여 보내고 (위조 방지 조건은 edge yaml의 trusted-proxies 주석 참고),
+  # 아래 설정은 "baseUrl 계산 시 Host 대신 X-Forwarded-*를 믿어라"라는 스위치
+  # 이 둘이 맞물려야 redirect_uri가 http://localhost:8000/... 으로 조립됨
+
+  #   none      → 무시 (기본값). 헤더가 와도 baseUrl은 그대로 8082
+  #   native    → 서블릿 컨테이너(톰캣의 RemoteIpValve)가 처리
+  #               클라이언트 IP·프로토콜 복원이 중심이라 Host/포트 반영이 제한적
+  #   framework → 스프링의 ForwardedHeaderFilter가 처리
+  forward-headers-strategy: framework
+
 spring:
   application:
     name: auth-service
