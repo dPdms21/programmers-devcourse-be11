@@ -9,7 +9,7 @@ private fun printPricePlan(): Int {
     return readln().toIntOrNull() ?: 1
 }
 
-private fun askSampleData(manager: MemberManager) {
+private fun askSampleData(storage: MemberStorage) {
     println("-------------------------------------------------------------")
     print("샘플 회원을 넣고 시작? (y/n) > ")
 
@@ -20,16 +20,21 @@ private fun askSampleData(manager: MemberManager) {
         Member("이영희", "lee@naver.com", "010-2222-2222"),
         Member("박민수", "park@gmail.com", "010-3333-3333"),
         Member("김철수", "kim2@gmail.com", "010-4444-4444")
-    ).forEach { manager.add(it) }
+    ).forEach { storage.add(it) }
 
-    println("${manager.memberCnt}명 세팅")
+    println("${storage.memberCnt}명 세팅")
 }
 
 fun main() {
     val planNo = printPricePlan()
 
-    val manager = MemberManager(planNo)
-    askSampleData(manager)
+//    val manager = MemberManager(planNo)
+//    askSampleData(manager)
 
-    MemberApp(manager).start()
+    val storage: MemberStorage = ListMemberStorage(planNo)
+//    val storage: MemberStorage = MapMemberStorage(planNo)
+    askSampleData(storage)
+
+//    MemberApp(manager).start()
+    MemberApp(storage).start()
 }

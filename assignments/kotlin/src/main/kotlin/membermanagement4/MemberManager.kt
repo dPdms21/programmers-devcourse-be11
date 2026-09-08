@@ -13,7 +13,7 @@ class MemberManager(planNo: Int) {
 
     fun findByEmail(email: String): Member? = members.find { it.email == email }
 
-    fun findByName(name: String): Member? = members.find { it.name == name }
+    fun findByName(name: String): List<Member> = members.filter { it.name == name }
 
     fun searchByName(keyword: String): List<Member> = members.filter { it.name.contains(keyword) }
 
@@ -35,20 +35,20 @@ class MemberManager(planNo: Int) {
 
     fun delete(email: String): Boolean = members.removeAll { it.email == email }
 
-    fun update(email: String, newName: String, newEmail: String, newPhone: String): Boolean {
+    fun update(email: String, newName: String, newEmail: String, newPhone: String): UpdateResult {
         val idx = members.indexOfFirst { it.email == email }
 
         if (idx == -1) {
-            return false
+            return UpdateResult.NOT_FOUND
         }
 
         if (newEmail != email && members.any { it.email == newEmail }) {
-            return false
+            return UpdateResult.DUPLICATE_EMAIL
         }
 
         members[idx] = members[idx].copy(name = newName, email = newEmail, phone = newPhone)
 
-        return true
+        return UpdateResult.OK
     }
 
     fun sortedByName(): List<Member> = members.sortedBy { it.name }
@@ -56,4 +56,10 @@ class MemberManager(planNo: Int) {
     fun groupByDomain(): Map<String, List<Member>> = members.groupBy { it.email.substringAfter("@", "(도메인없음)") }
 
     fun duplicatedNames(): Map<String, List<Member>> = members.groupBy { it.name }.filter { it.value.size > 1 }
+}
+
+enum class UpdateResult {
+    OK,
+    NOT_FOUND,
+    DUPLICATE_EMAIL
 }
