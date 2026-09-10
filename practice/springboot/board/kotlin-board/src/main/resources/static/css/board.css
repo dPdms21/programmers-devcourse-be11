@@ -1,0 +1,188 @@
+/* 게시판 공통 스타일 - 수업의 초점은 서버(코틀린)이므로 화면은 최소한으로만 꾸밈 */
+
+:root {
+    --line: #e2e5ea;
+    --text: #22262b;
+    --muted: #6b7280;
+    --point: #2f6feb;
+    --danger: #d94f4f;
+    --bg: #f6f7f9;
+}
+
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 40px 16px;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 32px 36px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+}
+
+h1 {
+    margin: 0 0 4px;
+    font-size: 22px;
+}
+
+.subtitle {
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+/* ---------- 버튼 ---------- */
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--text);
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn:hover { background: #f2f4f7; }
+
+.btn.primary {
+    background: var(--point);
+    border-color: var(--point);
+    color: #fff;
+}
+
+.btn.primary:hover { background: #2a60cd; }
+
+.btn.danger {
+    background: #fff;
+    border-color: var(--danger);
+    color: var(--danger);
+}
+
+.btn.danger:hover { background: #fdf2f2; }
+
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+
+/* ---------- 상단 바 / 검색 ---------- */
+.toolbar {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.toolbar .spacer { flex: 1; }
+
+input[type="text"],
+input[type="search"],
+textarea {
+    padding: 8px 10px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font: inherit;
+    color: inherit;
+    background: #fff;
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--point);
+}
+
+/* ---------- 목록 테이블 ---------- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 11px 8px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+th {
+    border-top: 2px solid #333;
+    background: #fafbfc;
+    font-size: 13px;
+}
+
+td.center, th.center { text-align: center; }
+
+td a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+td a:hover { color: var(--point); text-decoration: underline; }
+
+.empty {
+    padding: 40px 0;
+    color: var(--muted);
+    text-align: center;
+}
+
+/* ---------- 페이지 번호 ---------- */
+.pagination {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-top: 22px;
+}
+
+.pagination .btn { padding: 6px 12px; }
+
+.pagination .btn.active {
+    background: var(--point);
+    border-color: var(--point);
+    color: #fff;
+}
+
+/* ---------- 폼 ---------- */
+.form-group { margin-bottom: 16px; }
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+}
+
+.form-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 24px;
+}
+
+/* ---------- 상세 ---------- */
+.article-head {
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+}
+
+.article-meta {
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.article-body {
+    min-height: 180px;
+    padding: 20px 2px;
+    white-space: pre-wrap; /* 줄바꿈을 그대로 보여줌 */
+}

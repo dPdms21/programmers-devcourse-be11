@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 상세</title>
+    <link th:href="@{/css/board.css}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/boardDetail.js}"></script>
+</head>
+<body>
+<div class="container">
+    <!-- 컨트롤러가 model에 담아 준 id를 JS가 읽어 갈 수 있도록 숨은 칸에 실어둠 -->
+    <input id="boardId" type="hidden" th:value="${id}">
+
+    <div class="article-head">
+        <h1 id="title">불러오는 중...</h1>
+        <div class="article-meta">
+            작성자 <strong id="userId"></strong> · <span id="created"></span>
+        </div>
+    </div>
+
+    <div id="content" class="article-body"></div>
+
+    <div class="form-actions">
+        <a th:href="@{/}" class="btn">목록으로</a>
+        <button id="editBtn" class="btn primary" type="button">수정</button>
+        <button id="deleteBtn" class="btn danger" type="button">삭제</button>
+    </div>
+</div>
+</body>
+</html>

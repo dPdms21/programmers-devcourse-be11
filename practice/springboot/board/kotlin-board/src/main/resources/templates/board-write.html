@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>글쓰기</title>
+    <link th:href="@{/css/board.css}" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/boardWrite.js}"></script>
+</head>
+<body>
+<div class="container">
+    <h1>글쓰기</h1>
+    <p class="subtitle">POST /api/boards</p>
+
+    <div class="form-group">
+        <label for="userId">작성자</label>
+        <input id="userId" type="text" placeholder="아이디를 입력하세요" maxlength="50">
+    </div>
+
+    <div class="form-group">
+        <label for="title">제목</label>
+        <input id="title" type="text" placeholder="제목을 입력하세요" maxlength="200">
+    </div>
+
+    <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" rows="12" placeholder="내용을 입력하세요"></textarea>
+    </div>
+
+    <div class="form-actions">
+        <button id="submitBtn" class="btn primary" type="button">등록</button>
+        <a th:href="@{/}" class="btn">목록으로</a>
+    </div>
+</div>
+</body>
+</html>

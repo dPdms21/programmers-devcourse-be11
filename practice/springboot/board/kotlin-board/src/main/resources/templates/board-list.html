@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시판</title>
+    <link th:href="@{/css/board.css}" rel="stylesheet">
+    <!-- defer: HTML을 다 읽은 뒤에 JS를 실행 (DOM이 준비된 뒤라 안전) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" crossorigin="anonymous"></script>
+    <script th:src="@{/js/common.js}"></script>
+    <script th:src="@{/js/boardList.js}"></script>
+</head>
+<body>
+<div class="container">
+    <h1>게시판</h1>
+    <div class="toolbar">
+        <input id="keyword" type="search" placeholder="제목으로 검색">
+        <button id="searchBtn" class="btn" type="button">검색</button>
+        <button id="resetBtn" class="btn" type="button">초기화</button>
+        <span class="spacer"></span>
+        <a th:href="@{/write}" class="btn primary">글쓰기</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th class="center" style="width: 80px;">번호</th>
+            <th>제목</th>
+            <th style="width: 120px;">작성자</th>
+            <th style="width: 150px;">작성일</th>
+        </tr>
+        </thead>
+        <!-- 목록은 boardList.js가 API 응답을 받아 채움 -->
+        <tbody id="boardBody"></tbody>
+    </table>
+
+    <div id="pagination" class="pagination"></div>
+</div>
+</body>
+</html>
