@@ -13,3 +13,4 @@
 | [2026-09-08](./2026-09-08.md) | Kotlin 지연 초기화 · 위임 및 컬렉션 · data class 실습 / Repoary 3주차 주간보고 / 회원 관리4 과제 |
 | [2026-09-09](./2026-09-09.md) | Kotlin 코루틴 · Sequence 실습 / 강사 개인 면담 / 코루틴 동시성 복습 과제 |
 | [2026-09-10](./2026-09-10.md) | Kotlin Spring Boot 게시판 CRUD 실습 / 컬렉션 기반 회원 관리 실습 / Repoary README 행 생성 · TIL 및 README 누락 점검 기능 구현 |
+| [2026-09-11](./2026-09-11.md) | Gudit 3차 프로젝트 개선 방향 설계 / Transactional Outbox 구매 취소 적용 및 Redis Streams 도입 검토 |
