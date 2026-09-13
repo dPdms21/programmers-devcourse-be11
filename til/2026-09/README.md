@@ -20,3 +20,4 @@
 | [2026-09-10](./2026-09-10.md) | Kotlin Spring Boot 게시판 CRUD 실습 / 컬렉션 기반 회원 관리 실습 / Repoary README 행 생성 · TIL 및 README 누락 점검 기능 구현 |
 | [2026-09-11](./2026-09-11.md) | Gudit 3차 프로젝트 개선 방향 설계 / Transactional Outbox 구매 취소 적용 및 Redis Streams 도입 검토 |
 | [2026-09-12](./2026-09-12.md) | Gudit Transactional Outbox 결제 실패 · Timeout 확장 / Redis Streams 재고 복구 · Pending 재처리 / eventId 기반 멱등 처리 |
+| [2026-09-13](./2026-09-13.md) | Gudit 결제 보상 실패 재처리 / Redis Streams Pending 재처리 / Toss 상태 재조회·멱등 처리 |
