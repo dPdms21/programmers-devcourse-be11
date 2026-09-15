@@ -27,3 +27,4 @@
 | Date | Summary |
 | ---- | ------- |
 | [2026-09-14](./2026-09-14.md) | Gudit 결제 CS 내부 API 구현 / n8n · Claude 기반 CS 자동화 Workflow 구성 |
+| [2026-09-15](./2026-09-15.md) | Gudit AI CS Workflow v1 완성 / 구매 내역 기반 AI CS 문의 연동·UI 구현 / n8n Workflow v2 확장 |
