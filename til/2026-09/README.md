@@ -30,3 +30,4 @@
 | [2026-09-15](./2026-09-15.md) | Gudit AI CS Workflow v1 완성 / 구매 내역 기반 AI CS 문의 연동·UI 구현 / n8n Workflow v2 확장 |
 | [2026-09-16](./2026-09-16.md) | Gudit AI CS 인증 · 조회 구조 보완 / Outbox · Purchase · Payment · CS Kotlin 전환 / 도메인 통합 및 회귀 테스트 |
 | [2026-09-17](./2026-09-17.md) | Gudit Kotlin 전환 효과 최종 측정 / 3차 프로젝트 개선 결과 정리 · 발표 자료 제작 |
+| [2026-09-18](./2026-09-18.md) | Gudit 3차 팀 프로젝트 README 업데이트 / 최종 발표 / 프로젝트 회고 및 정리 |
