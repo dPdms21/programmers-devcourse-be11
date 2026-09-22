@@ -1,0 +1,80 @@
+*** Gradle ***
+
+빌드 결과물 삭제
+.\gradlew.bat clean
+
+실행 가능한 JAR 생성 (테스트 제외)
+.\gradlew.bat bootJar -x test
+
+JAR 실행 (실제 생성된 파일명 사용)
+java -jar build/libs/config-service-0.0.1-SNAPSHOT.jar
+
+빌드 후 바로 실행
+.\gradlew.bat bootRun
+
+Gradle Daemon 상태 확인
+.\gradlew.bat --status
+
+Gradle Daemon 종료
+.\gradlew.bat --stop
+
+*** Docker ***
+
+=> config-service
+이미지 생성
+docker build -t config-service:latest .
+
+컨테이너 실행
+컨테이너는 기본적으로 호스트의 임의 파일에 접근할 수 없다.
+-v 옵션으로 호스트 폴더를 컨테이너 내부 경로에 마운트한다.
+:ro는 컨테이너에서 읽기 전용으로 접근한다.
+
+docker run -d --name config-service -p 8888:8888 `
+  -v "D:\dev\programmers-devcourse-be11\practice\msa\config-repo:/config-repo:ro" `
+  -e CONFIG_REPO_PATH=file:/config-repo `
+  config-service:latest
+
+=> auth-service
+docker build -t auth-service:latest .
+
+docker run -d --name auth-service -p 8082:8082 `
+  --env-file ..\.env `
+  -e CONFIG_SERVICE_URL="http://host.docker.internal:8888" `
+  -e AUTH_DB_URL="jdbc:mysql://host.docker.internal:3306/board_auth?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true" `
+  -e BOARD_SERVICE_URL="http://host.docker.internal:8081" `
+  auth-service:latest
+
+=> board-service
+docker build -t board-service:latest .
+
+docker run -d --name board-service -p 8081:8081 `
+  --env-file ..\.env `
+  -e CONFIG_SERVICE_URL="http://host.docker.internal:8888" `
+  -e BOARD_DB_URL="jdbc:mysql://host.docker.internal:3306/board_app?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8&allowPublicKeyRetrieval=true" `
+  -e AUTH_SERVICE_URL="http://host.docker.internal:8082" `
+  board-service:latest
+
+=> edge-service
+docker build -t edge-service:latest .
+
+docker run -d --name edge-service -p 8000:8000 `
+  -e AUTH_SERVICE_URL="http://host.docker.internal:8082" `
+  -e BOARD_SERVICE_URL="http://host.docker.internal:8081" `
+  edge-service:latest
+
+=> web-service
+docker build -t web-service:latest .
+
+docker run -d --name web-service -p 8080:8080 `
+  -e EDGE_SERVICE_URL="http://host.docker.internal:8000" `
+  web-service:latest
+
+컨테이너 확인
+- 실행 중: docker ps
+- 전체 상태: docker ps -a
+
+로그 확인 (실시간)
+docker logs -f config-service
+
+사용하지 않는 이미지·컨테이너·네트워크 등 정리 (다른 프로젝트 리소스도 삭제 대상이 될 수 있으므로 주의)
+docker system prune -a
