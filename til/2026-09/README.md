@@ -37,3 +37,4 @@
 | Date | Summary |
 | ---- | ------- |
 | [2026-09-21](./2026-09-21.md) | 네트워크 · Docker 기초 및 AWS 계정 생성 / Repoary Spring Security 기본 사용자 제거 · 공통 예외 처리 및 GitHub 인증 오류 개선 |
+| [2026-09-22](./2026-09-22.md) | Docker 명령어 정리 · MSA Docker 환경 구성 및 연동 실습 / Repoary 누락 점검 GitHub API 호출 최적화 및 성능 측정 / Gudit 프로젝트 · 커리어 멘토링 |
