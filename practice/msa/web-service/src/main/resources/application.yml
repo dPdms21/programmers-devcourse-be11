@@ -6,4 +6,4 @@ spring:
     name: web-service
 
 edge-service:
-  url: http://localhost:8000
+  url: ${EDGE_SERVICE_URL:http://localhost:8000}

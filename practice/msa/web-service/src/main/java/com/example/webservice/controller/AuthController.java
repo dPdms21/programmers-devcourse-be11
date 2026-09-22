@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AuthController {
     @GetMapping("/join")
     public String join() {
-        return "/auth/sign-up";
+        return "auth/sign-up";
     }
 
     @GetMapping("/login")
     public String login() {
-        return "/auth/login";
+        return "auth/login";
     }
 
     @GetMapping("/oauth-join")
     public String oauthJoin() {
-        return "/auth/oauth-join";
+        return "auth/oauth-join";
     }
 }

@@ -79,7 +79,7 @@ spring:
   # 운영이라면 optional을 떼서 "설정 없이 뜨는 것"보다 "빨리 실패"를 택하는 게 보통
   # 지금은 개발 편의상 사용
   config:
-    import: "optional:configserver:http://localhost:8888"
+    import: "optional:configserver:${CONFIG_SERVICE_URL:http://localhost:8888}"
 
   datasource:
     url: ${AUTH_DB_URL}
