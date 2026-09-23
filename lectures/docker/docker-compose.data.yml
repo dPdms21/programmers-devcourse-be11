@@ -1,0 +1,81 @@
+name: msa-data
+
+# 네트워크 선언
+# - 서비스 compose(docker-compose.service.yml)와 컨테이너끼리 통신하려면
+#   동일한 네트워크를 사용해야 함. 그 공용 네트워크를 여기선 만듦
+# - data Compose에서 msa-network를 생성함
+# - service Compose가 이 네트워크를 external로 참조한다면 data를 먼저 실행해야 함
+networks:
+  msa-network:
+    name: msa-network
+
+services:
+  mysql:
+    # Docker Hub 공식 MySQL 이미지
+    image: mysql:8.0
+    container_name: mysql
+
+    # 컨테이너가 시작될 때 실행할 명령어
+    # 서버 기본 문자셋
+    # - MySQL 이미지의 기본 클라이언트 문자셋이 latin1이라, 이걸 지정하지 않으면
+    #   db/*.sql의 한글이 깨친 채로 저장됨
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+    # 컨테이너 안으로 전달될 환경변수
+    environment:
+      # root 계정 비밀번호
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
+    
+    # 포트 매핑 "호스트 포트:컨테이너 포트"
+    # - 컨테이너 내부 MySQL은 3306에서 동작
+    # - 호스트(내 PC)에서 3307로 접속 -> 컨테이너 내부 3306으로 접속
+    ports:
+      - "3307:3306"
+
+    # 볼륨 마운트 "왼쪽:오른쪽[:옵션]"
+    # - 왼쪽: 물리 저장소 - 파일이 실제 쌓이는 곳
+    # - 오른쪽: 논리 주소 - 컨테이너 안에서 그 저장소가 보이는 경로
+    volumes:
+      # 1) 초기화 SQL 스크립트 전달
+      # - 왼쪽: 호스트의 실제 폴더
+      # - 오른쪽: 그 폴더가 컨테이너 안에서 보일 경로
+      # - 파일이 컨테이너 안으로 "복사"되는 게 아니라, 호스트에 있는 그 파일 하나를
+      #   컨테이너 안에서 "바로 읽는" 방식
+
+      # /docker-entrypoint-initdb.d는 MySQL 공식 이미지가 사용하는 초기화 스크립트 경로
+      # 컨테이너가 시작될 때 이미지의 시작 스크립트가 이 경로를 열어보고,
+      # 안에 있는 *.sql을 파일명을 알파벳 순으로 자동 실행해줌
+      # MySQL 데이터 디렉터리가 비어 있는 최초 초기화 시 실행됨
+      # 컨테이너를 다시 생성해도 기존 데이터 볼륨을 사용하면 재실행되지 않음
+      # * 순서가 중요하면 01-, 02- 이런 식으로 파일명을 붙여주면 됨. ex) 01-board.sql, 02-auth.sql,
+      - ./db:/docker-entrypoint-initdb.d:ro
+
+      # 2) DB 데이터 보관
+      # /var/lib/mysql은 MySQL이 데이터를 파일로 저장하는 폴더 (데이터 디렉토리)
+      # MySQL은 논리 주소만 보고 쓰고, 그 요청을 Docker가 물리 저장소로 돌려놓음
+      - mysql-data:/var/lib/mysql
+
+    # 헬스체크
+    # - root 계정으로 접속해 SELECT 1 쿼리를 실행하여 DB 사용 가능 여부를 확인
+    # - $$는 Compose의 변수 치환을 방지하고 컨테이너 내부에서 환경변수를 읽게 함
+    # - 다른 서비스에서 depends_on + condition: service_healthy로 활용 가능
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - MYSQL_PWD="$$MYSQL_ROOT_PASSWORD" mysql -h 127.0.0.1 -u root -Nse 'SELECT 1' > /dev/null
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+    # 네트워크 설정
+    # - 이 컨테이너가 msa-network에 연결되도록 설정
+    # - 같은 네트워크에 있는 컨테이너끼리는 "서비스 이름"으로 서로를 찾을 수 있음
+    networks:
+      - msa-network
+
+# named volume 선언
+# - named volume은 컨테이너가 삭제되어도 데이터가 유지됨
+volumes:
+  mysql-data: {}

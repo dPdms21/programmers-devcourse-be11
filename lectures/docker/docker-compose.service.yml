@@ -1,0 +1,94 @@
+name: msa-service
+
+# 네트워크 선언
+# 이미 만들어진 것을 가져다 씀. 그래서 external: true를 붙임
+networks:
+  msa-network:
+    name: msa-network
+    external: true
+
+services:
+  config-service:
+    build: ../../practice/msa/config-service
+    image: config-service:latest
+    container_name: config-service
+    volumes:
+      - ../../practice/msa/config-repo:/config-repo:ro
+    environment:
+      CONFIG_REPO_PATH: file:/config-repo
+    ports:
+      - "8888:8888"
+    # 헬스체크
+    # eclipse-temurin:25-jre에는 curl이 없어서, bash를 이용해 TCP 연결로 헬스체크를 함
+    # bash 내장기능인 /dev/tcp/host/port를 이용
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo > /dev/tcp/127.0.0.1/8888"]
+      interval: 5s # 5초마다 체크
+      timeout: 3s # 3초 안에 응답 없으면 실패로 간주
+      retries: 20 # 20회 실패하면 unhealthy로 간주
+    networks:
+      - msa-network
+
+  auth-service:
+    build: ../../practice/msa/auth-service
+    env_file:
+      - ../../practice/msa/.env
+    image: auth-service:latest
+    container_name: auth-service
+    # 컨테이너가 시작될 때까지 기다림
+    depends_on:
+      config-service:
+        condition: service_healthy
+    # 같은 네트워크(msa-network)에 속한 컨테이너끼리는 서비스 이름으로 서로 접근할 수 있음
+    # 그래서 config-service라는 서비스 이름으로 접근 가능
+    environment:
+      CONFIG_SERVICE_URL: "http://config-service:8888"
+      # mysql의 포트가 3307이 아니라, 3306인 점에 주의
+      # 3307은 내 PC에서 컨테이너의 MySQL에 접속할 때만 쓰는 포트
+      AUTH_DB_URL: "jdbc:mysql://mysql:3306/board_auth?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8"
+      BOARD_SERVICE_URL: "http://board-service:8081"
+    ports:
+      - "8082:8082"
+    networks:
+      - msa-network
+  
+  board-service:
+    build: ../../practice/msa/board-service
+    env_file:
+      - ../../practice/msa/.env
+    image: board-service:latest
+    container_name: board-service
+    depends_on:
+      config-service:
+        condition: service_healthy
+    environment:
+      CONFIG_SERVICE_URL: "http://config-service:8888"
+      BOARD_DB_URL: "jdbc:mysql://mysql:3306/board_app?useSSL=false&serverTimezone=UTC&characterEncoding=UTF-8"
+      AUTH_SERVICE_URL: "http://auth-service:8082"
+    volumes:
+      # 방법 1
+      - board-uploads:/app/uploads
+      # 방법 2: 업로드 파일은 외부 호스트 PC에 저장하고, 컨테이너 안에서는 그걸 바로 읽는 방식
+      # - ../../practice/msa/board-service/uploads:/app/uploads
+    ports:
+      - "8081:8081"
+    networks:
+      - msa-network
+  
+  edge-service:
+    build: ../../practice/msa/edge-service
+    image: edge-service:latest
+    container_name: edge-service
+    depends_on:
+      config-service:
+        condition: service_healthy
+    environment:
+      AUTH_SERVICE_URL: "http://auth-service:8082"
+      BOARD_SERVICE_URL: "http://board-service:8081"
+    ports:
+      - "8000:8000"
+    networks:
+      - msa-network
+
+volumes:
+  board-uploads: {}

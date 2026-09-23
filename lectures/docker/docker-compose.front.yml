@@ -1,0 +1,48 @@
+name: msa-front
+
+services:
+  # Nginx란?
+  # - 웹 서버이자 리버스 프록시이며, 여기서는 리버스 프록시 목적으로 사용
+  # - 리버스 프록시 = 브라우저 요청을 대신 받아서 뒤쪽 서버로 넘겨주는 중개자
+  # 브라우저는 Nginx하고만 대화하고, 뒤에 서버가 몇 대인지 모름
+  # [지금]
+  # 브라우저 --8080 --> web-service
+  # 브라우저 --8000 --> edge-service (카카오 로그인)
+  # [도입]
+  # 브라우저 --80 --> Nginx --> web-service, edge-service
+
+  # 왜 필요한가?
+  # 1) 진입점 통일
+  # 지금은 브라우저가 8080, 8000 두 곳을 직접 앎
+  # 2) 내부 서비스를 숨김
+  # web-service / edge-service의 ports를 지울 수 있음
+  # 3) HTTPS 인증서 처리, 정적 파일 응답, 요청 로그 등을 앞단에서 처리할 수 있음
+  # Nginx에서 HTTPS를 종료하면 외부 HTTPS 설정을 한 곳에서 관리하고,
+  # 내부 서비스 간 통신은 HTTP로 유지할 수 있음
+  # 4) 로드 밸런싱
+  # 같은 서비스를 여러 개 띄웠을 때 요청을 나눠줌 -> 스케일 아웃(서버를 늘려서 부하를 분산)의 출발점
+
+  # nginx:
+  #   build: ./nginx
+  #   image: msa-nginx:latest
+  #   container_name: nginx
+  #   ports:
+  #     - "80:80"
+  #   networks:
+  #     - msa-network
+
+  web-service:
+    build: ../../practice/msa/web-service
+    image: web-service:latest
+    container_name: web-service
+    environment:
+      EDGE_SERVICE_URL: "http://edge-service:8000"
+    ports:
+      - "8080:8080"
+    networks:
+      - msa-network
+
+networks:
+  msa-network:
+    name: msa-network
+    external: true

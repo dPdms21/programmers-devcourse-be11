@@ -78,3 +78,64 @@ docker logs -f config-service
 
 사용하지 않는 이미지·컨테이너·네트워크 등 정리 (다른 프로젝트 리소스도 삭제 대상이 될 수 있으므로 주의)
 docker system prune -a
+
+멈추기
+docker stop [컨테이너ID]
+
+*** Docker Compose ***
+
+기동 (data → service → front)
+
+-f (= file): 사용할 Compose 파일 지정
+-d (= detach): 백그라운드 실행
+
+1. 데이터 (msa-network 생성 + MySQL)
+   docker compose -f docker-compose.data.yml up -d
+
+2. 서비스 (Config → Auth/Board/Edge)
+   docker compose -f docker-compose.service.yml up -d --build
+
+3. 프론트 (Web)
+   docker compose -f docker-compose.front.yml up -d --build
+
+--build는 컨테이너를 시작하기 전에 이미지를 빌드하도록 지정한다.
+코드 수정 후 up -d --build를 실행하면 이미지를 빌드하고 필요한 컨테이너를 재생성한다.
+restart만으로는 변경된 코드가 반영되지 않는다.
+
+종료 (역순: front → service → data)
+docker compose -f docker-compose.front.yml down
+docker compose -f docker-compose.service.yml down
+docker compose -f docker-compose.data.yml down
+
+완전 초기화 (Compose 컨테이너 및 관리 볼륨 삭제)
+
+# data 프로젝트의 MySQL 데이터 볼륨과
+# service 프로젝트의 board-uploads 볼륨까지 삭제되므로 주의
+
+docker compose -f docker-compose.front.yml down -v
+docker compose -f docker-compose.service.yml down -v
+docker compose -f docker-compose.data.yml down -v
+
+상태 확인
+docker ps
+docker ps -a
+docker compose -f docker-compose.service.yml ps
+
+로그 확인
+docker logs -f auth-service
+docker compose -f docker-compose.service.yml logs -f
+
+개별 서비스 재시작
+docker compose -f docker-compose.service.yml restart auth-service
+
+코드 수정 후 특정 서비스 재빌드 및 재생성
+docker compose -f docker-compose.service.yml up -d --build auth-service
+
+*** 쉘 스크립트 실행 권한 (Git Bash / WSL) ***
+chmod +x start.sh
+chmod +x stop.sh
+
+*** 쉘 스크립트 실행 ***
+./start.sh
+./stop.sh        # 컨테이너만 종료, 볼륨 유지
+./stop.sh -v     # 컨테이너 종료 + 관리 볼륨 삭제
