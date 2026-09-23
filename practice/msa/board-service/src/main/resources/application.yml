@@ -6,7 +6,7 @@ spring:
     name: board-service
 
   config:
-    import: "optional:configserver:${config-service.url:http://localhost:8888}"
+    import: "optional:configserver:${CONFIG_SERVICE_URL:http://localhost:8888}"
 
   datasource:
     url: ${BOARD_DB_URL}

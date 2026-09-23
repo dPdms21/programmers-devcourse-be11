@@ -13,15 +13,15 @@ spring:
           # 포괄 패턴(/api/**)은 마지막에 배치
           routes:
             - id: auth
-              uri: ${auth-service.url:http://localhost:8082}
+              uri: ${AUTH_SERVICE_URL:http://localhost:8082}
               predicates:
                 - Path=/api/auth/**,/api/users/**,/api/tokens/**
             - id: oauth2-login
-              uri: ${auth-service.url:http://localhost:8082}
+              uri: ${AUTH_SERVICE_URL:http://localhost:8082}
               predicates:
                 - Path=/oauth2/**,/login/oauth2/**
             - id: board
-              uri: ${board-service.url:http://localhost:8081}
+              uri: ${BOARD_SERVICE_URL:http://localhost:8081}
               predicates:
                 - Path=/api/**
           # [trusted-proxies]
