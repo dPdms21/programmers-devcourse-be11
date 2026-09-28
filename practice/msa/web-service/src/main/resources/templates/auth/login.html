@@ -27,16 +27,37 @@
 
         <!-- [카카오 로그인 버튼]
              버튼이라기보다 "단순 링크"라는 점이 핵심. ajax도 JS도 필요 없음
-             /oauth2/authorization/kakao는 우리가 만든 컨트롤러가 아니라
-             OAuth2AuthorizationRequestRedirectFilter가 가로채는 규약 경로(SecurityConfig 참고) —
+             /oauth2/authorization/kakao는 만든 컨트롤러가 아니라
+             OAuth2AuthorizationRequestRedirectFilter가 가로채는 규약 경로 (SecurityConfig 참고)
              브라우저가 이 링크를 따라가는 순간 카카오 인가 페이지로 리다이렉트되며 표준 흐름이 시작됨
              자체 로그인(위의 ajax)과 달리 이후 과정 전체가 "페이지 이동"으로 진행됨
-             [MSA] 그 필터는 auth-service에 있으므로 상대경로(8080=web, 404)가 아니라
-             edge(8000) 주소로 가야 함. edge가 /oauth2/** 를 auth-service로 라우팅 -->
+
+             [로컬 MSA 실행]
+             OAuth2AuthorizationRequestRedirectFilter는 auth-service에 있으므로
+             web-service(8080)로 요청하면 처리할 수 없음
+             edge-service(8000)를 통해 요청하고,
+             edge가 /oauth2/** 요청을 auth-service로 라우팅
+
+             [AWS 배포]
+             외부 진입점이 Nginx :80으로 통일되므로 localhost:8000을 직접 사용하지 않음
+             상대경로 /oauth2/authorization/kakao를 사용하면
+             브라우저 → Nginx → edge-service → auth-service 순서로 요청이 전달됨
+        -->
+
+        <!-- 로컬 MSA 실행 시 사용
         <a href="http://localhost:8000/oauth2/authorization/kakao" class="kakao-login-btn"
            style="display:block; margin-top:10px; padding:12px 0; text-align:center;
-              background:#FEE500; color:rgba(0,0,0,.85); border-radius:6px;
-              text-decoration:none; font-weight:bold;">
+                  background:#FEE500; color:rgba(0,0,0,.85); border-radius:6px;
+                  text-decoration:none; font-weight:bold;">
+            카카오 로그인
+        </a>
+        -->
+
+        <!-- AWS/Nginx 배포 환경 -->
+        <a href="/oauth2/authorization/kakao" class="kakao-login-btn"
+           style="display:block; margin-top:10px; padding:12px 0; text-align:center;
+          background:#FEE500; color:rgba(0,0,0,.85); border-radius:6px;
+          text-decoration:none; font-weight:bold;">
             카카오 로그인
         </a>
 
