@@ -20,6 +20,8 @@ spring:
               uri: ${AUTH_SERVICE_URL:http://localhost:8082}
               predicates:
                 - Path=/oauth2/**,/login/oauth2/**
+              filters:
+                - PreserveHostHeader
             - id: board
               uri: ${BOARD_SERVICE_URL:http://localhost:8081}
               predicates:
