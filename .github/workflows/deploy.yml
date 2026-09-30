@@ -1,0 +1,101 @@
+# CI/CD 개념
+
+# CI (Continuous Integration, 지속적 통합)
+# - 여러 사람이 올린 코드를 자주 합치고, 합칠 때마다 자동으로 빌드·테스트하여 깨진 코드를 빠르게 발견하는 방식
+# - push 시마다 ./gradlew build 또는 test 자동 실행
+# - 실패 시 즉시 확인 가능
+
+# CD (Continuous Delivery/Deployment, 지속적 전달/배포)
+# - CI를 통과한 코드를 서버까지 자동으로 전달·배포하는 방식
+
+# 사용 이유
+# - 수동 배포(SSH 접속 -> git clone/pull -> build -> up) 과정에서 사람이 같은 절차를 반복하면서 발생할 수 있는 누락 방지
+# - push만으로 항상 동일한 배포 절차 수행
+# - 언제, 누가, 무엇을 배포했는지 실행 기록 확인 가능
+
+# 전략
+# - CD 중심 구성
+# - push 발생 시 GitHub Actions가 서버에 SSH로 접속하여 배포 스크립트 실행
+# - 빌드 과정은 deploy.sh 내부에서 수행
+
+# GitHub Actions
+# - GitHub에서 제공하는 CI/CD 자동화 도구
+# - 저장소에 Workflow .yml 파일을 두고, 지정한 이벤트(push 등) 발생 시 GitHub Runner가 작업 실행
+# - 유사 도구: Jenkins, GitLab CI, AWS CodePipeline 등
+
+# GitHub Actions - EC2 자동 배포
+# - git push
+#   -> GitHub Actions
+#   -> SSH로 msa-app 접속
+#   -> deploy.sh 실행
+#   -> git pull
+#   -> docker build
+#   -> docker up -d
+# - Workflow 파일 위치 규칙: 저장소 루트의 .github/workflows/ 아래 .yml 파일만 GitHub Actions에서 인식
+
+# Actions 탭에 표시할 Workflow 이름
+name: Deploy to EC2
+
+# Workflow 실행 조건
+on:
+  # 자동 배포 비활성화
+  # 필요 시 아래 push 설정의 주석을 해제하여 main 브랜치 push 시 자동 배포 가능
+  #
+  # push:
+  #   branches:
+  #     - main
+  #
+  #   # 아래 경로의 파일이 변경된 push만 실행
+  #   # - 수업 자료(md 등)만 변경한 push는 배포 대상에서 제외
+  #   # - ** : 하위 디렉터리 전체 포함
+  #   paths:
+  #     - "practice/msa/**"
+  #     - "lectures/docker/**"
+  #     - ".github/workflows/deploy.yml"
+
+  # Actions 탭의 "Run workflow" 버튼을 통한 수동 실행 허용
+  # - 코드 변경 없이 재배포가 필요한 경우
+  # - .env 수정 후 재배포가 필요한 경우
+  # - 실패한 배포 재시도
+  # - paths 조건에 포함되지 않은 변경과 관계없이 수동 배포가 필요한 경우
+  workflow_dispatch:
+
+# 실행할 작업 정의
+jobs:
+  deploy:
+    # Workflow를 실행할 GitHub Runner 환경
+    runs-on: ubuntu-latest
+
+    # 순차적으로 실행할 단계
+    steps:
+      - name: Deploy to msa-app
+
+        # uses: 다른 사람이 만들어 둔 Action 재사용
+        # appleboy/ssh-action@v1:
+        # - SSH로 원격 서버에 접속하여 명령을 실행하는 공개 Action
+        # - msa-app-sg의 SSH 22 포트에 GitHub Actions Runner 접근 허용 필요
+        # - 실습에서는 0.0.0.0/0 허용 가능하지만 실습 종료 후 범위 축소 필요
+        uses: appleboy/ssh-action@v1
+
+        # with: 해당 Action에 전달할 입력값
+        with:
+          # ${{ secrets.이름 }}
+          # - GitHub Repository
+          #   Settings -> Secrets and variables -> Actions -> Repository secrets
+          #   에 등록한 값 사용
+          host: ${{ secrets.EC2_HOST }} # msa-app Elastic IP
+
+          # EC2 기본 사용자
+          username: ubuntu
+
+          # msa-key.pem Private Key 전체 내용
+          # Git Bash에서 cat 출력 시 프롬프트 문자나 % 등이 포함되지 않도록 주의
+          key: ${{ secrets.EC2_SSH_KEY }}
+
+          # 기본 제한 시간보다 긴 빌드 시간을 고려하여 40분으로 설정
+          command_timeout: 40m
+
+          # | : 여러 줄의 명령을 그대로 전달
+          script: |
+            cd ~/app/lectures/docker
+            ./deploy.sh
