@@ -45,3 +45,4 @@
 | Date | Summary |
 | ---- | ------- |
 | [2026-09-28](./2026-09-28.md) | Nginx 경유 OAuth 연동 · AWS 배포 아키텍처 및 인프라 구성 / Repoary Gemini API 기반 AI TIL 초안 생성 기능 구현 |
+| [2026-09-29](./2026-09-29.md) | AWS OAuth 연동 오류 보완 실습 · Docker Compose 배포 설정 · Nginx 기반 애플리케이션 배포 |
