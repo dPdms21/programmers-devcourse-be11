@@ -46,3 +46,4 @@
 | ---- | ------- |
 | [2026-09-28](./2026-09-28.md) | Nginx 경유 OAuth 연동 · AWS 배포 아키텍처 및 인프라 구성 / Repoary Gemini API 기반 AI TIL 초안 생성 기능 구현 |
 | [2026-09-29](./2026-09-29.md) | AWS OAuth 연동 오류 보완 실습 · Docker Compose 배포 설정 · Nginx 기반 애플리케이션 배포 |
+| [2026-09-30](./2026-09-30.md) | GitHub Actions EC2 배포 워크플로 추가 · AWS 인프라 및 MSA 배포 복습 / Repoary AI TIL 생성·오류 처리 개선 · 4차 프로젝트 기획 / 제4회 교과목 성취도 평가 / AI 활용 입사서류 작성법 특강 |
