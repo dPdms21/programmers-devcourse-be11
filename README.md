@@ -14,7 +14,8 @@
 | --- | ------- | --- | ---- | --- |
 | 개인 프로젝트 | [Repoary](https://github.com/prgrms-be-devcourse/NBE11-13-myproject-parkyeeun) | 2026.07 ~ 진행 중 | Backend 중심 Full Stack | GitHub 커밋과 변경 파일을 분석해 TIL 초안과 월별 README 생성을 지원하는 학습 기록 서비스 |
 | 1차 팀 프로젝트 | [Compose Bean](https://github.com/prgrms-be-devcourse/NBE11-13-1-Team01) | 2026.07.16 ~ 2026.07.24 | 팀장 / Backend | 비회원 커피 주문 서비스에서 상품 도메인·이미지 관리·소프트 딜리트, 공통 예외 처리, Slack 주문 알림, 기능 통합·테스트 및 프로젝트 문서화를 담당 |
-| 2차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-2-Team03) | 2026.08.07 ~ 2026.08.25 | Backend - Purchase·Payment / Frontend | 한정 수량 굿즈 타임세일 서비스에서 구매·결제 도메인과 Toss 결제 연동을 담당하고, 구매·결제 상태 전환의 동시성과 경합 상황을 검증 |
+| 2차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-2-Team03) | 2026.08.07 ~ 2026.08.25 | Backend - Purchase·Payment / Frontend | 한정 수량 굿즈 타임세일 서비스에서 구매·결제 도메인과 Toss Payments 연동을 담당하고, 구매·결제 상태 전환의 동시성과 경합 상황을 검증 |
+| 3차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-3-Team03) | 2026.09.11 ~ 2026.09.18 | Backend - Purchase·Payment·Outbox·CS / Frontend | 구매·결제 영역을 Kotlin으로 전환하고, Transactional Outbox·Redis Streams 기반 재고 복구와 결제 보상 재처리, AI 주문 CS를 구현 |
 
 ---
 
@@ -35,6 +36,9 @@
 
 ```text
 programmers-devcourse-be11/
+│
+├── .github/
+│   └── workflows/              # GitHub Actions 배포 워크플로
 │
 ├── assignments/
 │   ├── java/                   # Java 과제 코드
@@ -91,7 +95,7 @@ solve(sql): YYYY-MM-DD SQL 문제명 (풀이 방식)
 fix(scope): scope 코드 오류 수정
 style(scope): scope 코드 형식 수정
 refactor(scope): scope 코드 구조 개선
-chore(project): 프로젝트 설정 및 구조 변경
+chore(scope): 프로젝트 설정 및 환경 구성
 ```
 
-※ `scope`에는 `java`, `kotlin`, `spring`, `springboot` 등 실제 변경 영역을 작성한다.
+※ `scope`에는 `java`, `kotlin`, `spring`, `springboot`, `deploy`, `project` 등 실제 변경 영역을 작성한다.
