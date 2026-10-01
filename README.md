@@ -20,14 +20,14 @@
 
 ## Directory Guide
 
-| Path                          | Description                           |
-| ----------------------------- | ------------------------------------- |
-| [assignments/](./assignments) | Java·Kotlin·Spring·Spring Boot 과제 코드 |
-| [codingtest/](./codingtest)   | Java·SQL 코딩 테스트 풀이               |
-| [docs/](./docs)               | 과제 문서 및 실습 보조자료               |
-| [lectures/](./lectures)       | 강의 내용 및 개념 정리                  |
+| Path                          | Description                                     |
+| ----------------------------- | ----------------------------------------------- |
+| [assignments/](./assignments) | Java·Kotlin·Spring·Spring Boot 과제 코드          |
+| [codingtest/](./codingtest)   | Java·SQL 코딩 테스트 풀이                          |
+| [docs/](./docs)               | 과제 문서 및 실습 · 코딩 테스트 학습 보조자료         |
+| [lectures/](./lectures)       | 강의 내용 및 개념 정리                             |
 | [practice/](./practice)       | Java·Kotlin·Spring·Spring Boot·MSA 수업 실습 코드 |
-| [til/](./til)                 | 날짜별 학습 회고                        |
+| [til/](./til)                 | 날짜별 학습 회고                                  |
 
 ---
 
@@ -53,6 +53,7 @@ programmers-devcourse-be11/
 │   │   ├── spring/             # Spring 과제 문서
 │   │   └── springboot/         # Spring Boot 과제 문서
 │   │
+│   ├── codingtest/             # 코딩 테스트 학습 보조자료
 │   └── practice/               # 실습 보조자료
 │
 ├── lectures/                   # 강의 내용 및 개념 정리
@@ -74,6 +75,7 @@ programmers-devcourse-be11/
 
 ```text
 docs(assignments): 과제 문서 정리
+docs(codingtest): 코딩 테스트 학습 보조자료 정리
 docs(lectures): YYYY-MM-DD 강의 내용 정리
 docs(practice): 실습 보조자료 정리
 docs(til): YYYY-MM-DD 학습 회고 정리
