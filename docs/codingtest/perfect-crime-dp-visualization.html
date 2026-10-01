@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>완전범죄 2차원 DP 단계별 시각화</title>
+  <style>
+    :root{
+      --bg:#f7f8fa;--card:#fff;--text:#1f2937;--muted:#6b7280;--border:#d1d5db;
+      --accent:#2563eb;--accentSoft:#dbeafe;--valid:#dcfce7;--invalid:#fee2e2;
+      --active:#e0e7ff;--panel:#f3f4f6;--code:#111827;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,"Noto Sans KR",sans-serif;line-height:1.6}
+    main{max-width:980px;margin:0 auto;padding:28px 18px 48px}
+    h1{margin:0 0 8px}
+    h2{margin:28px 0 12px}
+    code,pre{font-family:Consolas,monospace}
+    .muted{color:var(--muted)}
+    .summary{display:grid;grid-template-columns:2fr 1fr 1fr;gap:12px;margin:20px 0}
+    .card,.panel{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px}
+    .panel{background:var(--panel)}
+    .controls{display:flex;gap:8px;flex-wrap:wrap}
+    button{min-height:42px;padding:8px 14px;border-radius:10px;border:1px solid var(--border);background:#fff;font-weight:700;cursor:pointer}
+    button.primary{background:var(--accentSoft);border-color:#93c5fd}
+    button:disabled{opacity:.4;cursor:not-allowed}
+    .progressWrap{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:12px}
+    .progress{height:100%;background:var(--accent);transition:width .2s ease}
+    .gridWrap{overflow-x:auto}
+    table{width:100%;border-collapse:separate;border-spacing:6px;table-layout:fixed;min-width:520px}
+    th{font-size:13px;color:var(--muted)}
+    td,th{padding:8px;text-align:center}
+    .cell{height:56px;border:1px solid var(--border);border-radius:10px;background:#fff}
+    .cell.active{background:var(--active);font-weight:700;border:2px solid #818cf8}
+    .states{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .state{padding:6px 10px;border-radius:999px;background:var(--active);border:1px solid #a5b4fc;font-family:Consolas,monospace;font-size:14px}
+    .transition{padding:11px 12px;border-radius:10px;margin:8px 0;border-left:5px solid}
+    .ok{background:var(--valid);border-left-color:#16a34a}
+    .fail{background:var(--invalid);border-left-color:#dc2626}
+    .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    pre{background:var(--code);color:#f9fafb;padding:16px;border-radius:12px;overflow-x:auto;font-size:14px}
+    .result{margin-top:14px;padding:14px;border-radius:12px;background:var(--accentSoft);border:1px solid #93c5fd}
+    @media(max-width:700px){
+      .summary,.two{grid-template-columns:1fr}
+      main{padding:20px 12px 36px}
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>완전범죄 — 2차원 DP 단계별 시각화</h1>
+  <p class="muted">예제: <code>info = [[1,2], [2,3], [2,1]], n = 4, m = 4</code></p>
+
+  <div class="summary">
+    <div class="card"><div class="muted">info</div><strong>[[1,2], [2,3], [2,1]]</strong></div>
+    <div class="card"><div class="muted">A 조건</div><strong>A &lt; 4</strong></div>
+    <div class="card"><div class="muted">B 조건</div><strong>B &lt; 4</strong></div>
+  </div>
+
+  <section class="panel">
+    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap">
+      <div>
+        <strong>현재 단계</strong>
+        <div id="stepTitle" class="muted" style="margin-top:4px"></div>
+      </div>
+      <div class="controls">
+        <button id="prevBtn">이전</button>
+        <button id="nextBtn" class="primary">다음</button>
+      </div>
+    </div>
+    <div class="progressWrap"><div id="progress" class="progress"></div></div>
+  </section>
+
+  <h2>1. 현재 가능한 DP 상태</h2>
+  <div class="card">
+    <p><code>dp[a][b] == true</code>는 <strong>A 흔적이 a, B 흔적이 b인 상태가 가능하다</strong>는 뜻이다.</p>
+    <div class="gridWrap"><div id="grid"></div></div>
+  </div>
+
+  <h2>2. 이번 물건 처리</h2>
+  <div id="transitionBox" class="card"></div>
+
+  <h2>3. 처리 전 / 처리 후 상태</h2>
+  <div class="two">
+    <div class="card">
+      <strong>처리 전 dp</strong>
+      <div id="beforeStates" class="states"></div>
+    </div>
+    <div class="card">
+      <strong>처리 후 next → dp</strong>
+      <div id="afterStates" class="states"></div>
+    </div>
+  </div>
+
+  <h2>4. 코드와 연결</h2>
+  <pre>class Solution {
+    public int solution(int[][] info, int n, int m) {
+        boolean[][] dp = new boolean[n][m];
+        dp[0][0] = true;
+
+        for (int[] item : info) {
+            int aTrace = item[0];
+            int bTrace = item[1];
+
+            boolean[][] next = new boolean[n][m];
+
+            for (int a = 0; a &lt; n; a++) {
+                for (int b = 0; b &lt; m; b++) {
+                    if (!dp[a][b]) continue;
+
+                    if (a + aTrace &lt; n) {
+                        next[a + aTrace][b] = true;
+                    }
+
+                    if (b + bTrace &lt; m) {
+                        next[a][b + bTrace] = true;
+                    }
+                }
+            }
+
+            dp = next;
+        }
+
+        for (int a = 0; a &lt; n; a++) {
+            for (int b = 0; b &lt; m; b++) {
+                if (dp[a][b]) return a;
+            }
+        }
+
+        return -1;
+    }
+}</pre>
+
+  <div id="resultBox" class="result"></div>
+
+  <h2>5. 변수 의미</h2>
+  <div class="card">
+    <table style="min-width:0;border-collapse:collapse;border-spacing:0">
+      <tr><th style="border:1px solid var(--border)">변수</th><th style="border:1px solid var(--border)">의미</th></tr>
+      <tr><td style="border:1px solid var(--border)"><code>info</code></td><td style="border:1px solid var(--border)">각 물건의 [A 흔적, B 흔적]</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>n</code></td><td style="border:1px solid var(--border)">A가 잡히는 기준값</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>m</code></td><td style="border:1px solid var(--border)">B가 잡히는 기준값</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>a</code></td><td style="border:1px solid var(--border)">현재까지 누적된 A 흔적</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>b</code></td><td style="border:1px solid var(--border)">현재까지 누적된 B 흔적</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>aTrace</code></td><td style="border:1px solid var(--border)">현재 물건을 A가 훔쳤을 때 추가 흔적</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>bTrace</code></td><td style="border:1px solid var(--border)">현재 물건을 B가 훔쳤을 때 추가 흔적</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>dp[a][b]</code></td><td style="border:1px solid var(--border)">A=a, B=b 상태가 가능한지 여부</td></tr>
+      <tr><td style="border:1px solid var(--border)"><code>next</code></td><td style="border:1px solid var(--border)">현재 물건까지 처리한 다음 상태</td></tr>
+    </table>
+  </div>
+</main>
+
+<script>
+(() => {
+  const n = 4, m = 4;
+  const stages = [
+    {
+      title: '시작 — 아직 아무 물건도 처리하지 않음',
+      item: null,
+      before: [[0,0]],
+      after: [[0,0]],
+      transitions: [],
+      note: '아직 아무것도 훔치지 않았으므로 dp[0][0] = true에서 시작한다.'
+    },
+    {
+      title: '1번 물건 [1,2] 처리',
+      item: [1,2],
+      before: [[0,0]],
+      after: [[1,0],[0,2]],
+      transitions: [
+        {ok:true, text:'(0,0)에서 A가 훔침 → (1,0)'},
+        {ok:true, text:'(0,0)에서 B가 훔침 → (0,2)'}
+      ]
+    },
+    {
+      title: '2번 물건 [2,3] 처리',
+      item: [2,3],
+      before: [[1,0],[0,2]],
+      after: [[3,0],[1,3],[2,2]],
+      transitions: [
+        {ok:true, text:'(1,0)에서 A가 훔침 → (3,0)'},
+        {ok:true, text:'(1,0)에서 B가 훔침 → (1,3)'},
+        {ok:true, text:'(0,2)에서 A가 훔침 → (2,2)'},
+        {ok:false, text:'(0,2)에서 B가 훔침 → (0,5) → B 흔적 5 ≥ 4, 탈락'}
+      ]
+    },
+    {
+      title: '3번 물건 [2,1] 처리',
+      item: [2,1],
+      before: [[3,0],[1,3],[2,2]],
+      after: [[3,1],[3,3],[2,3]],
+      transitions: [
+        {ok:false, text:'(3,0)에서 A가 훔침 → (5,0) → A 흔적 5 ≥ 4, 탈락'},
+        {ok:true, text:'(3,0)에서 B가 훔침 → (3,1)'},
+        {ok:true, text:'(1,3)에서 A가 훔침 → (3,3)'},
+        {ok:false, text:'(1,3)에서 B가 훔침 → (1,4) → B 흔적 4 ≥ 4, 탈락'},
+        {ok:false, text:'(2,2)에서 A가 훔침 → (4,2) → A 흔적 4 ≥ 4, 탈락'},
+        {ok:true, text:'(2,2)에서 B가 훔침 → (2,3)'}
+      ]
+    },
+    {
+      title: '최종 — 가능한 상태에서 A 흔적 최솟값 찾기',
+      item: null,
+      before: [[3,1],[3,3],[2,3]],
+      after: [[3,1],[3,3],[2,3]],
+      transitions: [],
+      note: '가능한 A 흔적은 3, 3, 2이므로 최솟값은 2다.'
+    }
+  ];
+
+  let step = 0;
+  const stepTitle = document.getElementById('stepTitle');
+  const progress = document.getElementById('progress');
+  const grid = document.getElementById('grid');
+  const transitionBox = document.getElementById('transitionBox');
+  const beforeStates = document.getElementById('beforeStates');
+  const afterStates = document.getElementById('afterStates');
+  const resultBox = document.getElementById('resultBox');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function setOf(states){
+    return new Set(states.map(([a,b]) => `${a},${b}`));
+  }
+
+  function renderGrid(states){
+    const active = setOf(states);
+    let html = '<table><thead><tr><th>A \\\\ B</th>';
+    for(let b=0;b<m;b++) html += `<th>B=${b}</th>`;
+    html += '</tr></thead><tbody>';
+    for(let a=0;a<n;a++){
+      html += `<tr><th>A=${a}</th>`;
+      for(let b=0;b<m;b++){
+        const on = active.has(`${a},${b}`);
+        html += `<td class="cell ${on ? 'active':''}">${on ? `true<br>(${a},${b})` : 'false'}</td>`;
+      }
+      html += '</tr>';
+    }
+    html += '</tbody></table>';
+    grid.innerHTML = html;
+  }
+
+  function renderStates(el, states){
+    el.innerHTML = states.map(([a,b]) => `<span class="state">A=${a}, B=${b}</span>`).join('');
+  }
+
+  function renderTransitions(stage){
+    if(stage.transitions.length === 0){
+      transitionBox.innerHTML = `<p>${stage.note || ''}</p>`;
+      return;
+    }
+    let html = '';
+    stage.transitions.forEach(t => {
+      html += `<div class="transition ${t.ok ? 'ok':'fail'}">${t.text}<br><span class="muted" style="font-size:13px">${t.ok ? '조건 만족 → next에 저장' : '조건 초과 → 저장하지 않음'}</span></div>`;
+    });
+    transitionBox.innerHTML = html;
+  }
+
+  function renderResult(){
+    if(step === stages.length - 1){
+      resultBox.innerHTML = '<strong>최종 결과:</strong> 가능한 상태는 (3,1), (3,3), (2,3)이고 A 흔적 최솟값은 <strong>2</strong> → result = 2';
+    } else {
+      resultBox.innerHTML = '<strong>핵심:</strong> dp[a][b]의 인덱스 a, b 자체가 누적 흔적값이고, true는 그 상태가 가능하다는 표시다.';
+    }
+  }
+
+  function render(){
+    const stage = stages[step];
+    stepTitle.textContent = `${step + 1} / ${stages.length} · ${stage.title}`;
+    progress.style.width = `${((step + 1) / stages.length) * 100}%`;
+    renderGrid(stage.after);
+    renderTransitions(stage);
+    renderStates(beforeStates, stage.before);
+    renderStates(afterStates, stage.after);
+    renderResult();
+
+    prevBtn.disabled = step === 0;
+    nextBtn.disabled = step === stages.length - 1;
+    nextBtn.textContent = step === stages.length - 2 ? '결과 보기' : '다음';
+  }
+
+  prevBtn.addEventListener('click', () => {
+    if(step > 0){ step--; render(); }
+  });
+  nextBtn.addEventListener('click', () => {
+    if(step < stages.length - 1){ step++; render(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

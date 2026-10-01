@@ -1,6 +1,6 @@
 # Documentation
 
-과제 문서와 실습 이해를 돕기 위한 보조자료를 정리한다.
+과제 문서와 실습 · 코딩 테스트 학습을 돕기 위한 보조자료를 정리한다.
 
 ## Directory Guide
 
@@ -10,7 +10,8 @@
 | [assignments/kotlin/](./assignments/kotlin)         | Kotlin 과제 설명 및 구현 안내 문서      |
 | [assignments/spring/](./assignments/spring)         | Spring 과제 설명 및 구현 안내 문서      |
 | [assignments/springboot/](./assignments/springboot) | Spring Boot 과제 설명 및 구현 안내 문서 |
-| [practice/](./practice)                             | 실습 보조자료                      |
+| [codingtest/](./codingtest)                         | 코딩 테스트 학습 보조자료               |
+| [practice/](./practice)                             | 실습 보조자료                         |
 
 ## 과제 보조자료
 
@@ -19,6 +20,12 @@
 | HashMap 버킷과 체이닝           | [🔗 이미지](./assignments/java/images/hashmap/hashmap-bucket-chaining.png)  | 버킷 배열과 각 버킷에 연결된 노드의 체이닝 구조를 이해하기 위해 만든 자료              |
 | HashMap 삭제 과정             | [🔗 이미지](./assignments/java/images/hashmap/hashmap-remove-process.png)   | 체이닝된 연결 리스트에서 첫 번째, 중간, 마지막 노드를 삭제하는 과정을 이해하기 위해 만든 자료  |
 | HashMap resize와 rehashing | [🔗 이미지](./assignments/java/images/hashmap/hashmap-resize-rehashing.png) | HashMap 과제를 수행하며 버킷 배열 확장과 기존 데이터 재배치 과정을 이해하기 위해 만든 자료 |
+
+## 코딩 테스트 보조자료
+
+| 주제        | 자료                                                         | 설명                                                                        |
+| ---------- | ------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| 완전범죄 DP | [🔗 시각화](./codingtest/perfect-crime-dp-visualization.html) | 2차원 DP에서 A·B의 누적 흔적 상태가 물건별 선택에 따라 확장되는 과정을 단계별로 확인하는 시각화 자료 |
 
 ## 실습 보조자료
 
@@ -39,4 +46,5 @@
 * `assignments/kotlin/`에는 Kotlin 과제 설명과 관련 문서를 정리한다.
 * `assignments/spring/`에는 Spring 과제 설명과 관련 문서를 정리한다.
 * `assignments/springboot/`에는 Spring Boot 과제 설명과 관련 문서를 정리한다.
+* `codingtest/`에는 코딩 테스트 문제 풀이 과정에서 이해가 어려웠던 알고리즘과 상태 변화를 정리한 보조자료를 정리한다.
 * `practice/`에는 수업 중 실습과 직접 연결된 보조자료를 정리한다.
