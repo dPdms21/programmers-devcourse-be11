@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: slow-board
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/slow_board
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+
+  jpa:
+    show-sql: true
