@@ -1,10 +1,12 @@
 # Programmers Devcourse BE 11
 
-> [11기] K-Digital Training: 클라우드 기반 백엔드 엔지니어링
+> [11기] K-Digital Training: 클라우드 기반 백엔드 엔지니어링 · 2026.06 ~ 2026.11 수료
 
 프로그래머스 데브코스 백엔드 11기 과정에서 학습한 내용을 정리하는 저장소입니다.
 
 강의 정리, 백엔드 수업 실습과 과제, Java·SQL 코딩 테스트, TIL을 분리하여 관리합니다.
+
+과정 동안 일별 TIL 114개(2026.06.04 ~ 2026.11.06)를 작성했습니다.
 
 ---
 
@@ -12,10 +14,11 @@
 
 | 구분 | 프로젝트 | 기간 | 역할 | 설명 |
 | --- | ------- | --- | ---- | --- |
-| 개인 프로젝트 | [Repoary](https://github.com/prgrms-be-devcourse/NBE11-13-myproject-parkyeeun) | 2026.07 ~ 진행 중 | Backend 중심 Full Stack | GitHub 커밋과 변경 파일을 분석해 TIL 초안과 월별 README 생성을 지원하는 학습 기록 서비스 |
+| 개인 프로젝트 | [Repoary](https://github.com/prgrms-be-devcourse/NBE11-13-myproject-parkyeeun) | 2026.07 ~ 2026.10 | Backend 중심 Full Stack | GitHub 커밋과 변경 파일을 분석해 TIL 초안과 월별 README 생성을 지원하는 학습 기록 서비스. 누락 점검의 GitHub API 호출 13회 → 3회 |
 | 1차 팀 프로젝트 | [Compose Bean](https://github.com/prgrms-be-devcourse/NBE11-13-1-Team01) | 2026.07.16 ~ 2026.07.24 | 팀장 / Backend | 비회원 커피 주문 서비스에서 상품 도메인·이미지 관리·소프트 딜리트, 공통 예외 처리, Slack 주문 알림, 기능 통합·테스트 및 프로젝트 문서화를 담당 |
-| 2차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-2-Team03) | 2026.08.07 ~ 2026.08.25 | Backend - Purchase·Payment / Frontend | 한정 수량 굿즈 타임세일 서비스에서 구매·결제 도메인과 Toss Payments 연동을 담당하고, 구매·결제 상태 전환의 동시성과 경합 상황을 검증 |
+| 2차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-2-Team03) | 2026.08.07 ~ 2026.08.25 | Backend - Purchase·Payment / Frontend | 한정 수량 굿즈 타임세일 서비스에서 구매·결제 도메인과 Toss Payments 연동을 담당. 동일 결제 50건 동시 승인의 중복 승인 9건 → 0건, 승인·취소 경합 데드락 해소 |
 | 3차 팀 프로젝트 | [Gudit](https://github.com/prgrms-be-devcourse/NBE11-13-3-Team03) | 2026.09.11 ~ 2026.09.18 | Backend - Purchase·Payment·Outbox·CS / Frontend | 구매·결제 영역을 Kotlin으로 전환하고, Transactional Outbox·Redis Streams 기반 재고 복구와 결제 보상 재처리, AI 주문 CS를 구현 |
+| 최종 팀 프로젝트 | [Y:ON](https://github.com/prgrms-be-devcourse/NBE11-13-final-Team03) | 2026.10.06 ~ 2026.11.02 | Backend - Search·Recommendation·Preference·Behavior / Frontend | 청년정책·직업훈련 통합 탐색 서비스에서 실데이터 14만 건 기준 추천 응답 11~17배 개선, 검색 JIT 병목 분석(5,647ms → 406ms, JIT ON/OFF 비교) |
 
 ---
 
